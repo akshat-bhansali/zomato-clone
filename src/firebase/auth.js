@@ -15,10 +15,17 @@ export const doCreateUserWithEmailAndPassword = async (email, password) => {
   return createUserWithEmailAndPassword(auth, email, password);
 };
 
-export const doSignInWithEmailAndPassword = (email, password,name) => {
+export const doSignInWithEmailAndPassword = async(email, password,role) => {
+  const data = await fetchDataFromFirestore();
+  const existingUser = data?.find(user => user.email == email);
+  if(existingUser){
+    if(role!=existingUser.role){
+      return signInWithEmailAndPassword(auth, "email", password);
+    }
+  }
   return signInWithEmailAndPassword(auth, email, password);
 };
-export const saveDataToFirestore = async (email,name) => {
+export const saveDataToFirestore = async (email,name,role) => {
   const data = await fetchDataFromFirestore();
   const existingUser = data?.find(user => user.email == email);
   if(!existingUser){
@@ -26,11 +33,18 @@ export const saveDataToFirestore = async (email,name) => {
       const docRef = await addDoc(colletionRef, {
         email: email,
         name: name,
-        role: "user"
+        role: role
       });
     } catch (error) {
       console.error("Error writing document: ", error);
       alert("Error writing document to Database");
+    }
+  }
+  else{
+    if(role!=existingUser.role){
+      auth.signOut();
+      alert("access denied");
+      window.location.reload();
     }
   }
 };
@@ -44,11 +58,11 @@ const fetchDataFromFirestore = async () => {
     return temporaryArr;
   };
 
-export const doSignInWithGoogle = async () => {
+export const doSignInWithGoogle = async (role) => {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
   const user = result.user;
-  saveDataToFirestore(user.email,user.displayName);
+  saveDataToFirestore(user.email,user.displayName,role);
 };
 
 export const doSignOut = () => {

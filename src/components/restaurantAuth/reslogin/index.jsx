@@ -7,7 +7,7 @@ import {
 } from "../../../firebase/auth";
 import { useAuth } from "../../../contexts/authContext";
 
-const Login = () => {
+const ResLogin = () => {
   const { userLoggedIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +19,7 @@ const Login = () => {
     if (!isSigningIn) {
       setIsSigningIn(true);
       try {
-        await doSignInWithEmailAndPassword(email, password);
+        await doSignInWithEmailAndPassword(email, password,"admin");
         console.log("User created successfully");
       } catch (error) {
         console.error("Error creating user:", error);
@@ -33,7 +33,7 @@ const Login = () => {
     e.preventDefault();
     if (!isSigningIn) {
       setIsSigningIn(true);
-      doSignInWithGoogle().catch((err) => {
+      doSignInWithGoogle("admin").catch((err) => {
         setIsSigningIn(false);
       });
     }
@@ -48,7 +48,7 @@ const Login = () => {
           <div className="text-center">
             <div className="mt-2">
               <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">
-                Welcome Back
+                Restauarant Log In
               </h3>
             </div>
           </div>
@@ -101,16 +101,19 @@ const Login = () => {
           </form>
           <p className="text-center text-sm">
             Don't have an account?{" "}
-            <Link to={"/register"} className="hover:underline font-bold">
+            <Link to={"/resregister"} className="hover:underline font-bold">
               Sign up
             </Link>
           </p>
-          <p className="text-center text-sm">
-            Want to list your restaurant?{" "}
-            <Link to={"/register"} className="hover:underline font-bold">
-              Sign up
-            </Link>
-          </p>
+          <div className="text-sm text-center">
+              Switch to User? {"   "}
+              <Link
+                to={"/login"}
+                className="text-center text-sm hover:underline font-bold"
+              >
+                Continue
+              </Link>
+            </div>
           <div className="flex flex-row text-center w-full">
             <div className="border-b-2 mb-2.5 mr-2 w-full"></div>
             <div className="text-sm font-bold w-fit">OR</div>
@@ -165,4 +168,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ResLogin;

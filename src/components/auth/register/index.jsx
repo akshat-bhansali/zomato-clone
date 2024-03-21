@@ -19,7 +19,7 @@ const Register = () => {
     e.preventDefault();
     if (!isSigningIn) {
       setIsSigningIn(true);
-      doSignInWithGoogle().catch((err) => {
+      doSignInWithGoogle("user").catch((err) => {
         setIsSigningIn(false);
       });
     }
@@ -33,7 +33,7 @@ const Register = () => {
         console.log("User created successfully");
         setIsRegistering(false);
         doSendEmailVerification();
-        saveDataToFirestore(email,name);
+        saveDataToFirestore(email,name,"user");
 
       } catch (error) {
         console.error("Error creating user:", error);
@@ -53,7 +53,7 @@ const Register = () => {
           <div className="text-center mb-6">
             <div className="mt-2">
               <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">
-                Create a New Account
+                User Sign Up
               </h3>
             </div>
           </div>
@@ -140,9 +140,15 @@ const Register = () => {
                 to={"/login"}
                 className="text-center text-sm hover:underline font-bold"
               >
-                Continue
+                Log In
               </Link>
             </div>
+            <p className="text-center text-sm">
+            Own a restaurant?{" "}
+            <Link to={"/resregister"} className="hover:underline font-bold">
+              Continue
+            </Link>
+          </p>
             <div className="flex flex-row text-center w-full">
             <div className="border-b-2 mb-2.5 mr-2 w-full"></div>
             <div className="text-sm font-bold w-fit">OR</div>

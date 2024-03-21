@@ -19,10 +19,9 @@ const Login = () => {
     if (!isSigningIn) {
       setIsSigningIn(true);
       try {
-        await doSignInWithEmailAndPassword(email, password);
+        await doSignInWithEmailAndPassword(email, password,"user");
         console.log("User created successfully");
       } catch (error) {
-        console.error("Error creating user:", error);
         alert("Invalid Email or Password");
         setIsSigningIn(false);
       }
@@ -33,7 +32,7 @@ const Login = () => {
     e.preventDefault();
     if (!isSigningIn) {
       setIsSigningIn(true);
-      doSignInWithGoogle().catch((err) => {
+      doSignInWithGoogle("user").catch((err) => {
         setIsSigningIn(false);
       });
     }
@@ -48,7 +47,7 @@ const Login = () => {
           <div className="text-center">
             <div className="mt-2">
               <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">
-                Welcome Back
+                User Log In
               </h3>
             </div>
           </div>
@@ -102,7 +101,13 @@ const Login = () => {
           <p className="text-center text-sm">
             Don't have an account?{" "}
             <Link to={"/register"} className="hover:underline font-bold">
-              Sign up
+              Sign Up
+            </Link>
+          </p>
+          <p className="text-center text-sm">
+            Own a restaurant?{" "}
+            <Link to={"/resregister"} className="hover:underline font-bold">
+              Continue
             </Link>
           </p>
           <div className="flex flex-row text-center w-full">

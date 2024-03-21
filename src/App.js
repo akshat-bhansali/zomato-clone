@@ -1,5 +1,7 @@
 import Login from "./components/auth/login";
 import Register from "./components/auth/register";
+import ResLogin from "./components/restaurantAuth/reslogin";
+import ResRegister from "./components/restaurantAuth/resregister";
 
 import Header from "./components/header";
 import Home from "./components/home";
@@ -24,6 +26,14 @@ function App() {
     {
       path: "/home",
       element: <Home />,
+    },
+    {
+      path: "/reslogin",
+      element: <ResLogin />,
+    },
+    {
+      path: "/resregister",
+      element: <ResRegister />,
     },
   ];
   let routesElement = useRoutes(routesArray);
