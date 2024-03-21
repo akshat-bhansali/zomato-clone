@@ -77,7 +77,12 @@ const Navbar = () => {
             </div>
             <ul className=" lg:hidden flex flex-col items-center justify-center h-full ">
               {navLinks.map((item) => (
-                <li key={item.label} onClick={()=>{setIsMenuOpen(!isMenuOpen)}}>
+                <li
+                  key={item.label}
+                  onClick={() => {
+                    setIsMenuOpen(!isMenuOpen);
+                  }}
+                >
                   <a
                     href={item.href}
                     className="font-montserrat leading-normal text-lg text-slate-gray"
@@ -86,14 +91,14 @@ const Navbar = () => {
                   </a>
                 </li>
               ))}
-              <li >
+              <li>
                 <div className="flex gap-2 text-lg leading-normal  font-montserrat  wide:mr-24">
                   {userLoggedIn ? (
                     <>
                       <button
                         onClick={() => {
                           doSignOut().then(() => {
-                            setIsMenuOpen(!isMenuOpen)
+                            setIsMenuOpen(!isMenuOpen);
                             navigate("/login");
                           });
                         }}
@@ -104,13 +109,21 @@ const Navbar = () => {
                   ) : (
                     <>
                       <div className="flex flex-col items-center justify-center">
-                      
-                      <Link to={"/login"} onClick={()=>setIsMenuOpen(!isMenuOpen)}>Login</Link>
-                      
-                      {/* <span>/</span> */}
-                      
+                        <Link
+                          to={"/login"}
+                          onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        >
+                          Login
+                        </Link>
 
-                      <Link to={"/register"} onClick={()=>setIsMenuOpen(!isMenuOpen)}>Register New Account</Link>
+                        {/* <span>/</span> */}
+
+                        <Link
+                          to={"/register"}
+                          onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        >
+                          Register New Account
+                        </Link>
                       </div>
                     </>
                   )}

@@ -15,10 +15,10 @@ export const doCreateUserWithEmailAndPassword = async (email, password) => {
   return createUserWithEmailAndPassword(auth, email, password);
 };
 
-export const doSignInWithEmailAndPassword = (email, password) => {
+export const doSignInWithEmailAndPassword = (email, password,name) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
-const saveDataToFirestore = async (email,name) => {
+export const saveDataToFirestore = async (email,name) => {
   const data = await fetchDataFromFirestore();
   const existingUser = data?.find(user => user.email == email);
   if(!existingUser){
@@ -55,13 +55,6 @@ export const doSignOut = () => {
   return auth.signOut();
 };
 
-export const doPasswordReset = (email) => {
-  return sendPasswordResetEmail(auth, email);
-};
-
-export const doPasswordChange = (password) => {
-  return updatePassword(auth.currentUser, password);
-};
 
 export const doSendEmailVerification = () => {
   return sendEmailVerification(auth.currentUser, {
