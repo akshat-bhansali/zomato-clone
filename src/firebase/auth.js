@@ -20,8 +20,7 @@ export const doSignInWithEmailAndPassword = (email, password) => {
 };
 const saveDataToFirestore = async (email,name) => {
   const data = await fetchDataFromFirestore();
-  const existingUser = data.find(user => user.email == email);
-  console.log(existingUser);
+  const existingUser = data?.find(user => user.email == email);
   if(!existingUser){
     try {
       const docRef = await addDoc(colletionRef, {
@@ -37,7 +36,6 @@ const saveDataToFirestore = async (email,name) => {
 };
 
 const fetchDataFromFirestore = async () => {
-  const db = getFirestore();
   const querySnapshot = await getDocs(colletionRef);
   const temporaryArr = [];
   querySnapshot.forEach((doc) => {
