@@ -22,6 +22,10 @@ export const doSignInWithEmailAndPassword = async(email, password,role) => {
     if(role!=existingUser.role){
       return signInWithEmailAndPassword(auth, "email", password);
     }
+    else{
+      localStorage.setItem("user",JSON.stringify(existingUser));
+      return signInWithEmailAndPassword(auth, email, password);
+    }
   }
   return signInWithEmailAndPassword(auth, email, password);
 };
@@ -46,6 +50,9 @@ export const saveDataToFirestore = async (email,name,role) => {
       alert("access denied");
       window.location.reload();
     }
+    else{
+      localStorage.setItem("user",JSON.stringify(existingUser));
+    }
   }
 };
 
@@ -66,6 +73,7 @@ export const doSignInWithGoogle = async (role) => {
 };
 
 export const doSignOut = () => {
+  localStorage.removeItem("user");
   return auth.signOut();
 };
 

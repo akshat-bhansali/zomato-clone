@@ -8,6 +8,7 @@ import Home from "./components/home";
 
 import { AuthProvider } from "./contexts/authContext";
 import { useRoutes } from "react-router-dom";
+import Profile from "./components/profile";
 
 function App() {
   const routesArray = [
@@ -34,6 +35,10 @@ function App() {
     {
       path: "/resregister",
       element: <ResRegister />,
+    },
+    {
+      path: "/profile",
+      element: <Profile />,
     },
   ];
   let routesElement = useRoutes(routesArray);

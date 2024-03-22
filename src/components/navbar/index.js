@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { AiOutlineClose } from "react-icons/ai";
 import { useAuth } from "../../contexts/authContext";
@@ -10,9 +10,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const navLinks = [
     { href: "/home", label: "Home" },
-    { href: "/about-us", label: "About Us" },
-    { href: "/products", label: "Products" },
-    { href: "/contact-us", label: "Contact Us" },
+    { href: "/profile", label: "Profile" },
   ];
   return (
     <>
@@ -24,15 +22,11 @@ const Navbar = () => {
           <ul className="flex-1 flex justify-center items-center gap-16 max-lg:hidden">
             {navLinks.map((item) => (
               <li key={item.label}>
-                <a
-                  href={item.href}
-                  className="font-montserrat leading-normal text-lg text-slate-gray"
-                >
-                  {item.label}
-                </a>
+                <Link to={item.href}>{item.label}</Link>
               </li>
             ))}
           </ul>
+          
           <div className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
             {userLoggedIn ? (
               <>
@@ -116,7 +110,6 @@ const Navbar = () => {
                           Login
                         </Link>
 
-                        {/* <span>/</span> */}
 
                         <Link
                           to={"/register"}
