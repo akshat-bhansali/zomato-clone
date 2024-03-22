@@ -8,7 +8,11 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { userLoggedIn } = useAuth();
   const navigate = useNavigate();
-  const navLinks = [{ href: "/home", label: "Home" }];
+  const navLinks = [{ href: "/home", label: "Home",enabled:true },
+                    { href: "/profile", label: "Profile", enabled:userLoggedIn }
+                   
+                    
+];
   return (
     <>
       <header className="sm:px-8 px-4 py-2 z-10 w-full">
@@ -18,11 +22,11 @@ const Navbar = () => {
           </a>
           <ul className="flex-1 flex justify-center items-center gap-16 max-lg:hidden">
             {navLinks.map((item) => (
-              <li key={item.label}>
+              (item.enabled)?<li key={item.label}>
                 <Link to={item.href}>{item.label}</Link>
-              </li>
+              </li>:<></>
             ))}
-            <li className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
+            {/* <li className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
               {userLoggedIn ? (
                 <>
                   <button
@@ -36,7 +40,7 @@ const Navbar = () => {
               ) : (
                 <></>
               )}
-            </li>
+            </li> */}
           </ul>
 
           <div className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
