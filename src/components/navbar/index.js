@@ -8,10 +8,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { userLoggedIn } = useAuth();
   const navigate = useNavigate();
-  const navLinks = [
-    { href: "/home", label: "Home" },
-    { href: "/profile", label: "Profile" },
-  ];
+  const navLinks = [{ href: "/home", label: "Home" }];
   return (
     <>
       <header className="sm:px-8 px-4 py-2 z-10 w-full">
@@ -25,8 +22,23 @@ const Navbar = () => {
                 <Link to={item.href}>{item.label}</Link>
               </li>
             ))}
+            <li className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
+              {userLoggedIn ? (
+                <>
+                  <button
+                    onClick={() => {
+                      navigate("/profile");
+                    }}
+                  >
+                    Profile
+                  </button>
+                </>
+              ) : (
+                <></>
+              )}
+            </li>
           </ul>
-          
+
           <div className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
             {userLoggedIn ? (
               <>
@@ -85,6 +97,21 @@ const Navbar = () => {
                   </a>
                 </li>
               ))}
+              <li className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
+                {userLoggedIn ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        navigate("/profile");
+                      }}
+                    >
+                      Profile
+                    </button>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </li>
               <li>
                 <div className="flex gap-2 text-lg leading-normal  font-montserrat  wide:mr-24">
                   {userLoggedIn ? (
@@ -109,7 +136,6 @@ const Navbar = () => {
                         >
                           Login
                         </Link>
-
 
                         <Link
                           to={"/register"}

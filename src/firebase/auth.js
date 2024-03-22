@@ -39,6 +39,7 @@ export const saveDataToFirestore = async (email,name,role) => {
         name: name,
         role: role
       });
+      localStorage.setItem("user",JSON.stringify({name:name,role:role,email:email}));
     } catch (error) {
       console.error("Error writing document: ", error);
       alert("Error writing document to Database");
@@ -73,7 +74,7 @@ export const doSignInWithGoogle = async (role) => {
 };
 
 export const doSignOut = () => {
-  localStorage.removeItem("user");
+  localStorage.removeItem("user"); 
   return auth.signOut();
 };
 

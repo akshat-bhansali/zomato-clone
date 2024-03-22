@@ -7,7 +7,7 @@ export default function Profile() {
     },[localStorage.getItem("user")])
   return (
     <div>
-      {user.role=="admin"?<>welcome to your restaurant {user.name}</>:<>welcome {user.name}</>}
+      {user?.role=="admin"?<>welcome to your restaurant {user?.name }</>:<>welcome {user?.name ?? ""}</>}
     </div>
   )
 }
