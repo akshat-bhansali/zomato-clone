@@ -99,8 +99,11 @@ function AdminProfile({ user }) {
                     console.log(doc.id, " => ", doc.data());
                 });
             }
+            alert("Successfully updated image !")
             
           } catch (e) {
+
+            alert("Some")
             console.log("errro ",e)
           }
         }
@@ -171,7 +174,7 @@ function AdminProfile({ user }) {
               fileList={fileList}
               multiple={false}
               maxCount={1}
-              onChange={({ fileList }) => setFileList(fileList)}
+              onChange={({ fileList }) => {if(fileList.length){if(fileList[0].size>300000){alert("Image size should be less than 300KB");return;}} setFileList(fileList)}}
             >
               {fileList.length === 0 && (
                 <button
@@ -193,6 +196,7 @@ function AdminProfile({ user }) {
               )}
             </Upload>
             <Button
+              disabled={fileList.length==0}
               onClick={() => {
                 handleUpload();
                 // handleClearFileList();
