@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Radio, Select, Upload } from "antd";
+import { Button, Form, Input, Radio, Select, Upload ,Space, Table, Tag} from "antd";
 import { db, storage } from "../../firebase/firebase";
 import {
-    deleteObject,
+  deleteObject,
   getDownloadURL,
   ref,
   uploadBytes,
   uploadBytesResumable,
 } from "firebase/storage";
 import {
-    addDoc,
+  addDoc,
   collection,
   getDoc,
   getDocs,
@@ -19,7 +19,6 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-
 
 function AdminProfile({ user }) {
   const adminCollection = collection(db, "admin");
@@ -45,6 +44,46 @@ function AdminProfile({ user }) {
     { value: "Andhra", label: "Andhra" },
     { value: "Goan", label: "Goan" },
   ];
+  const columns = [
+    {
+      title: 'Item',
+      dataIndex: 'item',
+      key: 'item',
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
+    },
+    {
+      title: 'Image',
+      key: 'image',
+      dataIndex: 'image',
+      render: (text) => (
+        <>
+          <img src={text} className="w-7 h-7"/>
+        </>
+      ),
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (_, record) => (
+        <Space size="middle">
+          <a>Delete Item</a>
+        </Space>
+      ),
+    },
+  ];
+  const data = [
+    {
+      key: '1',
+      item: 'John Brown',
+      description :"something good",
+      image : "https://firebasestorage.googleapis.com/v0/b/zomato-clone-417913.appspot.com/o/iit2022005%40iiitl.ac.in%2FRestaurantPic-armin-3.jpg?alt=media&token=8dc74339-1f3d-45d9-ba56-47c56d6af9c0"
+    },
+  ];
   const [fileList, setFileList] = useState([]);
 
   const handleClearFileList = () => {
@@ -69,42 +108,38 @@ function AdminProfile({ user }) {
             const url = await getDownloadURL(uploadTask.snapshot.ref);
             const querySnapshot = await getDocs(q);
             console.log("Query Snapshot ", querySnapshot);
-            if(querySnapshot.empty)
-            {
-                console.log("Adding doc")
-                addDoc(await adminCollection, {
-                    email: user.email,
-                    resPicPath : uploadTask.snapshot.ref.fullPath,
-                    resPicLink : url,
-                }).then((res)=>console.log("result ",res))
-                .catch((e)=>console.log("error ",e));
-                console.log("Doc added successfully with pic");
-            }else{
-                querySnapshot.forEach(async (doc) => {
-                    const oldPath = doc.get('resPicPath');
-                    if(oldPath)
-                    {
-                        try{
-                            await deleteObject(ref(storage, oldPath))
-                            console.log("Deleted Old File")
-                        } catch(e)
-                        {
-                            console.log("Error while deleting old File",e)
-                        }
-                    }
-                    updateDoc(doc.ref,{
-                        resPicPath : uploadTask.snapshot.ref.fullPath,
-                        resPicLink : url,
-                    })
-                    console.log(doc.id, " => ", doc.data());
+            if (querySnapshot.empty) {
+              console.log("Adding doc");
+              addDoc(await adminCollection, {
+                email: user.email,
+                resPicPath: uploadTask.snapshot.ref.fullPath,
+                resPicLink: url,
+              })
+                .then((res) => console.log("result ", res))
+                .catch((e) => console.log("error ", e));
+              console.log("Doc added successfully with pic");
+            } else {
+              querySnapshot.forEach(async (doc) => {
+                const oldPath = doc.get("resPicPath");
+                if (oldPath) {
+                  try {
+                    await deleteObject(ref(storage, oldPath));
+                    console.log("Deleted Old File");
+                  } catch (e) {
+                    console.log("Error while deleting old File", e);
+                  }
+                }
+                updateDoc(doc.ref, {
+                  resPicPath: uploadTask.snapshot.ref.fullPath,
+                  resPicLink: url,
                 });
+                console.log(doc.id, " => ", doc.data());
+              });
             }
-            alert("Successfully updated image !")
-            
+            alert("Successfully updated image !");
           } catch (e) {
-
-            alert("Some")
-            console.log("errro ",e)
+            alert("Some");
+            console.log("errro ", e);
           }
         }
       );
@@ -174,7 +209,15 @@ function AdminProfile({ user }) {
               fileList={fileList}
               multiple={false}
               maxCount={1}
-              onChange={({ fileList }) => {if(fileList.length){if(fileList[0].size>300000){alert("Image size should be less than 300KB");return;}} setFileList(fileList)}}
+              onChange={({ fileList }) => {
+                if (fileList.length) {
+                  if (fileList[0].size > 300000) {
+                    alert("Image size should be less than 300KB");
+                    return;
+                  }
+                }
+                setFileList(fileList);
+              }}
             >
               {fileList.length === 0 && (
                 <button
@@ -196,7 +239,7 @@ function AdminProfile({ user }) {
               )}
             </Upload>
             <Button
-              disabled={fileList.length==0}
+              disabled={fileList.length == 0}
               onClick={() => {
                 handleUpload();
                 // handleClearFileList();
@@ -210,7 +253,8 @@ function AdminProfile({ user }) {
           </Form.Item>
         </Form>
       </>
-    </>
+      <Table columns={columns} dataSource={data} />
+      </>
   );
 }
 
