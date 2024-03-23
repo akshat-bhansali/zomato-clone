@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Radio, Select, Upload } from "antd";
+import { Button, Form, Input, Radio, Select, Upload ,Space, Table, Tag} from "antd";
 import { db, storage } from "../../firebase/firebase";
 import {
   deleteObject,
@@ -43,6 +43,46 @@ function AdminProfile({ user }) {
     { value: "Tamil", label: "Tamil" },
     { value: "Andhra", label: "Andhra" },
     { value: "Goan", label: "Goan" },
+  ];
+  const columns = [
+    {
+      title: 'Item',
+      dataIndex: 'item',
+      key: 'item',
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
+    },
+    {
+      title: 'Image',
+      key: 'image',
+      dataIndex: 'image',
+      render: (text) => (
+        <>
+          <img src={text} className="w-7 h-7"/>
+        </>
+      ),
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (_, record) => (
+        <Space size="middle">
+          <a>Delete Item</a>
+        </Space>
+      ),
+    },
+  ];
+  const data = [
+    {
+      key: '1',
+      item: 'John Brown',
+      description :"something good",
+      image : "https://firebasestorage.googleapis.com/v0/b/zomato-clone-417913.appspot.com/o/iit2022005%40iiitl.ac.in%2FRestaurantPic-armin-3.jpg?alt=media&token=8dc74339-1f3d-45d9-ba56-47c56d6af9c0"
+    },
   ];
   const [fileList, setFileList] = useState([]);
 
@@ -101,6 +141,8 @@ function AdminProfile({ user }) {
 
             alert("Successfully updated image !");
           } catch (e) {
+            alert("Some");
+            console.log("errro ", e);
             alert("Some");
             console.log("errro ", e);
           }
@@ -274,7 +316,8 @@ function AdminProfile({ user }) {
           </Form>
         )}
       </>
-    </>
+      <Table columns={columns} dataSource={data} />
+      </>
   );
 }
 
