@@ -35,6 +35,10 @@ function AdminProfile({ user }) {
   const [modalItemDesc, setModalItemDesc] = useState("");
   const [modalItemPrice, setModalItemPrice] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalItemName2, setModalItemName2] = useState("");
+  const [modalItemDesc2, setModalItemDesc2] = useState("");
+  const [modalItemPrice2, setModalItemPrice2] = useState(0);
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
   const adminCollection = collection(db, "admin");
   const q = query(adminCollection, where("email", "==", user.email));
 
@@ -161,6 +165,24 @@ function AdminProfile({ user }) {
     setModalItemDesc("");
     setModalItemName("");
     setModalItemPrice(0);
+  };
+  const showModal2 = (record) => {
+    setIsModalOpen2(true);
+    setModalItemName2(record.item ? record.item : "");
+    setModalItemDesc2(record.description ? record.description : "");
+    setModalItemPrice2(record.price ? record.price : 0);
+  };
+  const handleOk2 = () => {
+    setIsModalOpen2(false);
+    setModalItemDesc2("");
+    setModalItemName2("");
+    setModalItemPrice2(0);
+  };
+  const handleCancel2 = () => {
+    setIsModalOpen2(false);
+    setModalItemDesc2("");
+    setModalItemName2("");
+    setModalItemPrice2(0);
   };
   const data = [
     {
@@ -401,7 +423,48 @@ function AdminProfile({ user }) {
           </Form>
         )}
       </>
+      <Button onClick={showModal2}>Add Item</Button>
       <Table columns={columns} dataSource={data} />
+      <Modal
+            title="Basic Modal"
+            open={isModalOpen2}
+            onOk={handleOk2}
+            onCancel={handleCancel2}
+            footer={[
+              <Button key="back" onClick={handleOk2}>
+                SAVE
+              </Button>,
+            ]}
+          >
+            <div className="text-xs mb-[-4px] ml-1">Item Name</div>
+
+            <Input
+              placeholder={"Enter Item Name"}
+              value={modalItemName2}
+              onChange={(e) => {
+                setModalItemName2(e.target.value);
+              }}
+            />
+
+            <div className="text-xs mb-[-4px] ml-1 mt-5">Item Description</div>
+            <Input
+              placeholder={"Enter Item Description"}
+              value={modalItemDesc2}
+              onChange={(e) => {
+                setModalItemDesc2(e.target.value);
+              }}
+            />
+            <div className="text-xs mb-[-4px] ml-1 mt-5">Item Price</div>
+            <Input
+              type="number"
+              placeholder={"Enter Item Price"}
+              value={modalItemPrice2}
+              onChange={(e) => {
+                setModalItemPrice2(e.target.value);
+              }}
+            />
+            {/* <img src={record.image} className="w-5 h-5" /> */}
+          </Modal>
     </>
   );
 }
