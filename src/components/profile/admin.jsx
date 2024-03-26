@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Radio, Select, Upload ,Space, Table, Tag} from "antd";
+import { Button, Form, Input, Radio, Select, Upload ,Space, Table, Modal } from "antd";
 import { db, storage } from "../../firebase/firebase";
 import {
   deleteObject,
@@ -44,6 +44,8 @@ function AdminProfile({ user }) {
     { value: "Andhra", label: "Andhra" },
     { value: "Goan", label: "Goan" },
   ];
+  const [modalItemName,setModalItemName] = useState("");
+  const [modalItemDesc,setModalItemDesc] = useState("");
   const columns = [
     {
       title: 'Item',
@@ -60,9 +62,9 @@ function AdminProfile({ user }) {
       title: 'Image',
       key: 'image',
       dataIndex: 'image',
-      render: (text) => (
+      render: (url) => (
         <>
-          <img src={text} className="w-7 h-7"/>
+          <img src={url} className="w-7 h-7"/>
         </>
       ),
     },
@@ -70,12 +72,42 @@ function AdminProfile({ user }) {
       title: 'Action',
       key: 'action',
       render: (_, record) => (
-        <Space size="middle">
-          <a>Delete Item</a>
-        </Space>
+        <>
+      <Button type="primary" onClick={showModal}>
+        Open Modal
+      </Button>
+      <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={[
+          <Button key="back" onClick={handleOk}>
+            SAVE
+          </Button>
+        ]}>
+          {setModalItemName(record.item? record.item :"")}
+          {setModalItemDesc(record.description? record.description :"")}
+          <div className="text-xs mb-[-4px] ml-1">Item Name</div>
+        
+        <Input placeholder={"Enter Item Name"} value={modalItemName} onChange={(e)=>{setModalItemName(e.target.value)}}/>
+        
+        <div className="text-xs mb-[-4px] ml-1 mt-5">Item Description</div><Input placeholder={"Enter Item Description"} value={modalItemDesc} onChange={(e)=>{setModalItemDesc(e.target.value)}}/>
+        <img src={record.image} className="w-5 h-5"/>
+      </Modal>
+    </>
       ),
     },
   ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+    setModalItemDesc("");
+    setModalItemName("");
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setModalItemDesc("");
+    setModalItemName("");
+  };
   const data = [
     {
       key: '1',
@@ -133,18 +165,15 @@ function AdminProfile({ user }) {
                   resPicPath: uploadTask.snapshot.ref.fullPath,
                   resPicLink: url,
                 });
-                // console.log("data", " => ", res);
-                // console.log("url", " => ", url);
-                // console.log(doc.id, " => ", doc.data());
               });
             }
 
             alert("Successfully updated image !");
           } catch (e) {
             alert("Some");
-            console.log("errro ", e);
+            console.log("error ", e);
             alert("Some");
-            console.log("errro ", e);
+            console.log("error ", e);
           }
         }
       );
