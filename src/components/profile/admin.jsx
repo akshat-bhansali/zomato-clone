@@ -46,6 +46,7 @@ function AdminProfile({ user }) {
   ];
   const [modalItemName,setModalItemName] = useState("");
   const [modalItemDesc,setModalItemDesc] = useState("");
+  const [modalItemPrice,setModalItemPrice] = useState("");
   const columns = [
     {
       title: 'Item',
@@ -57,6 +58,11 @@ function AdminProfile({ user }) {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
+    },
+    {
+      title: 'Price',
+      dataIndex: 'price',
+      key: 'price',
     },
     {
       title: 'Image',
@@ -83,11 +89,13 @@ function AdminProfile({ user }) {
         ]}>
           {setModalItemName(record.item? record.item :"")}
           {setModalItemDesc(record.description? record.description :"")}
+          {setModalItemPrice(record.price? record.price :"")}
           <div className="text-xs mb-[-4px] ml-1">Item Name</div>
         
         <Input placeholder={"Enter Item Name"} value={modalItemName} onChange={(e)=>{setModalItemName(e.target.value)}}/>
         
         <div className="text-xs mb-[-4px] ml-1 mt-5">Item Description</div><Input placeholder={"Enter Item Description"} value={modalItemDesc} onChange={(e)=>{setModalItemDesc(e.target.value)}}/>
+        <div className="text-xs mb-[-4px] ml-1 mt-5">Item Price</div><Input placeholder={"Enter Item Price"} value={modalItemPrice} onChange={(e)=>{setModalItemPrice(e.target.value)}}/>
         <img src={record.image} className="w-5 h-5"/>
       </Modal>
     </>
@@ -102,17 +110,20 @@ function AdminProfile({ user }) {
     setIsModalOpen(false);
     setModalItemDesc("");
     setModalItemName("");
+    setModalItemPrice("");
   };
   const handleCancel = () => {
     setIsModalOpen(false);
     setModalItemDesc("");
     setModalItemName("");
+    setModalItemPrice("");
   };
   const data = [
     {
       key: '1',
       item: 'John Brown',
       description :"something good",
+      price :50,
       image : "https://firebasestorage.googleapis.com/v0/b/zomato-clone-417913.appspot.com/o/iit2022005%40iiitl.ac.in%2FRestaurantPic-armin-3.jpg?alt=media&token=8dc74339-1f3d-45d9-ba56-47c56d6af9c0"
     },
   ];
