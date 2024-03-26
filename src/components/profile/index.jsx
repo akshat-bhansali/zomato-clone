@@ -34,7 +34,7 @@ export default function Profile() {
   return (
     <div>
       {user?.role === "admin" ? (
-        <AdminProfile user={user}/>
+        <AdminProfile user={user} />
       ) : (
         <>welcome {user?.name ?? ""}</>
       )}

@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Radio, Select, Upload ,Space, Table, Modal } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Radio,
+  Select,
+  Upload,
+  Space,
+  Table,
+  Modal,
+} from "antd";
 import { db, storage } from "../../firebase/firebase";
 import {
   deleteObject,
@@ -21,6 +31,10 @@ import {
 } from "firebase/firestore";
 
 function AdminProfile({ user }) {
+  const [modalItemName, setModalItemName] = useState("");
+  const [modalItemDesc, setModalItemDesc] = useState("");
+  const [modalItemPrice, setModalItemPrice] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const adminCollection = collection(db, "admin");
   const q = query(adminCollection, where("email", "==", user.email));
 
@@ -44,87 +58,118 @@ function AdminProfile({ user }) {
     { value: "Andhra", label: "Andhra" },
     { value: "Goan", label: "Goan" },
   ];
-  const [modalItemName,setModalItemName] = useState("");
-  const [modalItemDesc,setModalItemDesc] = useState("");
-  const [modalItemPrice,setModalItemPrice] = useState("");
+
   const columns = [
     {
-      title: 'Item',
-      dataIndex: 'item',
-      key: 'item',
+      title: "Item",
+      dataIndex: "item",
+      key: "item",
       render: (text) => <a>{text}</a>,
     },
     {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
     },
     {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
     },
     {
-      title: 'Image',
-      key: 'image',
-      dataIndex: 'image',
+      title: "Image",
+      key: "image",
+      dataIndex: "image",
       render: (url) => (
         <>
-          <img src={url} className="w-7 h-7"/>
+          <img src={url} className="w-7 h-7" />
         </>
       ),
     },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (_, record) => (
         <>
-      <Button type="primary" onClick={showModal}>
-        Open Modal
-      </Button>
-      <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={[
-          <Button key="back" onClick={handleOk}>
-            SAVE
+          <Button
+          className="bg-blue-300"
+            type="secondary"
+            onClick={() => {
+              showModal(record);
+            }}
+          >
+            Open Modal
           </Button>
-        ]}>
-          {setModalItemName(record.item? record.item :"")}
-          {setModalItemDesc(record.description? record.description :"")}
-          {setModalItemPrice(record.price? record.price :"")}
-          <div className="text-xs mb-[-4px] ml-1">Item Name</div>
-        
-        <Input placeholder={"Enter Item Name"} value={modalItemName} onChange={(e)=>{setModalItemName(e.target.value)}}/>
-        
-        <div className="text-xs mb-[-4px] ml-1 mt-5">Item Description</div><Input placeholder={"Enter Item Description"} value={modalItemDesc} onChange={(e)=>{setModalItemDesc(e.target.value)}}/>
-        <div className="text-xs mb-[-4px] ml-1 mt-5">Item Price</div><Input placeholder={"Enter Item Price"} value={modalItemPrice} onChange={(e)=>{setModalItemPrice(e.target.value)}}/>
-        <img src={record.image} className="w-5 h-5"/>
-      </Modal>
-    </>
+          <Modal
+            title="Basic Modal"
+            open={isModalOpen}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            footer={[
+              <Button key="back" onClick={handleOk}>
+                SAVE
+              </Button>,
+            ]}
+          >
+            <div className="text-xs mb-[-4px] ml-1">Item Name</div>
+
+            <Input
+              placeholder={"Enter Item Name"}
+              value={modalItemName}
+              onChange={(e) => {
+                setModalItemName(e.target.value);
+              }}
+            />
+
+            <div className="text-xs mb-[-4px] ml-1 mt-5">Item Description</div>
+            <Input
+              placeholder={"Enter Item Description"}
+              value={modalItemDesc}
+              onChange={(e) => {
+                setModalItemDesc(e.target.value);
+              }}
+            />
+            <div className="text-xs mb-[-4px] ml-1 mt-5">Item Price</div>
+            <Input
+              type="number"
+              placeholder={"Enter Item Price"}
+              value={modalItemPrice}
+              onChange={(e) => {
+                setModalItemPrice(e.target.value);
+              }}
+            />
+            <img src={record.image} className="w-5 h-5" />
+          </Modal>
+        </>
       ),
     },
   ];
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
+  const showModal = (record) => {
     setIsModalOpen(true);
+    setModalItemName(record.item ? record.item : "");
+    setModalItemDesc(record.description ? record.description : "");
+    setModalItemPrice(record.price ? record.price : 0);
   };
   const handleOk = () => {
     setIsModalOpen(false);
     setModalItemDesc("");
     setModalItemName("");
-    setModalItemPrice("");
+    setModalItemPrice(0);
   };
   const handleCancel = () => {
     setIsModalOpen(false);
     setModalItemDesc("");
     setModalItemName("");
-    setModalItemPrice("");
+    setModalItemPrice(0);
   };
   const data = [
     {
-      key: '1',
-      item: 'John Brown',
-      description :"something good",
-      price :50,
-      image : "https://firebasestorage.googleapis.com/v0/b/zomato-clone-417913.appspot.com/o/iit2022005%40iiitl.ac.in%2FRestaurantPic-armin-3.jpg?alt=media&token=8dc74339-1f3d-45d9-ba56-47c56d6af9c0"
+      key: "1",
+      item: "John Brown",
+      description: "something good",
+      price: 50,
+      image:
+        "https://firebasestorage.googleapis.com/v0/b/zomato-clone-417913.appspot.com/o/iit2022005%40iiitl.ac.in%2FRestaurantPic-armin-3.jpg?alt=media&token=8dc74339-1f3d-45d9-ba56-47c56d6af9c0",
     },
   ];
   const [fileList, setFileList] = useState([]);
@@ -357,7 +402,7 @@ function AdminProfile({ user }) {
         )}
       </>
       <Table columns={columns} dataSource={data} />
-      </>
+    </>
   );
 }
 
