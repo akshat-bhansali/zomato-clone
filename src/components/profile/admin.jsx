@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
+import {v4 as uuidv4} from 'uuid';
 import {
   Button,
   Form,
@@ -10,6 +11,7 @@ import {
   Space,
   Table,
   Modal,
+  Switch,
 } from "antd";
 import { db, storage } from "../../firebase/firebase";
 import {
@@ -72,7 +74,7 @@ function AdminProfile({ user }) {
     },
     {
       title: "Description",
-      dataIndex: "description",
+      dataIndex: "describe",
       key: "description",
     },
     {
@@ -93,10 +95,10 @@ function AdminProfile({ user }) {
     {
       title: "Action",
       key: "action",
-      render: (_, record) => (
+      render: (record) => (
         <>
           <Button
-          className="bg-blue-300"
+            className="bg-blue-300"
             type="secondary"
             onClick={() => {
               showModal(record);
@@ -107,10 +109,10 @@ function AdminProfile({ user }) {
           <Modal
             title="Basic Modal"
             open={isModalOpen}
-            onOk={handleOk}
+            onOk={()=>handleOk(record.key)}
             onCancel={handleCancel}
             footer={[
-              <Button key="back" onClick={handleOk}>
+              <Button key="back" onClick={()=>handleOk(record.key)}>
                 SAVE
               </Button>,
             ]}
@@ -150,12 +152,14 @@ function AdminProfile({ user }) {
   ];
   const showModal = (record) => {
     setIsModalOpen(true);
-    setModalItemName(record.item ? record.item : "");
-    setModalItemDesc(record.description ? record.description : "");
-    setModalItemPrice(record.price ? record.price : 0);
+    setModalItemName(record?.item ? record.item : "");
+    setModalItemDesc(record?.describe ? record.describe : "");
+    setModalItemPrice(record?.price ? record.price : 0);
   };
-  const handleOk = () => {
+  const handleOk = (k) => {
+
     setIsModalOpen(false);
+    saveTableData(k,{key:k ,item:modalItemName,describe:modalItemDesc,price:modalItemPrice});
     setModalItemDesc("");
     setModalItemName("");
     setModalItemPrice(0);
@@ -174,6 +178,7 @@ function AdminProfile({ user }) {
   };
   const handleOk2 = () => {
     setIsModalOpen2(false);
+    saveTableData(-1,{key:uuidv4(),item:modalItemName2,describe:modalItemDesc2,price:modalItemPrice2});
     setModalItemDesc2("");
     setModalItemName2("");
     setModalItemPrice2(0);
@@ -195,6 +200,7 @@ function AdminProfile({ user }) {
     },
   ];
   const [fileList, setFileList] = useState([]);
+  const [tableData, setTableData] = useState();
 
   const handleClearFileList = () => {
     setFileList([]);
@@ -255,11 +261,73 @@ function AdminProfile({ user }) {
           }
         }
       );
+      handleClearFileList();
     } catch (e) {
       console.log("errors ", e);
     }
   };
 
+  const handleDistImgUpload = (file, path) => {
+    try {
+      // const file = fileList[0].originFileObj;
+      console.log(file);
+      // console.log(fileList);
+
+      const imgRef = ref(storage, path);
+      const uploadTask = uploadBytesResumable(imgRef, file);
+      uploadTask.on(
+        "state_changed",
+        (e) => {},
+        (e) => {
+          console.log("Some error occured while uploading ", e);
+        },
+        async () => {
+          try {
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            // const q =
+            const querySnapshot = await getDocs(q);
+            console.log("Query Snapshot ", querySnapshot);
+            if (querySnapshot.empty) {
+              console.log("Adding doc");
+              addDoc(await adminCollection, {
+                email: user.email,
+                resPicPath: uploadTask.snapshot.ref.fullPath,
+                resPicLink: url,
+              })
+                .then((res) => console.log("result ", res))
+                .catch((e) => console.log("error ", e));
+              console.log("Doc added successfully with pic");
+            } else {
+              querySnapshot.forEach(async (doc) => {
+                const oldPath = doc.get("resPicPath");
+                if (oldPath) {
+                  try {
+                    await deleteObject(ref(storage, oldPath));
+                    console.log("Deleted Old File");
+                  } catch (e) {
+                    console.log("Error while deleting old File", e);
+                  }
+                }
+                const res = await updateDoc(doc.ref, {
+                  resPicPath: uploadTask.snapshot.ref.fullPath,
+                  resPicLink: url,
+                });
+              });
+            }
+
+            alert("Successfully updated image !");
+          } catch (e) {
+            alert("Some");
+            console.log("error ", e);
+            alert("Some");
+            console.log("error ", e);
+          }
+        }
+      );
+    } catch (e) {
+      console.log("errors ", e);
+    }
+  };
   // use states of fields
   const [details, setDetails] = useState(null);
   const saveDetails = async () => {
@@ -270,7 +338,38 @@ function AdminProfile({ user }) {
       alert("Saved changes");
     });
   };
-
+  async function saveTableData(pos,tdata)
+  {
+    let lis = details?.dishes || []
+    if(pos==-1)
+    {
+      lis = [...lis,{...tdata}]
+      console.log("List ",lis);
+    }else{
+      lis = lis.filter((v,i)=>{console.log(v.key,"   ",tdata.key); return v.key!==tdata.key})
+      console.log("deleted ",lis);
+      lis = [...lis,{...tdata}]
+    }
+    console.log("lis ",lis);
+    return;
+    const querySnapshot = await getDocs(q);
+    const doc = querySnapshot.forEach(async (doc) => {
+      console.log(details);
+      await updateDoc(doc.ref, { ...details,dishes:[...lis] });
+      setDetails({ ...details,dishes:[...lis] })
+      alert("Saved changes");
+    });
+    getTableData();
+  }
+  async function getTableData() {
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty){
+      querySnapshot.forEach(async (doc) => {
+        setTableData(doc.data()?.dishes);
+        console.log("table data ", doc.data()?.dishes);
+      });
+    }
+  }
   useEffect(() => {
     async function getData() {
       const querySnapshot = await getDocs(q);
@@ -286,7 +385,10 @@ function AdminProfile({ user }) {
         });
       }
     }
+    
     getData();
+    getTableData();
+    // getTableData();
   }, []);
 
   return (
@@ -314,6 +416,9 @@ function AdminProfile({ user }) {
                   setDetails({ ...details, name: v.target.value });
                 }}
               />
+            </Form.Item>
+            <Form.Item label="List your restaurant online :">
+              <Switch defaultChecked={details?.publish} onChange={(v)=>setDetails({...details,publish:v})} />
             </Form.Item>
             <Form.Item label="Address">
               <Input
@@ -424,47 +529,47 @@ function AdminProfile({ user }) {
         )}
       </>
       <Button onClick={showModal2}>Add Item</Button>
-      <Table columns={columns} dataSource={data} />
+      <Table columns={columns} dataSource={tableData} />
       <Modal
-            title="Basic Modal"
-            open={isModalOpen2}
-            onOk={handleOk2}
-            onCancel={handleCancel2}
-            footer={[
-              <Button key="back" onClick={handleOk2}>
-                SAVE
-              </Button>,
-            ]}
-          >
-            <div className="text-xs mb-[-4px] ml-1">Item Name</div>
+        title="Basic Modal"
+        open={isModalOpen2}
+        onOk={handleOk2}
+        onCancel={handleCancel2}
+        footer={[
+          <Button key="back" onClick={handleOk2}>
+            SAVE
+          </Button>,
+        ]}
+      >
+        <div className="text-xs mb-[-4px] ml-1">Item Name</div>
 
-            <Input
-              placeholder={"Enter Item Name"}
-              value={modalItemName2}
-              onChange={(e) => {
-                setModalItemName2(e.target.value);
-              }}
-            />
+        <Input
+          placeholder={"Enter Item Name"}
+          value={modalItemName2}
+          onChange={(e) => {
+            setModalItemName2(e.target.value);
+          }}
+        />
 
-            <div className="text-xs mb-[-4px] ml-1 mt-5">Item Description</div>
-            <Input
-              placeholder={"Enter Item Description"}
-              value={modalItemDesc2}
-              onChange={(e) => {
-                setModalItemDesc2(e.target.value);
-              }}
-            />
-            <div className="text-xs mb-[-4px] ml-1 mt-5">Item Price</div>
-            <Input
-              type="number"
-              placeholder={"Enter Item Price"}
-              value={modalItemPrice2}
-              onChange={(e) => {
-                setModalItemPrice2(e.target.value);
-              }}
-            />
-            {/* <img src={record.image} className="w-5 h-5" /> */}
-          </Modal>
+        <div className="text-xs mb-[-4px] ml-1 mt-5">Item Description</div>
+        <Input
+          placeholder={"Enter Item Description"}
+          value={modalItemDesc2}
+          onChange={(e) => {
+            setModalItemDesc2(e.target.value);
+          }}
+        />
+        <div className="text-xs mb-[-4px] ml-1 mt-5">Item Price</div>
+        <Input
+          type="number"
+          placeholder={"Enter Item Price"}
+          value={modalItemPrice2}
+          onChange={(e) => {
+            setModalItemPrice2(e.target.value);
+          }}
+        />
+        {/* <img src={record.image} className="w-5 h-5" /> */}
+      </Modal>
     </>
   );
 }
