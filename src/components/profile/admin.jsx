@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import {
   Button,
   Form,
@@ -12,6 +12,7 @@ import {
   Table,
   Modal,
   Switch,
+
 } from "antd";
 import { db, storage } from "../../firebase/firebase";
 import {
@@ -36,6 +37,8 @@ function AdminProfile({ user }) {
   const [modalItemName, setModalItemName] = useState("");
   const [modalItemDesc, setModalItemDesc] = useState("");
   const [modalItemPrice, setModalItemPrice] = useState(0);
+  const [modalItemUuid, setModalItemUuid] = useState();
+  const [modalItemImg, setModalItemImg] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalItemName2, setModalItemName2] = useState("");
   const [modalItemDesc2, setModalItemDesc2] = useState("");
@@ -86,17 +89,21 @@ function AdminProfile({ user }) {
       title: "Image",
       key: "image",
       dataIndex: "image",
-      render: (url) => (
-        <>
-          <img src={url} className="w-7 h-7" />
-        </>
-      ),
+      render: (imgd,d) => {
+        
+        return (<>
+        <div className='flex align-middle justify-evenly'>
+          <img src={imgd?.link} className="w-7 h-7" />
+        </div></>)
+      },
     },
     {
       title: "Action",
       key: "action",
-      render: (record) => (
-        <>
+      render: (record) => 
+
+        {
+          return(<>
           <Button
             className="bg-blue-300"
             type="secondary"
@@ -109,10 +116,10 @@ function AdminProfile({ user }) {
           <Modal
             title="Basic Modal"
             open={isModalOpen}
-            onOk={()=>handleOk(record.key)}
+            onOk={() => handleOk()}
             onCancel={handleCancel}
             footer={[
-              <Button key="back" onClick={()=>handleOk(record.key)}>
+              <Button key="back" onClick={() => {handleOk();}}>
                 SAVE
               </Button>,
             ]}
@@ -144,10 +151,18 @@ function AdminProfile({ user }) {
                 setModalItemPrice(e.target.value);
               }}
             />
-            <img src={record.image} className="w-5 h-5" />
+            <div className="flex align-middle justify-evenly mt-5">
+
+            <img src={modalItemImg} className="w-10 h-10" />
+            <Upload beforeUpload={((f)=>{handleDishImgUpload(f,modalItemUuid);handleOk(1);})} fileList={null}>
+            <Button >
+              Click to Upload
+            </Button>
+          </Upload>
+            </div>
           </Modal>
-        </>
-      ),
+        </>)}
+      ,
     },
   ];
   const showModal = (record) => {
@@ -155,11 +170,17 @@ function AdminProfile({ user }) {
     setModalItemName(record?.item ? record.item : "");
     setModalItemDesc(record?.describe ? record.describe : "");
     setModalItemPrice(record?.price ? record.price : 0);
+    setModalItemUuid(record.key)
+    setModalItemImg(record?.image?.link)
   };
-  const handleOk = (k) => {
-
+  const handleOk = (upd) => {
     setIsModalOpen(false);
-    saveTableData(k,{key:k ,item:modalItemName,describe:modalItemDesc,price:modalItemPrice});
+    if(!(upd || false))saveTableData(modalItemUuid, {
+      key: modalItemUuid,
+      item: modalItemName,
+      describe: modalItemDesc,
+      price: modalItemPrice,
+    });
     setModalItemDesc("");
     setModalItemName("");
     setModalItemPrice(0);
@@ -178,7 +199,12 @@ function AdminProfile({ user }) {
   };
   const handleOk2 = () => {
     setIsModalOpen2(false);
-    saveTableData(-1,{key:uuidv4(),item:modalItemName2,describe:modalItemDesc2,price:modalItemPrice2});
+    saveTableData(-1, {
+      key: uuidv4(),
+      item: modalItemName2,
+      describe: modalItemDesc2,
+      price: modalItemPrice2,
+    });
     setModalItemDesc2("");
     setModalItemName2("");
     setModalItemPrice2(0);
@@ -200,7 +226,6 @@ function AdminProfile({ user }) {
     },
   ];
   const [fileList, setFileList] = useState([]);
-  const [tableData, setTableData] = useState();
 
   const handleClearFileList = () => {
     setFileList([]);
@@ -226,13 +251,13 @@ function AdminProfile({ user }) {
             console.log("Query Snapshot ", querySnapshot);
             if (querySnapshot.empty) {
               console.log("Adding doc");
-              addDoc(await adminCollection, {
+              const res = await addDoc(await adminCollection, {
                 email: user.email,
                 resPicPath: uploadTask.snapshot.ref.fullPath,
                 resPicLink: url,
               })
-                .then((res) => console.log("result ", res))
-                .catch((e) => console.log("error ", e));
+                console.log("result ", res)
+ 
               console.log("Doc added successfully with pic");
             } else {
               querySnapshot.forEach(async (doc) => {
@@ -267,12 +292,12 @@ function AdminProfile({ user }) {
     }
   };
 
-  const handleDistImgUpload = (file, path) => {
+  const handleDishImgUpload = (file,key) => {
     try {
       // const file = fileList[0].originFileObj;
-      console.log(file);
+      console.log("Key to upload ",key);
       // console.log(fileList);
-
+      const path = `/${user.email}/dishes/${key+"-" + file.name}`;
       const imgRef = ref(storage, path);
       const uploadTask = uploadBytesResumable(imgRef, file);
       uploadTask.on(
@@ -289,33 +314,43 @@ function AdminProfile({ user }) {
             console.log("Query Snapshot ", querySnapshot);
             if (querySnapshot.empty) {
               console.log("Adding doc");
-              addDoc(await adminCollection, {
+              const res= await addDoc(await adminCollection, {
                 email: user.email,
+                dishes: [{
                 resPicPath: uploadTask.snapshot.ref.fullPath,
                 resPicLink: url,
+                }]
               })
-                .then((res) => console.log("result ", res))
-                .catch((e) => console.log("error ", e));
+              console.log("result ", res);
+          
               console.log("Doc added successfully with pic");
             } else {
+              let dishData = details?.dishes.filter((v,i)=>v.key===key);
+              dishData = dishData[0]
+              const oldPath = dishData?.image?.path || null;
+              
               querySnapshot.forEach(async (doc) => {
-                const oldPath = doc.get("resPicPath");
+               
                 if (oldPath) {
                   try {
                     await deleteObject(ref(storage, oldPath));
-                    console.log("Deleted Old File");
+                    console.log("Deleted Old File",oldPath);
                   } catch (e) {
                     console.log("Error while deleting old File", e);
                   }
                 }
+                console.log("New Data ",details?.dishes);
+                let dishLis = (details?.dishes.filter((v,i)=>v.key!==key));
+                dishData = {...dishData,image:{path:uploadTask.snapshot.ref.fullPath,link:url}}
+                dishLis.push(dishData)
+                console.log("New Data ",dishLis);
                 const res = await updateDoc(doc.ref, {
-                  resPicPath: uploadTask.snapshot.ref.fullPath,
-                  resPicLink: url,
+                  dishes: dishLis
                 });
               });
             }
-
             alert("Successfully updated image !");
+            getData();
           } catch (e) {
             alert("Some");
             console.log("error ", e);
@@ -338,56 +373,49 @@ function AdminProfile({ user }) {
       alert("Saved changes");
     });
   };
-  async function saveTableData(pos,tdata)
-  {
-    let lis = details?.dishes || []
-    if(pos==-1)
-    {
-      lis = [...lis,{...tdata}]
-      console.log("List ",lis);
-    }else{
-      lis = lis.filter((v,i)=>{console.log(v.key,"   ",tdata.key); return v.key!==tdata.key})
-      console.log("deleted ",lis);
-      lis = [...lis,{...tdata}]
+  async function saveTableData(pos, tdata) {
+    let lis = details?.dishes || [];
+    if (pos == -1) {
+      lis = [...lis, { ...tdata }];
+      console.log("List ", lis);
+    } else {
+      lis = lis.filter((v, i) => {
+        console.log(v.key, "   ", tdata.key);
+        return v.key !== tdata.key;
+      });
+      console.log("deleted ", lis);
+      lis = [...lis, { ...tdata }];
     }
-    console.log("lis ",lis);
-    return;
+    console.log("lis ", lis);
+    // return;
     const querySnapshot = await getDocs(q);
     const doc = querySnapshot.forEach(async (doc) => {
       console.log(details);
-      await updateDoc(doc.ref, { ...details,dishes:[...lis] });
-      setDetails({ ...details,dishes:[...lis] })
+      await updateDoc(doc.ref, { ...details, dishes: [...lis] });
+      setDetails({ ...details, dishes: [...lis] });
       alert("Saved changes");
     });
-    getTableData();
+    getData();
   }
-  async function getTableData() {
+  async function getData() {
+    setDetails(null);
     const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty){
+    if (querySnapshot.empty) {
+      await addDoc(await adminCollection, {
+        email: user.email,
+      });
+      setDetails({ email: user.email });
+    } else {
       querySnapshot.forEach(async (doc) => {
-        setTableData(doc.data()?.dishes);
-        console.log("table data ", doc.data()?.dishes);
+        setDetails(doc.data());
+        console.log("doc data ", doc.data());
       });
     }
   }
   useEffect(() => {
-    async function getData() {
-      const querySnapshot = await getDocs(q);
-      if (querySnapshot.empty) {
-        await addDoc(await adminCollection, {
-          email: user.email,
-        });
-        setDetails({ email: user.email });
-      } else {
-        querySnapshot.forEach(async (doc) => {
-          setDetails(doc.data());
-          console.log("doc data ", doc.data());
-        });
-      }
-    }
     
     getData();
-    getTableData();
+
     // getTableData();
   }, []);
 
@@ -418,7 +446,10 @@ function AdminProfile({ user }) {
               />
             </Form.Item>
             <Form.Item label="List your restaurant online :">
-              <Switch defaultChecked={details?.publish} onChange={(v)=>setDetails({...details,publish:v})} />
+              <Switch
+                defaultChecked={details?.publish}
+                onChange={(v) => setDetails({ ...details, publish: v })}
+              />
             </Form.Item>
             <Form.Item label="Address">
               <Input
@@ -529,7 +560,7 @@ function AdminProfile({ user }) {
         )}
       </>
       <Button onClick={showModal2}>Add Item</Button>
-      <Table columns={columns} dataSource={tableData} />
+      <Table columns={columns} dataSource={details?.dishes} />
       <Modal
         title="Basic Modal"
         open={isModalOpen2}
