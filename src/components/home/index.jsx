@@ -14,9 +14,11 @@ import {
 } from "firebase/firestore";
 import LazyLoad from "react-lazyload";
 import ScrollToTopButton from "../scrollToTop/index"
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const [restData, setRestData] = useState([]);
   const [showRes, setShowRes] = useState(false);
   const adminCollection = collection(db, "admin");
@@ -50,7 +52,9 @@ const Home = () => {
   {showRes &&
     restData.map((restaurant, i) => {
       const handleCardClick = () => {
-        console.log(restaurant.email);
+        const decodedEmail = btoa(restaurant.email);
+        const route = `/restaurant/${decodedEmail}`;
+       navigate(route);
       };
 
       return (

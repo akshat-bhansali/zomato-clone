@@ -9,6 +9,7 @@ import Home from "./components/home";
 import { AuthProvider } from "./contexts/authContext";
 import { useRoutes } from "react-router-dom";
 import Profile from "./components/profile";
+import RestaurantDetails from "./components/restaurantDetails";
 
 function App() {
   const routesArray = [
@@ -39,6 +40,10 @@ function App() {
     {
       path: "/profile",
       element: <Profile />,
+    },
+    {
+      path: "/restaurant/:id",
+      element: <RestaurantDetails />,
     },
   ];
   let routesElement = useRoutes(routesArray);
