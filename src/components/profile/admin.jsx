@@ -413,10 +413,7 @@ function AdminProfile({ user }) {
     }
   }
   useEffect(() => {
-    
     getData();
-
-    // getTableData();
   }, []);
 
   return (
@@ -445,7 +442,7 @@ function AdminProfile({ user }) {
                 }}
               />
             </Form.Item>
-            <Form.Item label="List your restaurant online :">
+            <Form.Item label="List restaurant online :">
               <Switch
                 defaultChecked={details?.publish}
                 onChange={(v) => setDetails({ ...details, publish: v })}

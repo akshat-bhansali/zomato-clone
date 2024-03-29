@@ -19,7 +19,7 @@ const Login = () => {
     if (!isSigningIn) {
       setIsSigningIn(true);
       try {
-        await doSignInWithEmailAndPassword(email, password,"user");
+        await doSignInWithEmailAndPassword(email, password, "user");
         console.log("User created successfully");
       } catch (error) {
         alert("Invalid Email or Password");

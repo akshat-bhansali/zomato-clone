@@ -13,8 +13,8 @@ import {
   where,
 } from "firebase/firestore";
 import LazyLoad from "react-lazyload";
-import ScrollToTopButton from "../scrollToTop/index"
 import { useNavigate } from "react-router-dom";
+import ScrollToTopButton from "../scrollToTop"
 
 const Home = () => {
   const { currentUser } = useAuth();
@@ -47,52 +47,60 @@ const Home = () => {
         <div className="text-6xl font-bold">TAGLINE</div>
         <div className="text-4xl">Sub Heading</div>
       </div> */}
-  <ScrollToTopButton/>
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mt-5">
-  {showRes &&
-    restData.map((restaurant, i) => {
-      const handleCardClick = () => {
-        const decodedEmail = btoa(restaurant.email);
-        const route = `/restaurant/${decodedEmail}`;
-       navigate(route);
-      };
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mt-5">
+        {showRes &&
+          restData.map((restaurant, i) => {
+            const handleCardClick = () => {
+              const decodedEmail = btoa(restaurant.email);
+              const route = `/restaurant/${decodedEmail}`;
+              navigate(route);
+            };
 
-      return (
-        <LazyLoad key={i} height={200} once className="justify-self-center">
-          <Card
-            className="h-full cursor-pointer"
-            style={{
-              width: 250
-            }}
-            cover={
-              <img
-                alt="example"
-                src={
-                  restaurant?.resPicLink
-                    ? restaurant?.resPicLink
-                    : "./banner.jpg"
-                }
-              />
-            }
-            onClick={handleCardClick}
-          >
-            <Card.Meta
-              avatar={
-                <Avatar
-                  src={restaurant?.veg ? "./veg.jpeg" : "./veg+non.jpeg"}
-                />
-              }
-              title={restaurant?.name ? restaurant?.name : "No Name"}
-              description={
-                restaurant?.address ? restaurant?.address : "No Address"
-              }
-            />
-          </Card>
-        </LazyLoad>
-      );
-    })}
-</div>
-
+            return (
+              <LazyLoad
+                key={i}
+                height={200}
+                once
+                className="justify-self-center"
+              >
+                <Card
+                  className="h-full cursor-pointer"
+                  style={{
+                    width: 250,
+                  }}
+                  cover={
+                    <img
+                      alt="example"
+                      src={
+                        restaurant?.resPicLink
+                          ? restaurant?.resPicLink
+                          : "./banner.jpg"
+                      }
+                    />
+                  }
+                  onClick={handleCardClick}
+                >
+                  <Card.Meta
+                    avatar={
+                      <Avatar
+                        src={
+                          restaurant?.veg == "veg"
+                            ? "./veg.jpeg"
+                            : "./veg+non.jpeg"
+                        }
+                      />
+                    }
+                    title={restaurant?.name ? restaurant?.name : "No Name"}
+                    description={
+                      restaurant?.address ? restaurant?.address : "No Address"
+                    }
+                  />
+                </Card>
+              </LazyLoad>
+            );
+          })}
+      </div>
+      <ScrollToTopButton/>
     </>
   );
 };
