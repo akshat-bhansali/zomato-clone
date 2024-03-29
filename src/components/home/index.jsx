@@ -14,7 +14,8 @@ import {
 } from "firebase/firestore";
 import LazyLoad from "react-lazyload";
 import { useNavigate } from "react-router-dom";
-import ScrollToTopButton from "../scrollToTop"
+import ScrollToTopButton from "../scrollToTop";
+import { FaStar } from "react-icons/fa";
 
 const Home = () => {
   const { currentUser } = useAuth();
@@ -63,44 +64,51 @@ const Home = () => {
                 once
                 className="justify-self-center"
               >
-                <Card
-                  className="h-full cursor-pointer"
-                  style={{
-                    width: 250,
-                  }}
-                  cover={
-                    <img
-                      alt="example"
-                      src={
-                        restaurant?.resPicLink
-                          ? restaurant?.resPicLink
-                          : "./banner.jpg"
-                      }
-                    />
-                  }
+                <button
+                  className="max-w-xs overflow-hidden hover:shadow-lg rounded-lg p-2"
                   onClick={handleCardClick}
                 >
-                  <Card.Meta
-                    avatar={
-                      <Avatar
-                        src={
-                          restaurant?.veg == "veg"
-                            ? "./veg.jpeg"
-                            : "./veg+non.jpeg"
-                        }
-                      />
+                  <img
+                    className="w-full rounded-lg mr-2 border h-[200px]"
+                    src={
+                      restaurant?.resPicLink
+                        ? restaurant?.resPicLink
+                        : "./banner.jpg"
                     }
-                    title={restaurant?.name ? restaurant?.name : "No Name"}
-                    description={
-                      restaurant?.address ? restaurant?.address : "No Address"
-                    }
+                    alt="Card"
                   />
-                </Card>
+                  <div className="bg-gray-400 w-full h-[2px] rounded-lg my-2"></div>
+                  <div className="">
+                    <div className="flex gap-x-20">
+                      <div className="font-bold text-xl mb-2 text-start pl-2">
+                      {restaurant?.name ? (restaurant.name.length > 10 ? restaurant.name.slice(0, 10) + '...' : restaurant.name) : "No Name"}
+                      </div>
+                      <div className="flex">
+                        <div className="flex border rounded-lg p-2 bg-green-700 mt-[-3px]">
+                          <div className="text-white font-bold">5.0</div>{" "}
+                          <FaStar className="text-white mt-1 ml-1" />
+                        </div>
+                        <div className="w-1 bg-black rounded-md mx-2"></div>
+                        <img
+                        className="w-8 h-8 mt-1"
+                          src={
+                            restaurant?.veg == "veg"
+                              ? "./veg.jpeg"
+                              : "./veg+non.jpeg"
+                          }
+                        />
+                      </div>
+                    </div>
+                    <p className="text-gray-700 text-start pl-2">
+                          {restaurant.address?restaurant.address:"No Address"}
+                    </p>
+                  </div>
+                </button>
               </LazyLoad>
             );
           })}
       </div>
-      <ScrollToTopButton/>
+      <ScrollToTopButton />
     </>
   );
 };
