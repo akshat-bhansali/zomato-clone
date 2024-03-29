@@ -75,13 +75,13 @@ const ScrollToTopButton = () => {
   return (
     <div className="flex">
       <div className={`fixed bottom-10 left-10 z-10 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50  ${cartResItem>0?"flex":"hidden"}`}>
-        <div className={`${cartResItem>0?"flex":"hidden"} justify-between text-sm text-black`}>
+        <div className={`${cartResItem>0?"flex":"hidden"} justify-between`}>
           {/* menu */}
           <div className="flex">
             <img src={cartResImg} className="w-8 h-8 mt-3 rounded-lg" />
             <div className="flex flex-col mt-2 m-2">
-              <div className="text-start">{cartResName}</div>
-              <div className="flex items-center">
+              <div className="text-start text-sm text-black">{cartResName}</div>
+              <div className="flex items-center text-xs text-black">
                 <div>{cartResItem} Item</div>
                 <div className="m-1 bg-gray-200 rounded-full w-[2px] h-4"></div>
                 <button onClick={()=>{navigate(`/restaurant/${btoa(cartResEmail)}`)}}>View Menu &#8594;</button>
@@ -93,8 +93,8 @@ const ScrollToTopButton = () => {
             className="bg-red-500 p-2 flex flex-col items-center rounded-md mx-2"
             onClick={handleCartClick}
           >
-            <div className="text-white">₹{cartResPrice}</div>
-            <div className="ml-2 text-white">View Cart</div>
+            <div className="text-white text-sm ">₹{cartResPrice}</div>
+            <div className="ml-2 text-white text-xs pr-1">View Cart</div>
           </button>
           {/* cancel */}
           <button
@@ -107,7 +107,7 @@ const ScrollToTopButton = () => {
       </div>
       <button
         onClick={handleScrollToTop}
-        className="fixed bottom-10 text-5xl right-10 z-10 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        className="bottom-40 sm:bottom-10 fixed bottom-10 text-5xl right-10 z-10 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
       >
         <FaArrowUp />
       </button>
