@@ -120,10 +120,12 @@ const RestaurantDetails = () => {
       if (!data?.resId) {
         newData.resId = atob(id);
         newData.resImg = details.resPicLink;
+        newData.resName = details.name;
       } else {
         if (data.resId !== atob(id) || data?.resId === null) {
           newData.resId = atob(id);
           newData.resImg = details.resPicLink;
+          newData.resName = details.name;
           newData.cart = [];
         }
       }
@@ -184,6 +186,7 @@ const RestaurantDetails = () => {
           cart: lis,
           resId: null,
           resImg: null,
+          resName:null
         });
       } else await updateDoc(doc.ref, { ...data, cart: lis });
       getUserData();
@@ -199,7 +202,8 @@ const RestaurantDetails = () => {
 
     const q = query(userCollection, where("email", "==", user.email));
     const querySnapshot = await getDocs(q);
-    querySnapshot?.forEach((v) => {
+    const v = querySnapshot?.docs[0]
+    
       const res = v.data();
       res?.rating?.forEach((v,i)=>{
         if(v.key === atob(id))setRating(v.rating);
@@ -207,8 +211,7 @@ const RestaurantDetails = () => {
       setUserData(v.data());
 
       // console.log("sdf ",v.data());
-      return v.data();
-    });
+ 
   }
   async function getData() {
     setDetails(null);
