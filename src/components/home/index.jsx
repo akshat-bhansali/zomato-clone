@@ -85,7 +85,7 @@ const Home = () => {
                       </div>
                       <div className="flex">
                         <div className="flex border rounded-lg p-2 bg-green-700 mt-[-3px]">
-                          <div className="text-white font-bold">5.0</div>{" "}
+                          <div className="text-white font-bold">{(restaurant?.rating/restaurant?.ratingCount) || 'N/A'}</div>{" "}
                           <FaStar className="text-white mt-1 ml-1" />
                         </div>
                         <div className="w-1 bg-black rounded-md mx-2"></div>

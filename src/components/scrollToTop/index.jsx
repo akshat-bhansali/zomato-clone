@@ -8,7 +8,7 @@ const ScrollToTopButton = () => {
       behavior: "smooth",
     });
   };
-
+   
   const handleCartClick = () => {
     console.log("Cart clicked");
   };
