@@ -10,6 +10,7 @@ import { AuthProvider } from "./contexts/authContext";
 import { useRoutes } from "react-router-dom";
 import Profile from "./components/profile";
 import RestaurantDetails from "./components/restaurantDetails";
+import Cart from "./components/cart";
 
 function App() {
   const routesArray = [
@@ -20,6 +21,10 @@ function App() {
     {
       path: "/login",
       element: <Login />,
+    },
+    {
+      path: "/cart",
+      element: <Cart />,
     },
     {
       path: "/register",
