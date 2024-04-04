@@ -43,7 +43,7 @@ const RestaurantDetails = () => {
         return (
           <>
             <div className="flex align-middle justify-evenly">
-              <Image src={imgd?.link} height={100} className="w-7 h-7" />
+              <Image src={imgd?.link} height={50} className="w-7 h-7" />
             </div>
           </>
         );

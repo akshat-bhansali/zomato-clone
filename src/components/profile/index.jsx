@@ -27,8 +27,11 @@ const normFile = (e) => {
   return e?.fileList;
 };
 export default function Profile() {
-  const user = useAuth();
-
+  // const user = useAuth();
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")));
+  }, [localStorage.getItem("user")]);
 
   return (
     <div>
