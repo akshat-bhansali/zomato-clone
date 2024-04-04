@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { db } from "../../firebase/firebase";
 import { Button, Card, Divider, Image } from "antd";
 import ProductCard from "./productCard";
+import axios from 'axios';
 
 export default function Cart() {
   const user = getAuth().currentUser;
@@ -68,6 +69,40 @@ export default function Cart() {
   }
 //   const handleRemoveItem = ()=>{}
 
+const initPayment = (data) => {
+  const options = {
+    key: "rzp_test_FFmybeRKLHkZGx",
+    amount: data.amount,
+    currency: data.currency,
+    name:  userData?.resName,
+    description: "temp",
+    image:  userData?.resImg,
+    order_id: data.id,
+    handler: async (response) => {
+      try {
+        const { data } = await axios.post("http://localhost:4000/verify", response);
+        window.location.href = '/profile'
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    theme: {
+      color: "#3399cc",
+    },
+  };
+  const rzp2 = new window.Razorpay(options);
+  rzp2.open();
+};
+const handlePayment = async () => {
+  try {
+    const { data } = await axios.post('http://localhost:4000/api/process/payment', { amount: toatlPrice });
+    initPayment(data.data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
   return (
     <div style={{ margin: '0 auto', padding: '20px' }}>
       <h2>Your Shopping Cart</h2>
@@ -81,7 +116,7 @@ export default function Cart() {
       ))}
       <Divider />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Button  size="large">Proceed to Checkout</Button>
+        <Button onClick={handlePayment} size="large">Proceed to Checkout</Button>
         <div style={{ fontSize: '1.5em', fontWeight: 'bold' }}>
           Total: ${toatlPrice}
         </div>

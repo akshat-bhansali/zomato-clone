@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaArrowUp } from "react-icons/fa";
 import { useAuth } from "../../contexts/authContext";
 import { db } from "../../firebase/firebase";
+import { Link } from 'react-router-dom';
 import {
   addDoc,
   collection,
@@ -89,13 +90,15 @@ const ScrollToTopButton = () => {
             </div>
           </div>
           {/* cart */}
-          <button
-            className="bg-red-500 p-2 flex flex-col items-center rounded-md mx-2"
-            onClick={handleCartClick}
-          >
-            <div className="text-white text-sm ">₹{cartResPrice}</div>
-            <div className="ml-2 text-white text-xs pr-1">View Cart</div>
-          </button>
+          <Link to="/cart">
+  <button
+    className="bg-red-500 p-2 flex flex-col items-center rounded-md mx-2"
+    onClick={handleCartClick}
+  >
+    <div className="text-white text-sm">₹{cartResPrice}</div>
+    <div className="ml-2 text-white text-xs pr-1">View Cart</div>
+  </button>
+</Link>
           {/* cancel */}
           <button
             onClick={removeFromCart}
