@@ -11,6 +11,7 @@ import { useRoutes } from "react-router-dom";
 import Profile from "./components/profile";
 import RestaurantDetails from "./components/restaurantDetails";
 import Cart from "./components/cart";
+import Orders from "./components/order";
 
 function App() {
   const routesArray = [
@@ -25,6 +26,10 @@ function App() {
     {
       path: "/cart",
       element: <Cart />,
+    },
+    {
+      path: "/orders",
+      element: <Orders />,
     },
     {
       path: "/register",

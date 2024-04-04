@@ -17,6 +17,7 @@ import {
   Upload,
 } from "antd";
 import AdminProfile from "./admin";
+import { useAuth } from "../../contexts/authContext";
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const normFile = (e) => {
@@ -26,10 +27,8 @@ const normFile = (e) => {
   return e?.fileList;
 };
 export default function Profile() {
-  const [user, setUser] = useState({});
-  useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
-  }, [localStorage.getItem("user")]);
+  const user = useAuth();
+
 
   return (
     <div>

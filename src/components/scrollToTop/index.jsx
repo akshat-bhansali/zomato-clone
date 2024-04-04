@@ -57,12 +57,12 @@ const ScrollToTopButton = () => {
     querySnapshot.forEach(async (doc) => {
       console.log("doc data ", doc.data());
       const data = doc.data();
-      setCartResName(doc.data().resName);
-      setCartResImg(doc.data().resImg);
-      setCartResEmail(doc.data().resId);
+      setCartResName(data.resName);
+      setCartResImg(data.resImg);
+      setCartResEmail(data.resId);
       let price =0;
       let count =0;
-      doc.data()?.cart?.map((item,i)=>{
+      data?.cart?.map((item,i)=>{
         price += Number(Number(item?.price) * Number(item?.cnt));
         count += Number(item?.cnt)
       })

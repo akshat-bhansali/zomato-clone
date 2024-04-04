@@ -1,4 +1,4 @@
-import { Button, Rate, Table } from "antd";
+import { Button, Image, Rate, Table } from "antd";
 import {
   addDoc,
   collection,
@@ -43,7 +43,7 @@ const RestaurantDetails = () => {
         return (
           <>
             <div className="flex align-middle justify-evenly">
-              <img src={imgd?.link} className="w-7 h-7" />
+              <Image src={imgd?.link} height={100} className="w-7 h-7" />
             </div>
           </>
         );
