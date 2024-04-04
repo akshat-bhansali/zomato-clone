@@ -6,6 +6,7 @@ import { db } from "../../firebase/firebase";
 import { Button, Card, Divider, Image } from "antd";
 import ProductCard from "./productCard";
 import axios from 'axios';
+import { addOrderToFirestore } from "../../firebase/auth";
 
 export default function Cart() {
   const user = getAuth().currentUser;
@@ -81,7 +82,13 @@ const initPayment = (data) => {
     handler: async (response) => {
       try {
         const { data } = await axios.post("http://localhost:4000/verify", response);
-        window.location.href = '/profile'
+        try {
+          const orderId = await addOrderToFirestore(userData?.email, userData?.resId, userData?.cart, response?.razorpay_payment_id,userData?.resImg,userData?.resName);
+          alert('Order added successfully')
+          navigate("/profile");
+        } catch (error) {
+          console.error('Error adding order:', error);
+        }
       } catch (error) {
         console.log(error);
       }

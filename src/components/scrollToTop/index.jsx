@@ -62,7 +62,7 @@ const ScrollToTopButton = () => {
       setCartResEmail(doc.data().resId);
       let price =0;
       let count =0;
-      doc.data().cart.map((item,i)=>{
+      doc.data()?.cart?.map((item,i)=>{
         price += Number(Number(item?.price) * Number(item?.cnt));
         count += Number(item?.cnt)
       })

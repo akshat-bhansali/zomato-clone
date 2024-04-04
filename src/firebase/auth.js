@@ -11,8 +11,28 @@ import {
 import { getFirestore, addDoc, collection, getDocs, CollectionReference } from "firebase/firestore";
 import {db} from "./firebase" 
 const colletionRef = collection(db, 'user');
+const orderCollectionRef = collection(db, 'order');
 export const doCreateUserWithEmailAndPassword = async (email, password) => {
   return createUserWithEmailAndPassword(auth, email, password);
+};
+
+export const addOrderToFirestore = async (userEmail, resEmail, orderDetails,orderId,resImg,resName) => {
+  try {
+    const docRef = await addDoc(orderCollectionRef, {
+      orderId:orderId,
+      userEmail: userEmail,
+      resEmail: resEmail,
+      orderDetails: orderDetails,
+      resImg : resImg,
+      resName:resName,
+      status : "Order Placed"
+    });
+    console.log("Order added with ID: ", docRef.id);
+    return docRef.id; // Return the ID of the newly added order
+  } catch (error) {
+    console.error("Error adding order: ", error);
+    throw new Error("Error adding order to Firestore");
+  }
 };
 
 export const doSignInWithEmailAndPassword = async(email, password,role) => {
