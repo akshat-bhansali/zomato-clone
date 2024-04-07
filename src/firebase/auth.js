@@ -28,7 +28,7 @@ export const addOrderToFirestore = async (userEmail, resEmail, orderDetails,orde
       status : "Order Placed"
     });
     console.log("Order added with ID: ", docRef.id);
-    return docRef.id; // Return the ID of the newly added order
+    return docRef.id; 
   } catch (error) {
     console.error("Error adding order: ", error);
     throw new Error("Error adding order to Firestore");

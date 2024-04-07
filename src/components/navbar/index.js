@@ -11,6 +11,7 @@ const Navbar = () => {
   const navLinks = [
     { href: "/home", label: "Home", enabled: true },
     { href: "/profile", label: "Profile", enabled: userLoggedIn },
+    { href: "/orders", label: "Orders", enabled: userLoggedIn },
   ];
   return (
     <>

@@ -15,7 +15,7 @@ const ProductCard = ({ item, onUpdateQuantity, onRemove }) => {
           <Meta
             avatar={<img alt={name} src={image} style={{ width: '80px', height: '80px', objectFit: 'cover' }} />}
             title={name}
-            description={`Rs ${price}`}
+            description={`₹${price}`}
           />
         <div className='flex flex-row'>
           <Space>

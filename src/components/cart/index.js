@@ -7,8 +7,10 @@ import { Button, Card, Divider, Image } from "antd";
 import ProductCard from "./productCard";
 import axios from 'axios';
 import { addOrderToFirestore } from "../../firebase/auth";
+import { useAuth } from "../../contexts/authContext";
 
 export default function Cart() {
+  const { currentUser } = useAuth();
   const user = getAuth().currentUser;
   const navigate = useNavigate();
   const userCollection = collection(db, "user");
@@ -69,7 +71,23 @@ export default function Cart() {
     getUserData();
   }
 //   const handleRemoveItem = ()=>{}
+const removeFromCart = async () => {
+  const q = query(userCollection, where("email", "==", currentUser.email));
+  const querySnapshot = await getDocs(q);
 
+  querySnapshot.forEach(async (doc) => {
+    const data = doc.data();
+
+    await updateDoc(doc.ref, {
+      ...data,
+      cart: [],
+      resId: null,
+      resImg: null,
+      resName:null
+    });
+    alert("Removed Cart");
+  });
+};
 const initPayment = (data) => {
   const options = {
     key: "rzp_test_FFmybeRKLHkZGx",
@@ -85,7 +103,8 @@ const initPayment = (data) => {
         try {
           const orderId = await addOrderToFirestore(userData?.email, userData?.resId, userData?.cart, response?.razorpay_payment_id,userData?.resImg,userData?.resName);
           alert('Order added successfully')
-          navigate("/profile");
+          navigate("/orders");
+          removeFromCart();
         } catch (error) {
           console.error('Error adding order:', error);
         }
@@ -125,7 +144,7 @@ const handlePayment = async () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Button onClick={handlePayment} size="large">Proceed to Checkout</Button>
         <div style={{ fontSize: '1.5em', fontWeight: 'bold' }}>
-          Total: ${toatlPrice}
+          Total: ₹{toatlPrice}
         </div>
       </div>
     </div>
