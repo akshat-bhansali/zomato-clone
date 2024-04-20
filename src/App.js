@@ -14,6 +14,10 @@ import RestaurantDetails from "./components/restaurantDetails";
 import Cart from "./components/cart";
 import Orders from "./components/order";
 import RefundPolicy from "./components/refund";
+import PrivacyPolicy from "./components/privacyPolicy";
+import ContactUs from "./components/contact";
+import AboutUs from "./components/about";
+import TermsAndConditions from "./components/tandc";
 
 function App() {
   const routesArray = [
@@ -60,7 +64,23 @@ function App() {
     {
       path: "/refund",
       element: <RefundPolicy/>
-    }
+    },
+    {
+      path: "/privacypolicy",
+      element: <PrivacyPolicy/>
+    },
+    {
+      path: "/contact",
+      element: <ContactUs/>
+    },
+    {
+      path: "/tandc",
+      element: <TermsAndConditions/>
+    },
+    {
+      path: "/about",
+      element: <AboutUs/>
+    },
   ];
   let routesElement = useRoutes(routesArray);
   return (
