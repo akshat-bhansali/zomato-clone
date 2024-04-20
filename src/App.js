@@ -13,6 +13,7 @@ import Profile from "./components/profile";
 import RestaurantDetails from "./components/restaurantDetails";
 import Cart from "./components/cart";
 import Orders from "./components/order";
+import RefundPolicy from "./components/refund";
 
 function App() {
   const routesArray = [
@@ -56,12 +57,16 @@ function App() {
       path: "/restaurant/:id",
       element: <RestaurantDetails />,
     },
+    {
+      path: "/refund",
+      element: <RefundPolicy/>
+    }
   ];
   let routesElement = useRoutes(routesArray);
   return (
     <AuthProvider>
       <Header />
-      <div className="w-full h-screen flex flex-col">{routesElement}</div>
+      <div className="w-full flex-grow flex flex-col">{routesElement}</div>
       <Footer/>
     </AuthProvider>
   );
