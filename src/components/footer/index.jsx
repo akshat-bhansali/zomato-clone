@@ -25,7 +25,7 @@ const Footer = () => {
                             </h2>
                             <ul className="text-gray-500 dark:text-gray-400 font-medium">
                                 <li className="mb-4">
-                                    <Link to="profile" className="hover:underline">
+                                    <Link to="refund" className="hover:underline">
                                         Refund Policy
                                     </Link>
                                 </li>
