@@ -4,8 +4,9 @@ import ResLogin from "./components/restaurantAuth/reslogin";
 import ResRegister from "./components/restaurantAuth/resregister";
 
 import Header from "./components/header";
-import Home from "./components/home";
 
+import Home from "./components/home";
+import Footer from "./components/footer"
 import { AuthProvider } from "./contexts/authContext";
 import { useRoutes } from "react-router-dom";
 import Profile from "./components/profile";
@@ -61,6 +62,7 @@ function App() {
     <AuthProvider>
       <Header />
       <div className="w-full h-screen flex flex-col">{routesElement}</div>
+      <Footer/>
     </AuthProvider>
   );
 }
