@@ -17,6 +17,7 @@ import {
   Upload,
 } from "antd";
 import AdminProfile from "./admin";
+import UserProfile from "./user";
 import { useAuth } from "../../contexts/authContext";
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -38,7 +39,10 @@ export default function Profile() {
       {user?.role === "admin" ? (
         <AdminProfile user={user} />
       ) : (
-        <>welcome {user?.name ?? ""}</>
+        <>
+        {/* welcome {user?.name ?? ""} */}
+          <UserProfile/>        
+        </>
       )}
     </div>
   );
