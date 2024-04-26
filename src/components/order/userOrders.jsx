@@ -61,7 +61,7 @@ const UserOrders = ({user}) => {
               <p>Total Price: Rs {order.totalPrice}</p>
               <p>OTP : {order?.otp}</p>
           <p>Name : {order?.userName}</p>
-          <p>Date : {order?.date}</p>
+          <p>Instruction : {order?.instruction}</p>
               <Collapse>
                 <Panel header="Order Details" key="1">
                 <p>

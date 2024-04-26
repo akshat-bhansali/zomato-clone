@@ -16,7 +16,7 @@ export const doCreateUserWithEmailAndPassword = async (email, password) => {
   return createUserWithEmailAndPassword(auth, email, password);
 };
 
-export const addOrderToFirestore = async (userEmail, resEmail, orderDetails,orderId,resImg,resName,userName) => {
+export const addOrderToFirestore = async (userEmail, resEmail, orderDetails,orderId,resImg,resName,userName,instruction) => {
   try {
     const docRef = await addDoc(orderCollectionRef, {
       orderId:orderId,
@@ -27,7 +27,8 @@ export const addOrderToFirestore = async (userEmail, resEmail, orderDetails,orde
       resName:resName,
       status : "Order Placed",
       otp : Math.floor(Math.random() * 9999) + 1,
-      userName:userName
+      userName:userName,
+      instruction:instruction
     });
     console.log("Order added with ID: ", docRef.id);
     return docRef.id; 
