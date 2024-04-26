@@ -101,7 +101,7 @@ const initPayment = (data) => {
       try {
         const { data } = await axios.post("http://localhost:4000/verify", response);
         try {
-          const orderId = await addOrderToFirestore(userData?.email, userData?.resId, userData?.cart, response?.razorpay_payment_id,userData?.resImg,userData?.resName);
+          const orderId = await addOrderToFirestore(userData?.email, userData?.resId, userData?.cart, response?.razorpay_payment_id,userData?.resImg,userData?.resName,userData?.name);
           alert('Order added successfully')
           navigate("/orders");
           removeFromCart();
