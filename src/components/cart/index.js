@@ -97,6 +97,7 @@ const initPayment = (data) => {
     description: "temp",
     image:  userData?.resImg,
     order_id: data.id,
+    date : new Date().toLocaleDateString('en-GB'),
     handler: async (response) => {
       try {
         const { data } = await axios.post("http://localhost:4000/verify", response);
