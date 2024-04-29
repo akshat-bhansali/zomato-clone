@@ -3,7 +3,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { AiOutlineClose } from "react-icons/ai";
 import { useAuth } from "../../contexts/authContext";
 import { doSignOut } from "../../firebase/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink , Link, useNavigate } from "react-router-dom";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { userLoggedIn } = useAuth();
@@ -15,16 +15,16 @@ const Navbar = () => {
   ];
   return (
     <>
-      <header className="sm:px-8 px-4 py-2 z-10 w-full shadow-xl">
+      <header className="sm:px-8 px-4 py-3 z-10 w-full shadow-xl">
         <nav className="flex justify-between items-center max-container">
-          <a href="/" className="text-3xl font-bold">
-            Logo
-          </a>
-          <ul className="flex-1 flex justify-center items-center gap-16 max-lg:hidden">
+          <Link to="/" className="text-3xl font-bold" >
+            <img src="SB-logo.jpg" className="w-16 h-16"/>
+          </Link>
+          <ul className="flex-1 flex justify-end items-center gap-16 max-lg:hidden px-16 ">
             {navLinks.map((item) =>
               item.enabled ? (
-                <li key={item.label}>
-                  <Link to={item.href}>{item.label}</Link>
+                <li key={item.label} className="">
+                  <Link to={item.href} className=" py-2 px-5 border border-gray-100 bg-gray-50 rounded-md hover:bg-black hover:text-white  transition-all ">{item.label}</Link>
                 </li>
               ) : (
                 <></>
@@ -50,7 +50,7 @@ const Navbar = () => {
           <div className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
             {userLoggedIn ? (
               <>
-                <button
+                <button className="py-2 px-5 bg-black text-white rounded shadow-lg hover:scale-105 transition-all"
                   onClick={() => {
                     doSignOut().then(() => {
                       navigate("/login");
@@ -62,9 +62,8 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Link to={"/login"}>Login</Link>
-                <span>/</span>
-                <Link to={"/register"}>Register New Account</Link>
+                <Link to={"/login"}  className="py-2 px-5 bg-black text-white rounded shadow-lg hover:scale-105 transition-all">Login</Link>
+                <Link to={"/register"}  className="py-2 px-5 bg-black text-white rounded shadow-lg hover:scale-105 transition-all">Register</Link>
               </>
             )}
           </div>
@@ -108,7 +107,7 @@ const Navbar = () => {
               <li className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
                 {userLoggedIn ? (
                   <>
-                    <button
+                    <button  
                       onClick={() => {
                         navigate("/profile");
                       }}
@@ -149,7 +148,7 @@ const Navbar = () => {
                           to={"/register"}
                           onClick={() => setIsMenuOpen(!isMenuOpen)}
                         >
-                          Register New Account
+                          Register
                         </Link>
                       </div>
                     </>
