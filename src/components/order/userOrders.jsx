@@ -59,8 +59,14 @@ const UserOrders = ({user}) => {
               {/* <img src={ordresCollection.res} */}
               <p>Status: {order.status}</p>
               <p>Total Price: Rs {order.totalPrice}</p>
+              <p>OTP : {order?.otp}</p>
+          <p>Name : {order?.userName}</p>
+          <p>Instruction : {order?.instruction}</p>
               <Collapse>
                 <Panel header="Order Details" key="1">
+                <p>
+                    order id : {order.orderId}
+                </p>
                   {order.orderDetails.map((item, index) => (
                     <div key={index}>
                       {/* <p>Item: {item.item}</p> */}

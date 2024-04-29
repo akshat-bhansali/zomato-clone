@@ -11,7 +11,6 @@ const UserProfile = () => {
   return (
     <div
       className="font-sans antialiased text-gray-900 leading-normal tracking-wider bg-cover"
-      style={{ backgroundImage: "url('banner.jpg')" }}
     >
       <div className="max-w-4xl flex items-center h-auto lg:h-screen flex-wrap mx-auto my-32 lg:my-0">
         {/* Main Column */}
