@@ -15,7 +15,7 @@ const Navbar = () => {
   ];
   return (
     <>
-      <header className="sm:px-8 px-4 py-2 z-10 w-full">
+      <header className="sm:px-8 px-4 py-2 z-10 w-full shadow-xl">
         <nav className="flex justify-between items-center max-container">
           <a href="/" className="text-3xl font-bold">
             Logo

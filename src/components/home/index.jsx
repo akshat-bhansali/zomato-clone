@@ -43,12 +43,13 @@ const Home = () => {
       Hello {currentUser?.displayName ? currentUser?.displayName : "User"}, you
       are now logged in.
     </div> */}
-      <img src="./banner.jpg" className="h-1/2" />
+      <img src="https://images.template.net/113396/world-food-day-banner-background-lgg7g.png" className="h-1/2 p-10" />
       {/* <div className="absolute inset-0 flex flex-col justify-center items-center text-white">
         <div className="text-6xl font-bold">TAGLINE</div>
         <div className="text-4xl">Sub Heading</div>
       </div> */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mt-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mt-5 border p-5 ">
+
         {showRes &&
           restData.map((restaurant, i) => {
             const handleCardClick = () => {
@@ -62,10 +63,10 @@ const Home = () => {
                 key={i}
                 height={200}
                 once
-                className="justify-self-center"
+                className="justify-self-center hover:scale-105 transition-all border rounded-lg"
               >
                 <button
-                  className="max-w-xs overflow-hidden hover:shadow-lg rounded-lg p-2"
+                  className="max-w-xs overflow-hidden shadow-lg hover:shadow-2xl rounded-lg p-3"
                   onClick={handleCardClick}
                 >
                   <img
