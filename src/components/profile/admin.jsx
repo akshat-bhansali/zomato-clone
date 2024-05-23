@@ -441,23 +441,19 @@ function AdminProfile({ user }) {
         </h1>
       </div>
 
-      <div className="flex">
+      <div className="flex flex-col lg:flex-row">
         {details && (
-          
-          <div className="bg-white border p-6 rounded-lg shadow-lg mb-6 w-[35vw] inline">
-          <div> <p className="font-bold text-xl opacity-70 text-indigo-600 mb-4">Restaurant Details</p></div>
+          <div className="bg-white border p-6 rounded-lg shadow-lg mb-6 lg:w-[35vw]">
+            <div>
+              <p className="font-bold text-xl opacity-70 text-indigo-600 mb-4">
+                Restaurant Details
+              </p>
+            </div>
             <Form
-              labelCol={{
-                span: 9,
-              }}
-              wrapperCol={{
-                span: 15,
-              }}
+              labelCol={{ span: 9 }}
+              wrapperCol={{ span: 15 }}
               layout="horizontal"
-              style={{
-                maxWidth: 900,
-                font:"bold"
-              }}
+              style={{ maxWidth: 900, font: "bold" }}
               className="text-left"
             >
               <Form.Item
@@ -466,17 +462,18 @@ function AdminProfile({ user }) {
               >
                 <Input
                   value={details.name}
-                  onChange={(v) => {
-                    setDetails({ ...details, name: v.target.value });
-                  }}
-                  className=""
+                  onChange={(v) =>
+                    setDetails({ ...details, name: v.target.value })
+                  }
+                  className="w-full lg:w-auto"
                 />
               </Form.Item>
               <Form.Item
                 label="List restaurant online :"
                 className="font-bold text-gray-700"
               >
-                <Switch className="m-3"
+                <Switch
+                  className="m-3"
                   defaultChecked={details?.publish}
                   onChange={(v) => setDetails({ ...details, publish: v })}
                 />
@@ -487,7 +484,7 @@ function AdminProfile({ user }) {
                   onChange={(v) =>
                     setDetails({ ...details, address: v.target.value })
                   }
-                  className="border rounded-lg p-2"
+                  className="border rounded-lg p-2 w-full lg:w-auto"
                 />
               </Form.Item>
               <Form.Item label="Pincode" className="font-bold text-gray-700">
@@ -498,7 +495,7 @@ function AdminProfile({ user }) {
                     setDetails({ ...details, pincode: v.target.value })
                   }
                   value={details?.pincode}
-                  className="border rounded-lg p-2"
+                  className="border rounded-lg p-2 w-full lg:w-auto"
                 />
               </Form.Item>
               <Form.Item label="Veg" className="font-bold text-gray-700">
@@ -520,28 +517,26 @@ function AdminProfile({ user }) {
                   </Radio>
                 </Radio.Group>
               </Form.Item>
-
               <Form.Item label="Cuisines" className="font-bold text-gray-700">
                 <Select
                   mode="tags"
-                  style={{
-                    width: "100%",
-                  }}
+                  style={{ width: "100%" }}
                   placeholder="Tags Mode"
                   defaultValue={details && details?.cusines}
                   onChange={(v) => setDetails({ ...details, cusines: v })}
                   options={categoriesOptions}
-                  className="border rounded-lg"
+                  className="border rounded-lg w-full lg:w-auto"
                 />
               </Form.Item>
 
+              {/* Image Upload Section */}
               <Form.Item
                 label="Restaurant Pic"
                 valuePropName="fileList"
                 getValueFromEvent={normFile}
                 className="font-bold text-gray-700"
               >
-                <div className="flex gap-10 items-center">
+                <div className="flex flex-col lg:flex-row gap-10 items-center">
                   {details?.resPicLink && (
                     <img
                       src={details?.resPicLink}
@@ -566,21 +561,12 @@ function AdminProfile({ user }) {
                   >
                     {fileList.length === 0 && (
                       <button
-                        style={{
-                          border: 0,
-                          background: "none",
-                        }}
+                        style={{ border: 0, background: "none" }}
                         type="button"
                         className="text-gray-600 hover:text-black"
                       >
                         <PlusOutlined />
-                        <div
-                          style={{
-                            marginTop: 8,
-                          }}
-                        >
-                          Change
-                        </div>
+                        <div style={{ marginTop: 8 }}>Change</div>
                       </button>
                     )}
                   </Upload>
@@ -605,10 +591,11 @@ function AdminProfile({ user }) {
           </div>
         )}
 
-        <div className="mx-4 p-3 border shadow-lg rounded-lg text-right font-semibold h-[37vh]">
+        {/* Dishes Table and Add Item Modal */}
+        <div className="mx-4 p-3 border shadow-lg rounded-lg text-right font-semibold lg:h-[37vh]">
           <Button
             onClick={showModal2}
-            className="bg-blue-600 text-white rounded-lg  hover:bg-blue-700 mb-6"
+            className="bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6 w-full lg:w-auto"
           >
             Add Item
           </Button>
@@ -619,7 +606,7 @@ function AdminProfile({ user }) {
             className="mb-6"
           />
 
-          <Modal 
+          <Modal
             title="Add New Item"
             open={isModalOpen2}
             onOk={handleOk2}
@@ -635,9 +622,7 @@ function AdminProfile({ user }) {
             ]}
           >
             <div className="mb-4">
-              <label className="text-xs font-bold mb-2 block">
-                Item Name
-              </label>
+              <label className="text-xs font-bold mb-2 block">Item Name</label>
               <Input
                 placeholder="Enter Item Name"
                 value={modalItemName2}
