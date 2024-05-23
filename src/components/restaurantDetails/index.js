@@ -57,6 +57,21 @@ const RestaurantDetails = () => {
         return (
           <>
             <div className="flex justify-evenly">
+            <Button
+                className="bg-blue-300"
+                type="secondary"
+                onClick={() => {
+                  if (user?.email == null || user?.email == "") {
+                    navigate("/login");
+                    alert("Login First");
+                    return;
+                  }
+                  removeFromCart(record);
+                }}
+              >
+                -
+              </Button>
+              {getCount(record.key)}
               <Button
                 className="bg-blue-300"
                 type="secondary"
@@ -70,21 +85,6 @@ const RestaurantDetails = () => {
                 }}
               >
                 +
-              </Button>
-              {getCount(record.key)}
-              <Button
-                className="bg-blue-300"
-                type="secondary"
-                onClick={() => {
-                  if (user?.email == null || user?.email == "") {
-                    navigate("/login");
-                    alert("Login First");
-                    return;
-                  }
-                  removeFromCart(record);
-                }}
-              >
-                -
               </Button>
             </div>
           </>

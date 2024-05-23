@@ -66,7 +66,7 @@ const Home = () => {
                 className="justify-self-center hover:scale-105 transition-all border rounded-lg"
               >
                 <button
-                  className="max-w-xs overflow-hidden shadow-lg hover:shadow-2xl rounded-lg p-3"
+                  className="max-w-xs overflow-hidden shadow-lg hover:shadow-2xl rounded-lg p-3 h-full w-full"
                   onClick={handleCardClick}
                 >
                   <img
@@ -80,7 +80,7 @@ const Home = () => {
                   />
                   <div className="bg-gray-400 w-full h-[2px] rounded-lg my-2"></div>
                   <div className="">
-                    <div className="flex gap-x-20">
+                    <div className="flex gap-x-5">
                       <div className="font-bold text-xl mb-2 text-start pl-2">
                       {restaurant?.name ? (restaurant.name.length > 10 ? restaurant.name.slice(0, 10) + '...' : restaurant.name) : "No Name"}
                       </div>
@@ -94,8 +94,8 @@ const Home = () => {
                         className="w-8 h-8 mt-1"
                           src={
                             restaurant?.veg == "veg"
-                              ? "./veg.jpeg"
-                              : "./veg+non.jpeg"
+                              ? "veg.jpeg"
+                              : "veg+non.jpeg"
                           }
                         />
                       </div>
