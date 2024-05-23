@@ -18,7 +18,7 @@ const Navbar = () => {
       <header className="sm:px-8 px-4 py-3 z-10 w-full shadow-md">
         <nav className="flex justify-between items-center max-container">
           <Link to="/" className="text-3xl font-bold">
-            <img src="SB_logo.jpg" className="w-16 h-16" alt="LOGO" />
+            <img src="logosb.jpg" className="w-20 object-contain" alt="LOGO" />
           </Link>
           <ul className="flex-1 flex justify-end items-center gap-5 max-lg:hidden px-16">
             {userLoggedIn?navLinks.map((item) =>
