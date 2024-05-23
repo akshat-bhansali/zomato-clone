@@ -21,7 +21,7 @@ const Navbar = () => {
             <img src="SB_logo.jpg" className="w-16 h-16" alt="LOGO" />
           </Link>
           <ul className="flex-1 flex justify-end items-center gap-5 max-lg:hidden px-16">
-            {navLinks.map((item) =>
+            {userLoggedIn?navLinks.map((item) =>
               item.enabled ? (
                 <li key={item.label}>
                   <NavLink
@@ -36,7 +36,7 @@ const Navbar = () => {
                   </NavLink>
                 </li>
               ) : null
-            )}
+            ):null}
             {/* 
       <li className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
         {userLoggedIn ? (
