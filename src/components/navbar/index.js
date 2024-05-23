@@ -3,7 +3,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { AiOutlineClose } from "react-icons/ai";
 import { useAuth } from "../../contexts/authContext";
 import { doSignOut } from "../../firebase/auth";
-import { NavLink , Link, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { userLoggedIn } = useAuth();
@@ -14,43 +14,50 @@ const Navbar = () => {
     { href: "/orders", label: "Orders", enabled: userLoggedIn },
   ];
   return (
-    <>
-      <header className="sm:px-8 px-4 py-3 z-10 w-full shadow-xl">
+    <div className="mb-4">
+      <header className="sm:px-8 px-4 py-3 z-10 w-full shadow-md">
         <nav className="flex justify-between items-center max-container">
-          <Link to="/" className="text-3xl font-bold" >
-            <img src="SB-logo.jpg" className="w-16 h-16"/>
+          <Link to="/" className="text-3xl font-bold">
+            <img src="SB_logo.jpg" className="w-16 h-16" alt="LOGO" />
           </Link>
-          <ul className="flex-1 flex justify-end items-center gap-16 max-lg:hidden px-16 ">
+          <ul className="flex-1 flex justify-end items-center gap-5 max-lg:hidden px-16">
             {navLinks.map((item) =>
               item.enabled ? (
-                <li key={item.label} className="">
-                  <Link to={item.href} className=" py-2 px-5 border border-gray-100 bg-gray-50 rounded-md hover:bg-black hover:text-white  transition-all ">{item.label}</Link>
-                </li>
-              ) : (
-                <></>
-              )
-            )}
-            {/* <li className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
-              {userLoggedIn ? (
-                <>
-                  <button
-                    onClick={() => {
-                      navigate("/profile");
-                    }}
+                <li key={item.label}>
+                  <NavLink
+                    to={item.href}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "py-2 px-5 border border-gray-100 bg-[#111827] text-white rounded-md transition-all"
+                        : "py-2 px-5 border border-gray-100 bg-gray-50 rounded-md hover:bg-[#111827] hover:text-white transition-all"
+                    }
                   >
-                    Profile
-                  </button>
-                </>
-              ) : (
-                <></>
-              )}
-            </li> */}
+                    {item.label}
+                  </NavLink>
+                </li>
+              ) : null
+            )}
+            {/* 
+      <li className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
+        {userLoggedIn ? (
+          <>
+            <button
+              onClick={() => {
+                navigate("/profile");
+              }}
+            >
+              Profile
+            </button>
+          </>
+        ) : null}
+      </li>
+      */}
           </ul>
-
           <div className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
             {userLoggedIn ? (
               <>
-                <button className="py-2 px-5 bg-black text-white rounded shadow-lg hover:scale-105 transition-all"
+                <button
+                  className="py-2 px-5 border border-gray-100 bg-gray-50 rounded-md hover:bg-[#111827] hover:text-white transition-all"
                   onClick={() => {
                     doSignOut().then(() => {
                       navigate("/login");
@@ -62,8 +69,18 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Link to={"/login"}  className="py-2 px-5 bg-black text-white rounded shadow-lg hover:scale-105 transition-all">Login</Link>
-                <Link to={"/register"}  className="py-2 px-5 bg-black text-white rounded shadow-lg hover:scale-105 transition-all">Register</Link>
+                <Link
+                  to={"/login"}
+                  className="py-2 px-5 bg-black text-white rounded shadow-lg hover:scale-105 transition-all"
+                >
+                  Login
+                </Link>
+                <Link
+                  to={"/register"}
+                  className="py-2 px-5 bg-black text-white rounded shadow-lg hover:scale-105 transition-all"
+                >
+                  Register
+                </Link>
               </>
             )}
           </div>
@@ -107,7 +124,7 @@ const Navbar = () => {
               <li className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
                 {userLoggedIn ? (
                   <>
-                    <button  
+                    <button
                       onClick={() => {
                         navigate("/profile");
                       }}
@@ -159,7 +176,7 @@ const Navbar = () => {
           </nav>
         </div>
       )}
-    </>
+    </div>
   );
 };
 export default Navbar;
