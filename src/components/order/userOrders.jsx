@@ -46,37 +46,61 @@ const UserOrders = ({user}) => {
         },
       ];
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="p-5 border shadow-lg rounded-lg">
+    <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
+        <h1 className="font-bold text-2xl text-gray-800">
+          Your
+          <span className="text-indigo-600"> orders</span>
+        </h1>
+      </div>
       <Row gutter={[16, 16]}>
-        {orders?.map(order => (
-          <Col span={8} key={order.id}>
-            <Card style={{ width: 300 }}>
-              <Meta
-                avatar={<Image src={order.resImg} height={50} width={50}/>}
-                title={order.resName}
-                description={order.time}
-              />
-              {/* <img src={ordresCollection.res} */}
-              <p>Status: {order.status}</p>
-              <p>Total Price: Rs {order.totalPrice}</p>
-              <p>OTP : {order?.otp}</p>
-          <p>Name : {order?.userName}</p>
-          <p>Instruction : {order?.instruction}</p>
-              <Collapse>
-                <Panel header="Order Details" key="1">
-                <p>
-                    order id : {order.orderId}
-                </p>
-                  {order.orderDetails.map((item, index) => (
-                    <div key={index}>
-                      {/* <p>Item: {item.item}</p> */}
-                      <p>Item: {item.item}  Rs {item.price} x {item.cnt} </p>
-                      {/* <p>Price: {item.price}</p> */}
-                    </div>
-                  ))}
-                </Panel>
-              </Collapse>
-            </Card>
+        {orders?.map((order) => (
+          <Col span={24} key={order.id} className="mb-4">
+            <div className="border rounded-lg shadow-md p-4 bg-white text-left  ">
+              <Row className="items-center">
+                <Col xs={24} lg={2} className="text-center mb-4 lg:mb-0">
+                  <Image src={order.resImg} height={70} width={70} className="mx-auto" />
+                </Col>
+                <Col xs={24} lg={3} className="text-center mb-4 lg:mb-0">
+                  <p className="text-lg font-bold">{order.resName}</p>
+                  <p>{order.time}</p>
+                </Col>
+                <Col xs={24} lg={3} className="text-left flex justify-between lg:flex-col mb-4 lg:mb-0">
+                  <p className="font-semibold text-md opacity-70">Status</p>
+                  <p className='text-lg font-bold'>{order.status}</p>
+                </Col>
+                <Col xs={24} lg={3} className="text-left flex justify-between lg:flex-col mb-4 lg:mb-0">
+                  <p className="font-semibold text-md opacity-70">Total Price</p>
+                  <p className='text-lg font-bold'>Rs {order.totalPrice}</p>
+                </Col>
+                <Col xs={24} lg={3} className="text-left flex justify-between lg:flex-col mb-4 lg:mb-0">
+                  <p className="font-semibold text-md opacity-70">OTP</p>
+                  <p className='text-lg font-bold'>{order?.otp}</p>
+                </Col>
+                <Col xs={24} lg={4} className="text-left flex justify-between lg:flex-col  mb-4 lg:mb-0">
+                  <p className="font-semibold text-md opacity-70">Name</p>
+                  <p className='text-lg font-bold'>{order?.userName}</p>
+                </Col>
+                <Col xs={24} lg={4} className="text-left flex justify-between lg:flex-col mb-4 lg:mb-0">
+                  <p className="font-semibold text-md opacity-70">Instruction</p>
+                  <p className='text-lg font-bold'>{order.instruction?order?.instruction:"-"}</p>
+                </Col>
+                <Col xs={24} lg={2}>
+                  <Collapse>
+                    <Panel header="Order Details" key="1">
+                      <p className="font-semibold text-md opacity-70">Order ID: {order.orderId}</p>
+                      {order.orderDetails.map((item, index) => (
+                        <div key={index} className="mb-2">
+                          <p className="font-semibold">
+                            Item: {item.item} Rs {item.price} x {item.cnt}
+                          </p>
+                        </div>
+                      ))}
+                    </Panel>
+                  </Collapse>
+                </Col>
+              </Row>
+            </div>
           </Col>
         ))}
       </Row>
