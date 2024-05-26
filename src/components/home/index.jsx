@@ -120,7 +120,7 @@ const Home = () => {
             );
           })}
       </div>
-      <ScrollToTopButton className="w-40 h-full" />
+      <ScrollToTopButton />
     </>
   );
 };
