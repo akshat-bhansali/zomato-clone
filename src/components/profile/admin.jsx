@@ -433,7 +433,7 @@ function AdminProfile({ user }) {
   }, []);
 
   return (
-    <div className="container mx-auto p-6">
+    <div className=" p-6">
       <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
         <h1 className="font-bold text-2xl text-gray-800">
           Welcome to your restaurant,{" "}
@@ -592,7 +592,7 @@ function AdminProfile({ user }) {
         )}
 
         {/* Dishes Table and Add Item Modal */}
-        <div className="mx-4 p-3 border shadow-lg rounded-lg text-right font-semibold lg:h-[37vh]">
+        <div className="mx-4 p-3 border shadow-lg rounded-lg text-right font-semibold lg:h-[37vh] w-full">
           <Button
             onClick={showModal2}
             className="bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6 w-full lg:w-auto"
