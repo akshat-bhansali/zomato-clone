@@ -166,8 +166,7 @@ export default function Cart() {
         maxLength={20}
         value={instruction}
         onChange={(e) => {
-          const inputValue = e.target.value.slice(0, 20);
-          setInstruction(inputValue);
+          setInstruction(e.target.value);
         }}
       />
       <Divider />
