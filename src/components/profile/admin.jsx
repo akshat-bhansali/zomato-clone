@@ -111,7 +111,7 @@ function AdminProfile({ user }) {
                 showModal(record);
               }}
             >
-              Open Modal
+              Edit
             </Button>
             <Modal
               title="Basic Modal"
@@ -450,8 +450,8 @@ function AdminProfile({ user }) {
               </p>
             </div>
             <Form
-              labelCol={{ span: 9 }}
-              wrapperCol={{ span: 15 }}
+              labelCol={{ span: 11 }}
+              wrapperCol={{ span: 11 }}
               layout="horizontal"
               style={{ maxWidth: 900, font: "bold" }}
               className="text-left"
@@ -498,15 +498,21 @@ function AdminProfile({ user }) {
                   className="border rounded-lg p-2 w-full lg:w-auto"
                 />
               </Form.Item>
-              <Form.Item label="Veg" className="font-bold text-gray-700">
+              <Form.Item
+                label="Veg"
+                className="font-bold text-gray-700 flex items-center"
+              >
                 <Radio.Group
                   onChange={(v) =>
                     setDetails({ ...details, veg: v.target.value })
                   }
                   defaultValue={details?.veg}
-                  className="space-x-4"
+                  className="flex items-center space-x-4"
                 >
-                  <Radio value="veg" defaultChecked={details?.veg === true}>
+                  <Radio
+                    value="veg-only"
+                    defaultChecked={details?.veg === "veg-only"}
+                  >
                     Veg Only
                   </Radio>
                   <Radio
@@ -517,6 +523,7 @@ function AdminProfile({ user }) {
                   </Radio>
                 </Radio.Group>
               </Form.Item>
+
               <Form.Item label="Cuisines" className="font-bold text-gray-700">
                 <Select
                   mode="tags"
