@@ -43,6 +43,7 @@ export const doSignInWithEmailAndPassword = async(email, password,role) => {
       return signInWithEmailAndPassword(auth, "email", password);
     }
     else{
+      console.log("Reached")
       localStorage.setItem("user",JSON.stringify(existingUser));
       return signInWithEmailAndPassword(auth, email, password);
     }

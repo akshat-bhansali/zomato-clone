@@ -18,6 +18,8 @@ import PrivacyPolicy from "./components/privacyPolicy";
 import ContactUs from "./components/contact";
 import AboutUs from "./components/about";
 import TermsAndConditions from "./components/tandc";
+import Admin from "./components/auth/super_admin";
+import SuperAdmin from "./components/auth/super_admin";
 
 function App() {
   const routesArray = [
@@ -28,6 +30,10 @@ function App() {
     {
       path: "/login",
       element: <Login />,
+    },
+    {
+      path: "/superadmin",
+      element: <SuperAdmin/>,
     },
     {
       path: "/cart",
