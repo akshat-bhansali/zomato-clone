@@ -3,7 +3,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { AiOutlineClose } from "react-icons/ai";
 import { useAuth } from "../../contexts/authContext";
 import { doSignOut } from "../../firebase/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { userLoggedIn } = useAuth();
@@ -14,43 +14,50 @@ const Navbar = () => {
     { href: "/orders", label: "Orders", enabled: userLoggedIn },
   ];
   return (
-    <>
-      <header className="sm:px-8 px-4 py-2 z-10 w-full">
+    <div className="mb-4">
+      <header className="sm:px-8 px-4 py-3 z-10 w-full shadow-md">
         <nav className="flex justify-between items-center max-container">
-          <a href="/" className="text-3xl font-bold">
-            Logo
-          </a>
-          <ul className="flex-1 flex justify-center items-center gap-16 max-lg:hidden">
-            {navLinks.map((item) =>
+          <Link to="/" className="text-3xl font-bold">
+            <img src="logosb.jpg" className="w-20 object-contain" alt="LOGO" />
+          </Link>
+          <ul className="flex-1 flex justify-end items-center gap-5 max-lg:hidden px-16">
+            {userLoggedIn?navLinks.map((item) =>
               item.enabled ? (
                 <li key={item.label}>
-                  <Link to={item.href}>{item.label}</Link>
-                </li>
-              ) : (
-                <></>
-              )
-            )}
-            {/* <li className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
-              {userLoggedIn ? (
-                <>
-                  <button
-                    onClick={() => {
-                      navigate("/profile");
-                    }}
+                  <NavLink
+                    to={item.href}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "py-2 px-5 border border-gray-100 bg-[#111827] text-white rounded-md transition-all"
+                        : "py-2 px-5 border border-gray-100 bg-gray-50 rounded-md hover:bg-[#111827] hover:text-white transition-all"
+                    }
                   >
-                    Profile
-                  </button>
-                </>
-              ) : (
-                <></>
-              )}
-            </li> */}
+                    {item.label}
+                  </NavLink>
+                </li>
+              ) : null
+            ):null}
+            {/* 
+      <li className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
+        {userLoggedIn ? (
+          <>
+            <button
+              onClick={() => {
+                navigate("/profile");
+              }}
+            >
+              Profile
+            </button>
+          </>
+        ) : null}
+      </li>
+      */}
           </ul>
-
           <div className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
             {userLoggedIn ? (
               <>
                 <button
+                  className="py-2 px-5 border border-gray-100 bg-gray-50 rounded-md hover:bg-[#111827] hover:text-white transition-all"
                   onClick={() => {
                     doSignOut().then(() => {
                       navigate("/login");
@@ -62,9 +69,18 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Link to={"/login"}>Login</Link>
-                <span>/</span>
-                <Link to={"/register"}>Register New Account</Link>
+                <Link
+                  to={"/login"}
+                  className="py-2 px-5 bg-black text-white rounded shadow-lg hover:scale-105 transition-all"
+                >
+                  Login
+                </Link>
+                <Link
+                  to={"/register"}
+                  className="py-2 px-5 bg-black text-white rounded shadow-lg hover:scale-105 transition-all"
+                >
+                  Register
+                </Link>
               </>
             )}
           </div>
@@ -80,7 +96,7 @@ const Navbar = () => {
       </header>
       {isMenuOpen && (
         <div>
-          <nav className="fixed top-0 right-0 left-0 bottom-0 lg:bottom-auto bg-slate-100  ">
+          <nav className="fixed top-0 right-0 left-0 bottom-0 lg:bottom-auto bg-slate-100">
             <div
               className="hidden max-lg:block fixed right-0  px-8 py-4 cursor-pointer"
               onClick={() => {
@@ -149,7 +165,7 @@ const Navbar = () => {
                           to={"/register"}
                           onClick={() => setIsMenuOpen(!isMenuOpen)}
                         >
-                          Register New Account
+                          Register
                         </Link>
                       </div>
                     </>
@@ -160,7 +176,7 @@ const Navbar = () => {
           </nav>
         </div>
       )}
-    </>
+    </div>
   );
 };
 export default Navbar;

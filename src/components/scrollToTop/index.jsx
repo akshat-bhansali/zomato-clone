@@ -75,7 +75,7 @@ const ScrollToTopButton = () => {
   }, []);
   return (
     <div className="flex">
-      <div className={`fixed bottom-10 left-10 z-10 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50  ${cartResItem>0?"flex":"hidden"}`}>
+      <div className={`fixed lg:bottom-10 lg:left-10 bottom-3 left-3 z-10 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 h-[80px]   ${cartResItem>0?"flex":"hidden"}`}>
         <div className={`${cartResItem>0?"flex":"hidden"} justify-between`}>
           {/* menu */}
           <div className="flex">
@@ -110,7 +110,7 @@ const ScrollToTopButton = () => {
       </div>
       <button
         onClick={handleScrollToTop}
-        className="bottom-40 sm:bottom-10 fixed bottom-10 text-5xl right-10 z-10 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        className="fixed lg:bottom-10 bottom-3 text-2xl lg:text-5xl lg:right-10 right-3 z-10 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
       >
         <FaArrowUp />
       </button>

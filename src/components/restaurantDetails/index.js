@@ -15,7 +15,7 @@ import { getAuth } from "firebase/auth";
 const RestaurantDetails = () => {
   const user = getAuth().currentUser;
   const navigate = useNavigate();
-  const [rating,setRating] = useState(0);
+  const [rating, setRating] = useState(0);
   const { id } = useParams();
   const [userData, setUserData] = useState(null);
   const columns = [
@@ -66,10 +66,10 @@ const RestaurantDetails = () => {
                     alert("Login First");
                     return;
                   }
-                  addToCart(record);
+                  removeFromCart(record);
                 }}
               >
-                +
+                -
               </Button>
               {getCount(record.key)}
               <Button
@@ -81,10 +81,10 @@ const RestaurantDetails = () => {
                     alert("Login First");
                     return;
                   }
-                  removeFromCart(record);
+                  addToCart(record);
                 }}
               >
-                -
+                +
               </Button>
             </div>
           </>
@@ -186,7 +186,7 @@ const RestaurantDetails = () => {
           cart: lis,
           resId: null,
           resImg: null,
-          resName:null
+          resName: null,
         });
       } else await updateDoc(doc.ref, { ...data, cart: lis });
       getUserData();
@@ -202,16 +202,15 @@ const RestaurantDetails = () => {
 
     const q = query(userCollection, where("email", "==", user.email));
     const querySnapshot = await getDocs(q);
-    const v = querySnapshot?.docs[0]
-    
-      const res = v.data();
-      res?.rating?.forEach((v,i)=>{
-        if(v.key === atob(id))setRating(v.rating);
-      })
-      setUserData(v.data());
+    const v = querySnapshot?.docs[0];
 
-      // console.log("sdf ",v.data());
- 
+    const res = v.data();
+    res?.rating?.forEach((v, i) => {
+      if (v.key === atob(id)) setRating(v.rating);
+    });
+    setUserData(v.data());
+
+    // console.log("sdf ",v.data());
   }
   async function getData() {
     setDetails(null);
@@ -231,7 +230,7 @@ const RestaurantDetails = () => {
     }
     return;
   }
-  async function updateRating(rate){
+  async function updateRating(rate) {
     if (user?.email == null || user?.email == "") {
       navigate("/login");
       alert("Login First");
@@ -239,27 +238,39 @@ const RestaurantDetails = () => {
     }
     const q = query(userCollection, where("email", "==", user.email));
     const querySnapshot = await getDocs(q);
-    
+
     const v = querySnapshot?.docs[0];
     const res = v?.data();
-    if(res==null)return;
+    if (res == null) return;
     let flag = true;
     let oldRate = null;
-    let lis = res?.rating?.filter((v)=>{
-      if(v.key === atob(id)){oldRate=v.rating;return false;}
-      return true;
-    }) || [];
-    
-    
+    let lis =
+      res?.rating?.filter((v) => {
+        if (v.key === atob(id)) {
+          oldRate = v.rating;
+          return false;
+        }
+        return true;
+      }) || [];
+
     {
       const q = query(adminCollection, where("email", "==", atob(id)));
       const querySnapshot = await getDocs(q);
       const doc = querySnapshot?.docs[0];
-      if(oldRate===null)await updateDoc(doc.ref, { ...doc.data(), ratingCount:doc.data()?.ratingCount+1 || 1,rating:(doc.data()?.rating+rate) || rate});
-      else await updateDoc(doc.ref, { ...doc.data(),rating:(doc.data()?.rating+rate-oldRate)});
+      if (oldRate === null)
+        await updateDoc(doc.ref, {
+          ...doc.data(),
+          ratingCount: doc.data()?.ratingCount + 1 || 1,
+          rating: doc.data()?.rating + rate || rate,
+        });
+      else
+        await updateDoc(doc.ref, {
+          ...doc.data(),
+          rating: doc.data()?.rating + rate - oldRate,
+        });
     }
-    lis = [...lis,{key:atob(id),rating:rate}]
-    await updateDoc(v.ref,{...res,rating:lis})
+    lis = [...lis, { key: atob(id), rating: rate }];
+    await updateDoc(v.ref, { ...res, rating: lis });
     getData();
     getUserData();
   }
@@ -274,16 +285,22 @@ const RestaurantDetails = () => {
 
   return (
     <div>
-      <div className="flex justify-between">
+      
         <div>
-          <h2>Restaurant Details</h2>
-          <p>Restaurant Email: {atob(id)}</p>
+          <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
+            <h1 className="font-bold text-2xl text-gray-800">
+              Order from
+              <span className="text-indigo-600">{" " + details?.name}</span>
+            </h1>
+          </div>
         </div>
-        <div className="flex gap-5 align-middle justify-center">
-          Rate Us 
-          <Rate value={rating} onChange={(v)=>updateRating(v)}/>
+        <div className="flex justify-end ">
+        <div className="mr-5 p-3 rounded-lg flex gap-5 align-middle justify-center">
+          <p className="font-bold opacity-70 text-lg">Rate Us</p>
+          <Rate value={rating} onChange={(v) => updateRating(v)} />
         </div>
-      </div>
+        </div>
+      
       {<Table columns={columns} dataSource={details?.dishes} />}
     </div>
   );

@@ -12,7 +12,6 @@ import {
   Table,
   Modal,
   Switch,
-
 } from "antd";
 import { db, storage } from "../../firebase/firebase";
 import {
@@ -89,80 +88,92 @@ function AdminProfile({ user }) {
       title: "Image",
       key: "image",
       dataIndex: "image",
-      render: (imgd,d) => {
-        
-        return (<>
-        <div className='flex align-middle justify-evenly'>
-          <img src={imgd?.link} className="w-7 h-7" />
-        </div></>)
+      render: (imgd, d) => {
+        return (
+          <>
+            <div className="flex align-middle justify-evenly">
+              <img src={imgd?.link} className="w-7 h-7" />
+            </div>
+          </>
+        );
       },
     },
     {
       title: "Action",
       key: "action",
-      render: (record) => 
-
-        {
-          return(<>
-          <Button
-            className="bg-blue-300"
-            type="secondary"
-            onClick={() => {
-              showModal(record);
-            }}
-          >
-            Open Modal
-          </Button>
-          <Modal
-            title="Basic Modal"
-            open={isModalOpen}
-            onOk={() => handleOk()}
-            onCancel={handleCancel}
-            footer={[
-              <Button key="back" onClick={() => {handleOk();}}>
-                SAVE
-              </Button>,
-            ]}
-          >
-            <div className="text-xs mb-[-4px] ml-1">Item Name</div>
-
-            <Input
-              placeholder={"Enter Item Name"}
-              value={modalItemName}
-              onChange={(e) => {
-                setModalItemName(e.target.value);
+      render: (record) => {
+        return (
+          <>
+            <Button
+              className="bg-blue-300"
+              type="secondary"
+              onClick={() => {
+                showModal(record);
               }}
-            />
-
-            <div className="text-xs mb-[-4px] ml-1 mt-5">Item Description</div>
-            <Input
-              placeholder={"Enter Item Description"}
-              value={modalItemDesc}
-              onChange={(e) => {
-                setModalItemDesc(e.target.value);
-              }}
-            />
-            <div className="text-xs mb-[-4px] ml-1 mt-5">Item Price</div>
-            <Input
-              type="number"
-              placeholder={"Enter Item Price"}
-              value={modalItemPrice}
-              onChange={(e) => {
-                setModalItemPrice(e.target.value);
-              }}
-            />
-            <div className="flex align-middle justify-evenly mt-5">
-
-            <img src={modalItemImg} className="w-10 h-10" />
-            <Upload beforeUpload={((f)=>{handleDishImgUpload(f,modalItemUuid);handleOk(1);})} fileList={null}>
-            <Button >
-              Click to Upload
+            >
+              Edit
             </Button>
-          </Upload>
-            </div>
-          </Modal>
-        </>)}
-      ,
+            <Modal
+              title="Basic Modal"
+              open={isModalOpen}
+              onOk={() => handleOk()}
+              onCancel={handleCancel}
+              footer={[
+                <Button
+                  key="back"
+                  onClick={() => {
+                    handleOk();
+                  }}
+                >
+                  SAVE
+                </Button>,
+              ]}
+            >
+              <div className="text-xs mb-[-4px] ml-1">Item Name</div>
+
+              <Input
+                placeholder={"Enter Item Name"}
+                value={modalItemName}
+                onChange={(e) => {
+                  setModalItemName(e.target.value);
+                }}
+              />
+
+              <div className="text-xs mb-[-4px] ml-1 mt-5">
+                Item Description
+              </div>
+              <Input
+                placeholder={"Enter Item Description"}
+                value={modalItemDesc}
+                onChange={(e) => {
+                  setModalItemDesc(e.target.value);
+                }}
+              />
+              <div className="text-xs mb-[-4px] ml-1 mt-5">Item Price</div>
+              <Input
+                type="number"
+                placeholder={"Enter Item Price"}
+                value={modalItemPrice}
+                onChange={(e) => {
+                  setModalItemPrice(e.target.value);
+                }}
+              />
+              <div className="flex align-middle justify-evenly mt-5">
+                <img src={modalItemImg} className="w-10 h-10" />
+                <Upload
+                  beforeUpload={(f) => {
+                    handleDishImgUpload(f, modalItemUuid);
+                    handleOk(1);
+                  }}
+                  fileList={null}
+                >
+                  <Button>Click to Upload</Button>
+                </Upload>
+              </div>
+            </Modal>
+          </>
+        );
+      },
     },
   ];
   const showModal = (record) => {
@@ -170,17 +181,18 @@ function AdminProfile({ user }) {
     setModalItemName(record?.item ? record.item : "");
     setModalItemDesc(record?.describe ? record.describe : "");
     setModalItemPrice(record?.price ? record.price : 0);
-    setModalItemUuid(record.key)
-    setModalItemImg(record?.image?.link)
+    setModalItemUuid(record.key);
+    setModalItemImg(record?.image?.link);
   };
   const handleOk = (upd) => {
     setIsModalOpen(false);
-    if(!(upd || false))saveTableData(modalItemUuid, {
-      key: modalItemUuid,
-      item: modalItemName,
-      describe: modalItemDesc,
-      price: modalItemPrice,
-    });
+    if (!(upd || false))
+      saveTableData(modalItemUuid, {
+        key: modalItemUuid,
+        item: modalItemName,
+        describe: modalItemDesc,
+        price: modalItemPrice,
+      });
     setModalItemDesc("");
     setModalItemName("");
     setModalItemPrice(0);
@@ -255,9 +267,9 @@ function AdminProfile({ user }) {
                 email: user.email,
                 resPicPath: uploadTask.snapshot.ref.fullPath,
                 resPicLink: url,
-              })
-                console.log("result ", res)
- 
+              });
+              console.log("result ", res);
+
               console.log("Doc added successfully with pic");
             } else {
               querySnapshot.forEach(async (doc) => {
@@ -292,12 +304,12 @@ function AdminProfile({ user }) {
     }
   };
 
-  const handleDishImgUpload = (file,key) => {
+  const handleDishImgUpload = (file, key) => {
     try {
       // const file = fileList[0].originFileObj;
-      console.log("Key to upload ",key);
+      console.log("Key to upload ", key);
       // console.log(fileList);
-      const path = `/${user.email}/dishes/${key+"-" + file.name}`;
+      const path = `/${user.email}/dishes/${key + "-" + file.name}`;
       const imgRef = ref(storage, path);
       const uploadTask = uploadBytesResumable(imgRef, file);
       uploadTask.on(
@@ -314,38 +326,42 @@ function AdminProfile({ user }) {
             console.log("Query Snapshot ", querySnapshot);
             if (querySnapshot.empty) {
               console.log("Adding doc");
-              const res= await addDoc(await adminCollection, {
+              const res = await addDoc(await adminCollection, {
                 email: user.email,
-                dishes: [{
-                resPicPath: uploadTask.snapshot.ref.fullPath,
-                resPicLink: url,
-                }]
-              })
+                dishes: [
+                  {
+                    resPicPath: uploadTask.snapshot.ref.fullPath,
+                    resPicLink: url,
+                  },
+                ],
+              });
               console.log("result ", res);
-          
+
               console.log("Doc added successfully with pic");
             } else {
-              let dishData = details?.dishes.filter((v,i)=>v.key===key);
-              dishData = dishData[0]
+              let dishData = details?.dishes.filter((v, i) => v.key === key);
+              dishData = dishData[0];
               const oldPath = dishData?.image?.path || null;
-              
+
               querySnapshot.forEach(async (doc) => {
-               
                 if (oldPath) {
                   try {
                     await deleteObject(ref(storage, oldPath));
-                    console.log("Deleted Old File",oldPath);
+                    console.log("Deleted Old File", oldPath);
                   } catch (e) {
                     console.log("Error while deleting old File", e);
                   }
                 }
-                console.log("New Data ",details?.dishes);
-                let dishLis = (details?.dishes.filter((v,i)=>v.key!==key));
-                dishData = {...dishData,image:{path:uploadTask.snapshot.ref.fullPath,link:url}}
-                dishLis.push(dishData)
-                console.log("New Data ",dishLis);
+                console.log("New Data ", details?.dishes);
+                let dishLis = details?.dishes.filter((v, i) => v.key !== key);
+                dishData = {
+                  ...dishData,
+                  image: { path: uploadTask.snapshot.ref.fullPath, link: url },
+                };
+                dishLis.push(dishData);
+                console.log("New Data ", dishLis);
                 const res = await updateDoc(doc.ref, {
-                  dishes: dishLis
+                  dishes: dishLis,
                 });
               });
             }
@@ -417,188 +433,245 @@ function AdminProfile({ user }) {
   }, []);
 
   return (
-    <>
-      <div>welcome to your restaurant {user?.name}</div>
+    <div className=" p-6">
+      <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
+        <h1 className="font-bold text-2xl text-gray-800">
+          Welcome to your restaurant,{" "}
+          <span className="text-indigo-600">{user?.name}</span>
+        </h1>
+      </div>
 
-      <>
+      <div className="flex flex-col lg:flex-row">
         {details && (
-          <Form
-            labelCol={{
-              span: 4,
-            }}
-            wrapperCol={{
-              span: 14,
-            }}
-            layout="horizontal"
-            style={{
-              maxWidth: 900,
-            }}
+          <div className="bg-white border p-6 rounded-lg shadow-lg mb-6 lg:w-[35vw]">
+            <div>
+              <p className="font-bold text-xl opacity-70 text-indigo-600 mb-4">
+                Restaurant Details
+              </p>
+            </div>
+            <Form
+              labelCol={{ span: 11 }}
+              wrapperCol={{ span: 11 }}
+              layout="horizontal"
+              style={{ maxWidth: 900, font: "bold" }}
+              className="text-left"
+            >
+              <Form.Item
+                label="Restaurant Name"
+                className="font-bold text-gray-700"
+              >
+                <Input
+                  value={details.name}
+                  onChange={(v) =>
+                    setDetails({ ...details, name: v.target.value })
+                  }
+                  className="w-full lg:w-auto"
+                />
+              </Form.Item>
+              <Form.Item
+                label="List restaurant online :"
+                className="font-bold text-gray-700"
+              >
+                <Switch
+                  className="m-3"
+                  defaultChecked={details?.publish}
+                  onChange={(v) => setDetails({ ...details, publish: v })}
+                />
+              </Form.Item>
+              <Form.Item label="Address" className="font-bold text-gray-700">
+                <Input
+                  value={details?.address}
+                  onChange={(v) =>
+                    setDetails({ ...details, address: v.target.value })
+                  }
+                  className="border rounded-lg p-2 w-full lg:w-auto"
+                />
+              </Form.Item>
+              <Form.Item label="Pincode" className="font-bold text-gray-700">
+                <Input
+                  type="number"
+                  maxLength={6}
+                  onChange={(v) =>
+                    setDetails({ ...details, pincode: v.target.value })
+                  }
+                  value={details?.pincode}
+                  className="border rounded-lg p-2 w-full lg:w-auto"
+                />
+              </Form.Item>
+              <Form.Item
+                label="Veg"
+                className="font-bold text-gray-700 flex items-center"
+              >
+                <Radio.Group
+                  onChange={(v) =>
+                    setDetails({ ...details, veg: v.target.value })
+                  }
+                  defaultValue={details?.veg}
+                  className="flex items-center space-x-4"
+                >
+                  <Radio
+                    value="veg-only"
+                    defaultChecked={details?.veg === "veg-only"}
+                  >
+                    Veg Only
+                  </Radio>
+                  <Radio
+                    value="non-veg"
+                    defaultChecked={details?.veg === false}
+                  >
+                    Veg and Non-Veg
+                  </Radio>
+                </Radio.Group>
+              </Form.Item>
+
+              <Form.Item label="Cuisines" className="font-bold text-gray-700">
+                <Select
+                  mode="tags"
+                  style={{ width: "100%" }}
+                  placeholder="Tags Mode"
+                  defaultValue={details && details?.cusines}
+                  onChange={(v) => setDetails({ ...details, cusines: v })}
+                  options={categoriesOptions}
+                  className="border rounded-lg w-full lg:w-auto"
+                />
+              </Form.Item>
+
+              {/* Image Upload Section */}
+              <Form.Item
+                label="Restaurant Pic"
+                valuePropName="fileList"
+                getValueFromEvent={normFile}
+                className="font-bold text-gray-700"
+              >
+                <div className="flex flex-col lg:flex-row gap-10 items-center">
+                  {details?.resPicLink && (
+                    <img
+                      src={details?.resPicLink}
+                      className="w-24 h-24 rounded-lg shadow-md"
+                    />
+                  )}
+                  <Upload
+                    action={(f) => {}}
+                    listType="picture-card"
+                    fileList={fileList}
+                    multiple={false}
+                    maxCount={1}
+                    onChange={({ fileList }) => {
+                      if (fileList.length) {
+                        if (fileList[0].size > 300000) {
+                          alert("Image size should be less than 300KB");
+                          return;
+                        }
+                      }
+                      setFileList(fileList);
+                    }}
+                  >
+                    {fileList.length === 0 && (
+                      <button
+                        style={{ border: 0, background: "none" }}
+                        type="button"
+                        className="text-gray-600 hover:text-black"
+                      >
+                        <PlusOutlined />
+                        <div style={{ marginTop: 8 }}>Change</div>
+                      </button>
+                    )}
+                  </Upload>
+                </div>
+                <Button
+                  disabled={fileList.length === 0}
+                  onClick={handleUpload}
+                  className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                >
+                  Upload
+                </Button>
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  onClick={saveDetails}
+                  className="bg-green-600 text-white rounded-lg hover:bg-green-700"
+                >
+                  Save Changes
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
+        )}
+
+        {/* Dishes Table and Add Item Modal */}
+        <div className="mx-4 p-3 border shadow-lg rounded-lg text-right font-semibold lg:h-[37vh] w-full">
+          <Button
+            onClick={showModal2}
+            className="bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6 w-full lg:w-auto"
           >
-            <Form.Item label="Restaurant Name">
+            Add Item
+          </Button>
+
+          <Table
+            columns={columns}
+            dataSource={details?.dishes}
+            className="mb-6"
+          />
+
+          <Modal
+            title="Add New Item"
+            open={isModalOpen2}
+            onOk={handleOk2}
+            onCancel={handleCancel2}
+            footer={[
+              <Button
+                key="back"
+                onClick={handleOk2}
+                className="bg-green-600 text-white rounded-lg hover:bg-green-700"
+              >
+                SAVE
+              </Button>,
+            ]}
+          >
+            <div className="mb-4">
+              <label className="text-xs font-bold mb-2 block">Item Name</label>
               <Input
-                value={details.name}
-                onChange={(v) => {
-                  setDetails({ ...details, name: v.target.value });
+                placeholder="Enter Item Name"
+                value={modalItemName2}
+                onChange={(e) => {
+                  setModalItemName2(e.target.value);
                 }}
+                className="border rounded-lg p-2"
               />
-            </Form.Item>
-            <Form.Item label="List restaurant online :">
-              <Switch
-                defaultChecked={details?.publish}
-                onChange={(v) => setDetails({ ...details, publish: v })}
-              />
-            </Form.Item>
-            <Form.Item label="Address">
+            </div>
+
+            <div className="mb-4">
+              <label className="text-xs font-semibold mb-2 block">
+                Item Description
+              </label>
               <Input
-                value={details?.address}
-                onChange={(v) =>
-                  setDetails({ ...details, address: v.target.value })
-                }
+                placeholder="Enter Item Description"
+                value={modalItemDesc2}
+                onChange={(e) => {
+                  setModalItemDesc2(e.target.value);
+                }}
+                className="border rounded-lg p-2"
               />
-            </Form.Item>
-            <Form.Item label="Picode">
+            </div>
+
+            <div className="mb-4">
+              <label className="text-xs font-semibold mb-2 block">
+                Item Price
+              </label>
               <Input
                 type="number"
-                size="6"
-                maxLength={6}
-                onChange={(v) =>
-                  setDetails({ ...details, pincode: v.target.value })
-                }
-                onError={(e) => console.log(e)}
-                value={details?.pincode}
-              />
-            </Form.Item>
-            <Form.Item label="Veg">
-              <Radio.Group
-                onChange={(v) =>
-                  setDetails({ ...details, veg: v.target.value })
-                }
-                defaultValue={details?.veg}
-              >
-                <Radio value="veg" defaultChecked={details?.veg == true}>
-                  Veg Only
-                </Radio>
-                <Radio value="non-veg" defaultChecked={details?.veg === false}>
-                  Veg and Non-Veg
-                </Radio>
-              </Radio.Group>
-            </Form.Item>
-
-            <Form.Item label="Cusines">
-              <Select
-                mode="tags"
-                style={{
-                  width: "100%",
+                placeholder="Enter Item Price"
+                value={modalItemPrice2}
+                onChange={(e) => {
+                  setModalItemPrice2(e.target.value);
                 }}
-                placeholder="Tags Mode"
-                defaultValue={details && details?.cusines}
-                onChange={(v) => setDetails({ ...details, cusines: v })}
-                options={categoriesOptions}
+                className="border rounded-lg p-2"
               />
-            </Form.Item>
-
-            <Form.Item
-              label="Restaurant Pic"
-              valuePropName="fileList"
-              getValueFromEvent={normFile}
-            >
-              <div className="flex gap-10">
-                {details?.resPicLink && <img src={details?.resPicLink} />}
-                <Upload
-                  action={(f) => {}}
-                  listType="picture-card"
-                  fileList={fileList}
-                  multiple={false}
-                  maxCount={1}
-                  onChange={({ fileList }) => {
-                    if (fileList.length) {
-                      if (fileList[0].size > 300000) {
-                        alert("Image size should be less than 300KB");
-                        return;
-                      }
-                    }
-                    setFileList(fileList);
-                  }}
-                >
-                  {fileList.length === 0 && (
-                    <button
-                      style={{
-                        border: 0,
-                        background: "none",
-                      }}
-                      type="button"
-                    >
-                      <PlusOutlined />
-                      <div
-                        style={{
-                          marginTop: 8,
-                        }}
-                      >
-                        Choose
-                      </div>
-                    </button>
-                  )}
-                </Upload>
-              </div>
-              <Button
-                disabled={fileList.length == 0}
-                onClick={() => {
-                  handleUpload();
-                  // handleClearFileList();
-                }}
-              >
-                Upload
-              </Button>
-            </Form.Item>
-            <Form.Item label="Button">
-              <Button onClick={saveDetails}>Save Changes</Button>
-            </Form.Item>
-          </Form>
-        )}
-      </>
-      <Button onClick={showModal2}>Add Item</Button>
-      <Table columns={columns} dataSource={details?.dishes} />
-      <Modal
-        title="Basic Modal"
-        open={isModalOpen2}
-        onOk={handleOk2}
-        onCancel={handleCancel2}
-        footer={[
-          <Button key="back" onClick={handleOk2}>
-            SAVE
-          </Button>,
-        ]}
-      >
-        <div className="text-xs mb-[-4px] ml-1">Item Name</div>
-
-        <Input
-          placeholder={"Enter Item Name"}
-          value={modalItemName2}
-          onChange={(e) => {
-            setModalItemName2(e.target.value);
-          }}
-        />
-
-        <div className="text-xs mb-[-4px] ml-1 mt-5">Item Description</div>
-        <Input
-          placeholder={"Enter Item Description"}
-          value={modalItemDesc2}
-          onChange={(e) => {
-            setModalItemDesc2(e.target.value);
-          }}
-        />
-        <div className="text-xs mb-[-4px] ml-1 mt-5">Item Price</div>
-        <Input
-          type="number"
-          placeholder={"Enter Item Price"}
-          value={modalItemPrice2}
-          onChange={(e) => {
-            setModalItemPrice2(e.target.value);
-          }}
-        />
-        {/* <img src={record.image} className="w-5 h-5" /> */}
-      </Modal>
-    </>
+            </div>
+          </Modal>
+        </div>
+      </div>
+    </div>
   );
 }
 
