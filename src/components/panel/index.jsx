@@ -30,6 +30,10 @@ const Panel = ({ tableData, loading }) => {
       title: "OrderValue",
       dataIndex: "orderValue",
     },
+    {
+      title: "Status",
+      dataIndex: "pay_status",
+    },
     // {
     //   title: "Description",
     //   dataIndex: "description",
@@ -48,54 +52,32 @@ const Panel = ({ tableData, loading }) => {
     //   ),
     // },
   ];
-  const [data,setData] = useState([
-    {
-      key: "1",
-      title: "John Brown",
-      description: 32,
-      image: "New York No. 1 Lake Park",
-    },
-    {
-      key: "2",
-      title: "Jim Green",
-      description: 42,
-      image: "London No. 1 Lake Park",
-    },
-    {
-      key: "3",
-      title: "Joe Black",
-      description: 32,
-      image: "Sydney No. 1 Lake Park",
-    },
-    {
-      key: "4",
-      title: "Disabled User",
-      description: 99,
-      image: "Sydney No. 1 Lake Park",
-    },
-  ]);
+  const [data,setData] = useState([]);
 
   const [curRes,setCurRes] = useState();
   const [selectedRows, setSelectedRows] = useState();
 
   async function getData() {
     setData(null);
-    const q = query(ordersCollection, where("status", "==", "Order Placed"));
+    const q = query(ordersCollection);
 
     let temp={};
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
       let it = 0;
       querySnapshot.forEach(async (doc) => {
+        console.log(doc.data(),"123")
         let orderObj = {
           key:it++,
           orderId:doc.data().orderId,
           customer:doc.data().userEmail,
-          orderValue:doc.data().orderDetails.reduce((acc, curr) => acc + parseFloat(curr.price), 0)
+          orderValue:doc.data().orderDetails.reduce((acc, curr) => acc + parseFloat(curr.price), 0),
+          pay_status:doc.data().pay_status,
         }
-        if(temp[doc.data().resEmail])
-        temp[doc.data().resEmail].push(orderObj);
-        else temp[doc.data().resEmail]=[orderObj];
+        console.log(doc.data());
+        if(temp[doc.data().resName])
+        temp[doc.data().resName].push(orderObj);
+        else temp[doc.data().resName]=[orderObj];
       });
       console.log("Temp ",temp);
       setCurRes(Object.keys(temp)[0]);

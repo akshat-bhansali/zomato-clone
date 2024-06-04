@@ -28,7 +28,8 @@ export const addOrderToFirestore = async (userEmail, resEmail, orderDetails,orde
       status : "Order Placed",
       otp : Math.floor(Math.random() * 9999) + 1,
       userName:userName,
-      instruction:instruction
+      instruction:instruction,
+      pay_status : "Not Paid"
     });
     console.log("Order added with ID: ", docRef.id);
     return docRef.id; 
