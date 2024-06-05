@@ -53,7 +53,7 @@ const UserOrders = ({user}) => {
           <span className="text-indigo-600"> orders</span>
         </h1>
       </div>
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 16]} >
         {orders?.map((order) => (
           <Col span={24} key={order.id} className="mb-4">
             <div className="border rounded-lg shadow-md p-4 bg-white text-left  ">
@@ -77,7 +77,7 @@ const UserOrders = ({user}) => {
                   <p className="font-semibold text-md opacity-70">OTP</p>
                   <p className='text-lg font-bold'>{order?.otp}</p>
                 </Col>
-                <Col xs={24} lg={4} className="text-left flex justify-between lg:flex-col  mb-4 lg:mb-0">
+                <Col xs={24} lg={3} className="text-left flex justify-between lg:flex-col  mb-4 lg:mb-0">
                   <p className="font-semibold text-md opacity-70">Name</p>
                   <p className='text-lg font-bold'>{order?.userName}</p>
                 </Col>
@@ -85,7 +85,7 @@ const UserOrders = ({user}) => {
                   <p className="font-semibold text-md opacity-70">Instruction</p>
                   <p className='text-lg font-bold'>{order.instruction?order?.instruction:"-"}</p>
                 </Col>
-                <Col xs={24} lg={2}>
+                <Col xs={24} lg={3}>
                   <Collapse>
                     <Panel header="Order Details" key="1">
                       <p className="font-semibold text-md opacity-70">Order ID: {order.orderId}</p>

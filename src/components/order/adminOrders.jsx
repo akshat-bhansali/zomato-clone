@@ -1,40 +1,43 @@
 import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Avatar, Button, Collapse, Image } from "antd";
+import { Row } from "antd";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import OrderCard from "./OrderCard";
 
-const { Meta } = Card;
-const { Panel } = Collapse;
-
 const AdminOrders = ({ user }) => {
-  // console.log("User admin",user.role)
   const ordresCollection = collection(db, "order");
+
   const getOrders = async () => {
     const q = query(ordresCollection, where("resEmail", "==", user.email));
     const querySnapshot = await getDocs(q);
-    console.log(querySnapshot);
     let listOrders = [];
-
-    querySnapshot?.docs?.map((v, i) => {
-      console.log(i, " ", v.data());
+    querySnapshot?.docs?.map((v) => {
       let totalPrice = 0;
       v.data()?.orderDetails.forEach(
-        (v, i) => (totalPrice += Number(v.cnt) * Number(v.price))
+        (item) => (totalPrice += Number(item.cnt) * Number(item.price))
       );
-      listOrders.push({ ...v.data(), totalPrice: totalPrice });
+      listOrders.push({ ...v.data(), totalPrice });
     });
     setOrders(listOrders);
   };
+
   useEffect(() => {
     getOrders();
   }, []);
+
   const [orders, setOrders] = useState(null);
+
   return (
     <div style={{ padding: "20px" }}>
+      <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
+        <h1 className="font-bold text-2xl text-gray-800">
+          Recieved
+          <span className="text-indigo-600"> Orders</span>
+        </h1>
+      </div>
       <Row gutter={[16, 16]}>
         {orders?.map((order) => (
-          <OrderCard order={order}/>
+          <OrderCard order={order} key={order.id} />
         ))}
       </Row>
     </div>
