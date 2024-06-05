@@ -31,6 +31,7 @@ const SuperAdmin = () => {
       }
     }
   };
+  
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
   }, [localStorage.getItem("user"),userLoggedIn]);
@@ -38,7 +39,7 @@ const SuperAdmin = () => {
   return (
     <div>
       {userLoggedIn && user?.role!=='superadmin' && <Navigate to={"/home"} replace={true} />}
-      {(userLoggedIn && user?.role==='superadmin') ? <Panel/> :
+      {(userLoggedIn && user?.role==='superadmin') ? <Panel user={user}/> :
 
       <main className="w-full h-screen flex self-center place-content-center place-items-center">
         <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">

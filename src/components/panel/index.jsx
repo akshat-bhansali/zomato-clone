@@ -1,12 +1,52 @@
 import React, { useEffect, useState } from "react";
-import { Select, Table,Checkbox,Modal, Button } from "antd";
+import { Select, Table,Checkbox,Modal, Button, Upload } from "antd";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../firebase/firebase";
+import { db, storage } from "../../firebase/firebase";
 import { Option } from "antd/es/mentions";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 
-const Panel = ({ tableData, loading }) => {
+const Panel = ({ tableData, loading,user }) => {
+  const handleDishImgUpload = (file,key) => {
+    try {
+      // const file = fileList[0].originFileObj;
+      console.log("Key to upload ", key);
+      // console.log(fileList);
+      const path = `/${user.email}/payment/${key + "-" + file.name}`;
+      const imgRef = ref(storage, path);
+      const uploadTask = uploadBytesResumable(imgRef, file);
+      uploadTask.on(
+        "state_changed",
+        (e) => {},
+        (e) => {
+          console.log("Some error occured while uploading ", e);
+        },
+        async () => {
+          try {
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            console.log("PaymentURL",url);
+            // Add Code to save link
+            // Preferably save both
+            //         resPicPath: uploadTask.snapshot.ref.fullPath,
+            //         resPicLink: url,
+          
+           
+            alert("Successfully updated image !");
+            // getData(); -> Call a function to re fetch data to update UI
+          } catch (e) {
+            alert("Some");
+            console.log("error ", e);
+            alert("Some");
+            console.log("error ", e);
+          }
+        }
+      );
+    } catch (e) {
+      console.log("errors ", e);
+    }
+  };
   const ordersCollection = collection(db, "order");
+
   const columns = [
     {
       title: "OrderId",
@@ -69,6 +109,8 @@ const Panel = ({ tableData, loading }) => {
   const [selectedRows, setSelectedRows] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sum,setSum] = useState(0);
+
+  const [curPaymentId,setCurPaymentId] = useState(null);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -145,11 +187,15 @@ const Panel = ({ tableData, loading }) => {
   
   useEffect(() => {
     let val = 0;
+    let id = null;
     selectedRows?.forEach((row) => {
+      id = row.orderId;
       if (row?.orderValue) {
+        console.log(row);
         val += row?.orderValue;
       }
     });
+    setCurPaymentId(id);
     setSum(val);
   }, [selectedRows]);
   
@@ -166,7 +212,7 @@ const Panel = ({ tableData, loading }) => {
     </Select>}
     {data && <Checkbox onChange={onChangePaid} checked={paidBox}>Paid</Checkbox>}
     {data && <Checkbox onChange={onChangeNotPaid} checked={notPaidBox}>Not Paid</Checkbox>}
-    {data && notPaidBox && <Button onClick={showModal}>Pay</Button>}
+    {data && notPaidBox && <Button onClick={showModal} disabled={(sum==0)}>Pay</Button>}
       {mainData && curRes && <Table
         title={()=>curRes}
         loading={loading}
@@ -176,7 +222,19 @@ const Panel = ({ tableData, loading }) => {
       />}
       <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <p>Pay {sum} to {curRes}</p>
-        <Button>Pay now</Button>
+        <div className="flex align-middle justify-evenly mt-5">
+               
+                <Upload
+                  beforeUpload={(f) => {
+                    handleDishImgUpload(f, curPaymentId);
+                    handleOk(1);
+                  }}
+                  fileList={null}
+                >
+                  <Button>Click to Upload</Button>
+                </Upload>
+              </div>
+        {/* <Button>Pay now</Button> */}
       </Modal>
     </div>
   );
