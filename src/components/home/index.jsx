@@ -72,7 +72,7 @@ const Home = () => {
                   onClick={handleCardClick}
                 >
                   <img
-                    className="rounded-lg mb-2 border h-[250px] w-full object-cover"
+                    className={`rounded-lg mb-2 border h-[250px] w-full object-cover  ${restaurant.closed ? 'grayscale' : ''}`}
                     src={
                       restaurant?.resPicLink
                         ? restaurant?.resPicLink
@@ -110,9 +110,14 @@ const Home = () => {
                           />
                         </div>
                       </div>
+                      <div className="flex gap-5">
                       <p className="text-gray-700 text-start pl-2">
                         {restaurant.address ? restaurant.address : "No Address"}
                       </p>
+                      <p className="text-red-700 text-start pl-2 ml-3">
+                        {restaurant?.closed ? "Not accepting orders":""}
+                      </p>
+                      </div>
                     </div>
                   </div>
                 </button>

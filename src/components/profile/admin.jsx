@@ -459,6 +459,56 @@ function AdminProfile({ user }) {
                 />
               </Form.Item>
               <Form.Item
+                label="Restaurant Owner Name"
+                className="font-bold text-gray-700"
+              >
+                <Input
+                  value={details?.owner_name}
+                  onChange={(v) =>
+                    setDetails({ ...details, owner_name: v.target.value })
+                  }
+                  className="w-full lg:w-auto"
+                />
+              </Form.Item>
+              <Form.Item
+                label="Restaurant Email"
+                className="font-bold text-gray-700"
+              >
+                <Input
+                  value={user?.email}
+                  className="w-full lg:w-auto"
+                  disabled="true"
+                />
+              </Form.Item>
+              <Form.Item
+                label="Restaurant Owner Contact"
+                className="font-bold text-gray-700"
+              >
+                <Input
+                addonBefore="+91"
+                type="number"
+                  value={details?.owner_contact}
+                  onChange={(v) =>
+                    setDetails({ ...details, owner_contact: v.target.value })
+                  }
+                  className="w-full lg:w-auto"
+                />
+              </Form.Item>
+              <Form.Item
+                label="Restaurant Contact"
+                className="font-bold text-gray-700"
+              >
+                <Input
+                addonBefore="+91"
+                type="number"
+                  value={details?.contact}
+                  onChange={(v) =>
+                    setDetails({ ...details, contact: v.target.value })
+                  }
+                  className="w-full lg:w-auto"
+                />
+              </Form.Item>
+              <Form.Item
                 label="List restaurant online :"
                 className="font-bold text-gray-700"
               >
@@ -466,6 +516,16 @@ function AdminProfile({ user }) {
                   className="m-3"
                   defaultChecked={details?.publish}
                   onChange={(v) => setDetails({ ...details, publish: v })}
+                />
+              </Form.Item>
+              <Form.Item
+                label="Temporarily closed :"
+                className="font-bold text-gray-700"
+              >
+                <Switch
+                  className="m-3"
+                  defaultChecked={details?.closed}
+                  onChange={(v) => setDetails({ ...details, closed: v })}
                 />
               </Form.Item>
               <Form.Item label="Address" className="font-bold text-gray-700">
