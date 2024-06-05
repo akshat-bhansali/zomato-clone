@@ -227,16 +227,6 @@ function AdminProfile({ user }) {
     setModalItemName2("");
     setModalItemPrice2(0);
   };
-  const data = [
-    {
-      key: "1",
-      item: "John Brown",
-      description: "something good",
-      price: 50,
-      image:
-        "https://firebasestorage.googleapis.com/v0/b/zomato-clone-417913.appspot.com/o/iit2022005%40iiitl.ac.in%2FRestaurantPic-armin-3.jpg?alt=media&token=8dc74339-1f3d-45d9-ba56-47c56d6af9c0",
-    },
-  ];
   const [fileList, setFileList] = useState([]);
 
   const handleClearFileList = () => {

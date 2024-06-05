@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Select, Table } from "antd";
+import { Select, Table,Checkbox,Modal, Button } from "antd";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { Option } from "antd/es/mentions";
@@ -52,10 +52,35 @@ const Panel = ({ tableData, loading }) => {
     //   ),
     // },
   ];
+  const onChangePaid= (e) => {
+    setPaidBox(e.target.checked);
+    setNotPaidBox(!e.target.checked);
+  };
+  const onChangeNotPaid= (e) => {
+    setPaidBox(!e.target.checked);
+    setNotPaidBox(e.target.checked);
+  };
+  const [paidBox,setPaidBox] = useState(false);
+  const [notPaidBox,setNotPaidBox] = useState(true);
   const [data,setData] = useState([]);
+  const [mainData,setMainData] = useState([]);
 
   const [curRes,setCurRes] = useState();
   const [selectedRows, setSelectedRows] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [sum,setSum] = useState(0);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   async function getData() {
     setData(null);
@@ -66,7 +91,6 @@ const Panel = ({ tableData, loading }) => {
     if (!querySnapshot.empty) {
       let it = 0;
       querySnapshot.forEach(async (doc) => {
-        console.log(doc.data(),"123")
         let orderObj = {
           key:it++,
           orderId:doc.data().orderId,
@@ -74,12 +98,10 @@ const Panel = ({ tableData, loading }) => {
           orderValue:doc.data().orderDetails.reduce((acc, curr) => acc + parseFloat(curr.price), 0),
           pay_status:doc.data().pay_status,
         }
-        console.log(doc.data());
         if(temp[doc.data().resName])
         temp[doc.data().resName].push(orderObj);
         else temp[doc.data().resName]=[orderObj];
       });
-      console.log("Temp ",temp);
       setCurRes(Object.keys(temp)[0]);
     }
     setData(temp);
@@ -93,6 +115,7 @@ const Panel = ({ tableData, loading }) => {
         "selectedRows: ",
         selectedRows
       );
+      console.log(selectedRows,"s")
       setSelectedRows(selectedRows);
     },
     getCheckboxProps: (record) => ({
@@ -103,10 +126,37 @@ const Panel = ({ tableData, loading }) => {
   useEffect(()=>{
     getData();
   },[])
+  useEffect(() => {
+    setSelectedRows([]);
+    if (!data || !data[curRes]) {
+      return; 
+    }
+    const rest = data[curRes];
+    let temp = [];
+    for (let i = 0; i < rest.length; i++) {
+      if (rest[i].pay_status === "Paid" && paidBox) {
+        temp.push(rest[i]);
+      } else if (rest[i].pay_status === "Not Paid" && notPaidBox) {
+        temp.push(rest[i]);
+      }
+    }
+    setMainData(temp);
+  }, [paidBox, notPaidBox, data, curRes]);
+  
+  useEffect(() => {
+    let val = 0;
+    selectedRows?.forEach((row) => {
+      if (row?.orderValue) {
+        val += row?.orderValue;
+      }
+    });
+    setSum(val);
+  }, [selectedRows]);
+  
   
   return (
     <div>
-    {data && <Select defaultValue="Select a restaurant" style={{ width: 200 }} onChange={(e)=>{setCurRes(e)}}>
+    {data && <Select defaultValue={curRes} style={{ width: 200 }} onChange={(e)=>{setCurRes(e)}}>
       {
         Object.keys(data).map((op,i)=>{
 
@@ -114,13 +164,20 @@ const Panel = ({ tableData, loading }) => {
         })
       }
     </Select>}
-      {data && curRes && <Table
+    {data && <Checkbox onChange={onChangePaid} checked={paidBox}>Paid</Checkbox>}
+    {data && <Checkbox onChange={onChangeNotPaid} checked={notPaidBox}>Not Paid</Checkbox>}
+    {data && notPaidBox && <Button onClick={showModal}>Pay</Button>}
+      {mainData && curRes && <Table
         title={()=>curRes}
         loading={loading}
         rowSelection={rowSelection}
         columns={columns}
-        dataSource={data[curRes]}
+        dataSource={mainData}
       />}
+      <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <p>Pay {sum} to {curRes}</p>
+        <Button>Pay now</Button>
+      </Modal>
     </div>
   );
 };
