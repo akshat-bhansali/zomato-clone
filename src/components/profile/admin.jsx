@@ -266,19 +266,22 @@ function AdminProfile({ user }) {
                 const oldPath = doc.get("resPicPath");
                 if (oldPath) {
                   try {
-                    await deleteObject(ref(storage, oldPath));
+                    await Promise.all(deleteObject(ref(storage, oldPath)),updateDoc(doc.ref, {
+                      resPicPath: uploadTask.snapshot.ref.fullPath,
+                      resPicLink: url,
+                    }));
                     console.log("Deleted Old File");
                   } catch (e) {
                     console.log("Error while deleting old File", e);
                   }
+                }else{
+                  await updateDoc(doc.ref, {
+                    resPicPath: uploadTask.snapshot.ref.fullPath,
+                    resPicLink: url,
+                  });
                 }
-                const res = await updateDoc(doc.ref, {
-                  resPicPath: uploadTask.snapshot.ref.fullPath,
-                  resPicLink: url,
-                });
               });
             }
-
             alert("Successfully updated image !");
           } catch (e) {
             alert("Some");
@@ -353,6 +356,89 @@ function AdminProfile({ user }) {
                 const res = await updateDoc(doc.ref, {
                   dishes: dishLis,
                 });
+              });
+            }
+            alert("Successfully updated image !");
+            getData();
+          } catch (e) {
+            alert("Some");
+            console.log("error ", e);
+            alert("Some");
+            console.log("error ", e);
+          }
+        }
+      );
+    } catch (e) {
+      console.log("errors ", e);
+    }
+  };
+  const handleDocUpload = (file, key) => {
+    try {
+      // const file = fileList[0].originFileObj;
+      // console.log(fileList);
+      const path = `/${user.email}/documents/${key + "-" + file.name}`;
+      const imgRef = ref(storage, path);
+      const uploadTask = uploadBytesResumable(imgRef, file);
+      
+      uploadTask.on(
+        "state_changed",
+        (e) => {},
+        (e) => {
+          console.log("Some error occured while uploading ", e);
+        },
+        async () => {
+          try {
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            // const q =
+            const querySnapshot = await getDocs(q);
+            console.log("Query Snapshot ", querySnapshot);
+            if (querySnapshot.empty) {
+              console.log("Adding doc");
+              const res = await addDoc(await adminCollection, {
+                email: user.email,
+                [key]: {
+                    
+                  path: uploadTask.snapshot.ref.fullPath,
+                  link: url,
+                
+              },
+                
+              });
+              console.log("result ", res);
+
+              console.log("Do c added successfully with pic");
+            } else {
+
+              let oldPath = null;
+              if(key=='panCard')oldPath = details?.panCard?.path;
+              if(key=='bankAccount')oldPath = details?.bankAccount?.path;
+              if(key=='FSSAILicense')oldPath = details?.FSSAILicense?.path;
+              querySnapshot.forEach(async (doc) => {
+                if (oldPath) {
+                  try {
+                    await Promise.all(deleteObject(ref(storage, oldPath)), updateDoc(doc.ref, {
+                      [key]: {
+                        
+                          path: uploadTask.snapshot.ref.fullPath,
+                          link: url,
+                      },
+                    }));
+                    console.log("Deleted Old File", oldPath);
+                  } catch (e) {
+                    console.log("Error while deleting old File", e);
+                  }
+                }else{
+
+                    const res = await updateDoc(doc.ref, {
+                      [key]: {
+                        
+                          path: uploadTask.snapshot.ref.fullPath,
+                          link: url,
+                        
+                      },
+                    });
+                }
+       
               });
             }
             alert("Successfully updated image !");
@@ -636,6 +722,45 @@ function AdminProfile({ user }) {
                   Upload
                 </Button>
               </Form.Item>
+              <Form.Item >
+              <div className="flex gap-10 justify-center align-middle  w-max">
+              <img src={details?.panCard?.link} className="w-20 h-20" />
+                <Upload
+                  beforeUpload={(f) => {
+                    handleDocUpload(f,"panCard");
+                  }}
+                  fileList={null}
+                >
+                  <Button>Upload Pan Card</Button>
+                </Upload>
+              </div>
+              </Form.Item>
+              <Form.Item >
+              <div className="flex gap-10 justify-center align-middle  w-max">
+              <img src={details?.bankAccount?.link} className="w-20 h-20" />
+                <Upload
+                  beforeUpload={(f) => {
+                    handleDocUpload(f,"bankAccount");
+                  }}
+                  fileList={null}
+                >
+                  <Button>Upload Bank Account details</Button>
+                </Upload>
+              </div>
+              </Form.Item>
+              <Form.Item >
+              <div className="flex gap-10 justify-center align-middle  w-max">
+              <img src={details?.FSSAILicense?.link} className="w-20 h-20" />
+                <Upload
+                  beforeUpload={(f) => {
+                    handleDocUpload(f,"FSSAILicense");
+                  }}
+                  fileList={null}
+                >
+                  <Button>Upload FSSAI License</Button>
+                </Upload>
+              </div>
+              </Form.Item>
               <Form.Item>
                 <Button
                   onClick={saveDetails}
@@ -644,6 +769,7 @@ function AdminProfile({ user }) {
                   Save Changes
                 </Button>
               </Form.Item>
+
             </Form>
           </div>
         )}
