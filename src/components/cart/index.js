@@ -26,6 +26,7 @@ export default function Cart() {
   const [userData, setUserData] = useState(null);
   const [toatlPrice, setTotalPrice] = useState(null);
   const [instruction, setInstruction] = useState(null);
+  const platformFee = 3;
   async function getUserData() {
     if (user?.email == null) {
       return;
@@ -44,7 +45,7 @@ export default function Cart() {
     res?.cart?.forEach((ele) => {
       sum += Number(ele.price) * Number(ele.cnt);
     });
-    setTotalPrice(sum);
+    setTotalPrice(sum+platformFee);
     console.log("Result ", res);
     setUserData(v.data());
   }
@@ -148,10 +149,10 @@ export default function Cart() {
       console.log(error);
     }
   };
-
+   
   return (
     <div style={{ margin: "0 auto", padding: "20px" }}>
-      <h2>Your Shopping Cart</h2>
+      <h2 className="font-bold text-xl m-3">Your Shopping Cart</h2>
       {userData?.cart?.map((item, ind) => (
         <ProductCard
           key={item.id}
@@ -180,8 +181,11 @@ export default function Cart() {
         <Button onClick={handlePayment} size="large">
           Proceed to Checkout
         </Button>
+        <div>
+        <p className="font-semibold text-gray-500 ">Platform fee: ₹{platformFee} </p>
         <div style={{ fontSize: "1.5em", fontWeight: "bold" }}>
           Total: ₹{toatlPrice}
+        </div>
         </div>
       </div>
     </div>

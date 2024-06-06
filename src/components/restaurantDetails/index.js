@@ -284,7 +284,7 @@ const RestaurantDetails = () => {
   }, []);
 
   return (
-    <div>
+    <div className="p-6">
       
         <div>
           <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
