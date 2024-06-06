@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Select, Table,Checkbox,Modal, Button, Upload } from "antd";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { Select, Table,Checkbox,Modal, Button, Upload, Image } from "antd";
+import { collection, getDocs, query, where,updateDoc } from "firebase/firestore";
 import { db, storage } from "../../firebase/firebase";
 import { Option } from "antd/es/mentions";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+
 
 
 const Panel = ({ tableData, loading,user }) => {
@@ -24,15 +25,39 @@ const Panel = ({ tableData, loading,user }) => {
         async () => {
           try {
             const url = await getDownloadURL(uploadTask.snapshot.ref);
-            console.log("PaymentURL",url);
-            // Add Code to save link
-            // Preferably save both
-            //         resPicPath: uploadTask.snapshot.ref.fullPath,
-            //         resPicLink: url,
-          
-           
+console.log("PaymentURL", url);
+
+const ordersCollection2 = collection(db, "order");
+
+// Query for documents with the specified conditions
+const q = query(
+  ordersCollection2,
+  where("resName", "==", curRes),
+  where("pay_status", "==", "Not Paid")
+);
+
+// Get the documents that match the query
+const querySnapshot = await getDocs(q);
+
+// Iterate through each document in the query result
+querySnapshot.forEach(async (doc) => {
+  // Get a reference to the document
+  const docRef = doc.ref;
+
+  // Update the pay_status and pay_url fields
+  try {
+    await updateDoc(docRef, {
+      pay_status: "Paid",
+      pay_url: url
+    });
+    console.log("Document updated successfully");
+  } catch (error) {
+    console.error("Error updating document: ", error);
+  }
+});
+
             alert("Successfully updated image !");
-            // getData(); -> Call a function to re fetch data to update UI
+            getData();
           } catch (e) {
             alert("Some");
             console.log("error ", e);
@@ -74,23 +99,17 @@ const Panel = ({ tableData, loading,user }) => {
       title: "Status",
       dataIndex: "pay_status",
     },
-    // {
-    //   title: "Description",
-    //   dataIndex: "description",
-    // },
-    // {
-    //   title: "Image URL",
-    //   dataIndex: "image",
-    //   render: (text) => (
-    //     <div className="w-[200px] overflow-hidden h-[100px]">
-    //       <img
-    //         src={text}
-    //         alt="no image found"
-    //         className="object-contain min-w-full min-h-full"
-    //       />
-    //     </div>
-    //   ),
-    // },
+    {
+      title: "Image",
+      dataIndex: "pay_url",
+      render: (imgd, d) => {
+        return (
+          <>
+            <Image src={imgd} height={50} className="w-7 h-7" />
+          </>
+        );
+      },
+    },
   ];
   const onChangePaid= (e) => {
     setPaidBox(e.target.checked);
@@ -139,6 +158,7 @@ const Panel = ({ tableData, loading,user }) => {
           customer:doc.data().userEmail,
           orderValue:doc.data().orderDetails.reduce((acc, curr) => acc + parseFloat(curr.price), 0),
           pay_status:doc.data().pay_status,
+          pay_url : doc.data().pay_url
         }
         if(temp[doc.data().resName])
         temp[doc.data().resName].push(orderObj);
