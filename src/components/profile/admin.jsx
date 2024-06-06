@@ -266,15 +266,18 @@ function AdminProfile({ user }) {
                 const oldPath = doc.get("resPicPath");
                 if (oldPath) {
                   try {
-                    await Promise.all(deleteObject(ref(storage, oldPath)),updateDoc(doc.ref, {
-                      resPicPath: uploadTask.snapshot.ref.fullPath,
-                      resPicLink: url,
-                    }));
+                    await Promise.all(
+                      deleteObject(ref(storage, oldPath)),
+                      updateDoc(doc.ref, {
+                        resPicPath: uploadTask.snapshot.ref.fullPath,
+                        resPicLink: url,
+                      })
+                    );
                     console.log("Deleted Old File");
                   } catch (e) {
                     console.log("Error while deleting old File", e);
                   }
-                }else{
+                } else {
                   await updateDoc(doc.ref, {
                     resPicPath: uploadTask.snapshot.ref.fullPath,
                     resPicLink: url,
@@ -379,7 +382,7 @@ function AdminProfile({ user }) {
       const path = `/${user.email}/documents/${key + "-" + file.name}`;
       const imgRef = ref(storage, path);
       const uploadTask = uploadBytesResumable(imgRef, file);
-      
+
       uploadTask.on(
         "state_changed",
         (e) => {},
@@ -397,48 +400,42 @@ function AdminProfile({ user }) {
               const res = await addDoc(await adminCollection, {
                 email: user.email,
                 [key]: {
-                    
                   path: uploadTask.snapshot.ref.fullPath,
                   link: url,
-                
-              },
-                
+                },
               });
               console.log("result ", res);
 
               console.log("Do c added successfully with pic");
             } else {
-
               let oldPath = null;
-              if(key=='panCard')oldPath = details?.panCard?.path;
-              if(key=='bankAccount')oldPath = details?.bankAccount?.path;
-              if(key=='FSSAILicense')oldPath = details?.FSSAILicense?.path;
+              if (key == "panCard") oldPath = details?.panCard?.path;
+              if (key == "bankAccount") oldPath = details?.bankAccount?.path;
+              if (key == "FSSAILicense") oldPath = details?.FSSAILicense?.path;
               querySnapshot.forEach(async (doc) => {
                 if (oldPath) {
                   try {
-                    await Promise.all(deleteObject(ref(storage, oldPath)), updateDoc(doc.ref, {
-                      [key]: {
-                        
+                    await Promise.all(
+                      deleteObject(ref(storage, oldPath)),
+                      updateDoc(doc.ref, {
+                        [key]: {
                           path: uploadTask.snapshot.ref.fullPath,
                           link: url,
-                      },
-                    }));
+                        },
+                      })
+                    );
                     console.log("Deleted Old File", oldPath);
                   } catch (e) {
                     console.log("Error while deleting old File", e);
                   }
-                }else{
-
-                    const res = await updateDoc(doc.ref, {
-                      [key]: {
-                        
-                          path: uploadTask.snapshot.ref.fullPath,
-                          link: url,
-                        
-                      },
-                    });
+                } else {
+                  const res = await updateDoc(doc.ref, {
+                    [key]: {
+                      path: uploadTask.snapshot.ref.fullPath,
+                      link: url,
+                    },
+                  });
                 }
-       
               });
             }
             alert("Successfully updated image !");
@@ -509,7 +506,7 @@ function AdminProfile({ user }) {
   }, []);
 
   return (
-    <div className=" p-6">
+    <div className="p-6">
       <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
         <h1 className="font-bold text-2xl text-gray-800">
           Welcome to your restaurant,{" "}
@@ -517,18 +514,18 @@ function AdminProfile({ user }) {
         </h1>
       </div>
 
-      <div className="flex flex-col lg:flex-row">
+      <div className="flex">
         {details && (
-          <div className="bg-white border p-6 rounded-lg shadow-lg mb-6 lg:w-[35vw]">
+          <div className="bg-white border m-4 p-6 rounded-lg shadow-lg mb-6 lg:w-[28vw] overflow-y-auto">
             <div>
               <p className="font-bold text-xl opacity-70 text-indigo-600 mb-4">
                 Restaurant Details
               </p>
             </div>
             <Form
-              labelCol={{ span: 11 }}
-              wrapperCol={{ span: 11 }}
-              layout="horizontal"
+              labelCol={{ span: 22 }}
+              wrapperCol={{ span: 22 }}
+              layout="vertical"
               style={{ maxWidth: 900, font: "bold" }}
               className="text-left"
             >
@@ -541,7 +538,7 @@ function AdminProfile({ user }) {
                   onChange={(v) =>
                     setDetails({ ...details, name: v.target.value })
                   }
-                  className="w-full lg:w-auto"
+                  className="w-full"
                 />
               </Form.Item>
               <Form.Item
@@ -553,7 +550,7 @@ function AdminProfile({ user }) {
                   onChange={(v) =>
                     setDetails({ ...details, owner_name: v.target.value })
                   }
-                  className="w-full lg:w-auto"
+                  className="w-full"
                 />
               </Form.Item>
               <Form.Item
@@ -562,8 +559,8 @@ function AdminProfile({ user }) {
               >
                 <Input
                   value={user?.email}
-                  className="w-full lg:w-auto"
-                  disabled="true"
+                  className="w-full "
+                  disabled={true}
                 />
               </Form.Item>
               <Form.Item
@@ -571,13 +568,13 @@ function AdminProfile({ user }) {
                 className="font-bold text-gray-700"
               >
                 <Input
-                addonBefore="+91"
-                type="number"
+                  addonBefore="+91"
+                  type="number"
                   value={details?.owner_contact}
                   onChange={(v) =>
                     setDetails({ ...details, owner_contact: v.target.value })
                   }
-                  className="w-full lg:w-auto"
+                  className="w-full "
                 />
               </Form.Item>
               <Form.Item
@@ -585,13 +582,13 @@ function AdminProfile({ user }) {
                 className="font-bold text-gray-700"
               >
                 <Input
-                addonBefore="+91"
-                type="number"
+                  addonBefore="+91"
+                  type="number"
                   value={details?.contact}
                   onChange={(v) =>
                     setDetails({ ...details, contact: v.target.value })
                   }
-                  className="w-full lg:w-auto"
+                  className="w-full"
                 />
               </Form.Item>
               <Form.Item
@@ -620,7 +617,7 @@ function AdminProfile({ user }) {
                   onChange={(v) =>
                     setDetails({ ...details, address: v.target.value })
                   }
-                  className="border rounded-lg p-2 w-full lg:w-auto"
+                  className="border rounded-lg p-2 w-full "
                 />
               </Form.Item>
               <Form.Item label="Pincode" className="font-bold text-gray-700">
@@ -631,19 +628,16 @@ function AdminProfile({ user }) {
                     setDetails({ ...details, pincode: v.target.value })
                   }
                   value={details?.pincode}
-                  className="border rounded-lg p-2 w-full lg:w-auto"
+                  className="border rounded-lg p-2 w-full "
                 />
               </Form.Item>
-              <Form.Item
-                label="Veg"
-                className="font-bold text-gray-700 flex items-center"
-              >
+              <Form.Item label="Veg" className="font-bold text-gray-700">
                 <Radio.Group
                   onChange={(v) =>
                     setDetails({ ...details, veg: v.target.value })
                   }
                   defaultValue={details?.veg}
-                  className="flex items-center space-x-4"
+                  className="flex space-x-4"
                 >
                   <Radio
                     value="veg-only"
@@ -668,98 +662,8 @@ function AdminProfile({ user }) {
                   defaultValue={details && details?.cusines}
                   onChange={(v) => setDetails({ ...details, cusines: v })}
                   options={categoriesOptions}
-                  className="border rounded-lg w-full lg:w-auto"
+                  className="border rounded-lg w-full"
                 />
-              </Form.Item>
-
-              {/* Image Upload Section */}
-              <Form.Item
-                label="Restaurant Pic"
-                valuePropName="fileList"
-                getValueFromEvent={normFile}
-                className="font-bold text-gray-700"
-              >
-                <div className="flex flex-col lg:flex-row gap-10 items-center">
-                  {details?.resPicLink && (
-                    <img
-                      src={details?.resPicLink}
-                      className="w-24 h-24 rounded-lg shadow-md"
-                    />
-                  )}
-                  <Upload
-                    action={(f) => {}}
-                    listType="picture-card"
-                    fileList={fileList}
-                    multiple={false}
-                    maxCount={1}
-                    onChange={({ fileList }) => {
-                      if (fileList.length) {
-                        if (fileList[0].size > 300000) {
-                          alert("Image size should be less than 300KB");
-                          return;
-                        }
-                      }
-                      setFileList(fileList);
-                    }}
-                  >
-                    {fileList.length === 0 && (
-                      <button
-                        style={{ border: 0, background: "none" }}
-                        type="button"
-                        className="text-gray-600 hover:text-black"
-                      >
-                        <PlusOutlined />
-                        <div style={{ marginTop: 8 }}>Change</div>
-                      </button>
-                    )}
-                  </Upload>
-                </div>
-                <Button
-                  disabled={fileList.length === 0}
-                  onClick={handleUpload}
-                  className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-                >
-                  Upload
-                </Button>
-              </Form.Item>
-              <Form.Item >
-              <div className="flex gap-10 justify-center align-middle  w-max">
-              <img src={details?.panCard?.link} className="w-20 h-20" />
-                <Upload
-                  beforeUpload={(f) => {
-                    handleDocUpload(f,"panCard");
-                  }}
-                  fileList={null}
-                >
-                  <Button>Upload Pan Card</Button>
-                </Upload>
-              </div>
-              </Form.Item>
-              <Form.Item >
-              <div className="flex gap-10 justify-center align-middle  w-max">
-              <img src={details?.bankAccount?.link} className="w-20 h-20" />
-                <Upload
-                  beforeUpload={(f) => {
-                    handleDocUpload(f,"bankAccount");
-                  }}
-                  fileList={null}
-                >
-                  <Button>Upload Bank Account details</Button>
-                </Upload>
-              </div>
-              </Form.Item>
-              <Form.Item >
-              <div className="flex gap-10 justify-center align-middle  w-max">
-              <img src={details?.FSSAILicense?.link} className="w-20 h-20" />
-                <Upload
-                  beforeUpload={(f) => {
-                    handleDocUpload(f,"FSSAILicense");
-                  }}
-                  fileList={null}
-                >
-                  <Button>Upload FSSAI License</Button>
-                </Upload>
-              </div>
               </Form.Item>
               <Form.Item>
                 <Button
@@ -769,13 +673,13 @@ function AdminProfile({ user }) {
                   Save Changes
                 </Button>
               </Form.Item>
-
             </Form>
           </div>
         )}
 
         {/* Dishes Table and Add Item Modal */}
-        <div className="mx-4 p-3 border shadow-lg rounded-lg text-right font-semibold lg:h-[37vh] w-full">
+        <div>
+        <div className=" m-4 p-3 border shadow-lg rounded-lg  font-semibold lg:h-[37vh] lg:w-[70vw] w-full z-10 overflow-y-auto">
           <Button
             onClick={showModal2}
             className="bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6 w-full lg:w-auto"
@@ -845,6 +749,105 @@ function AdminProfile({ user }) {
               />
             </div>
           </Modal>
+        </div>
+        <div className="m-4 p-3 border shadow-lg rounded-lg font-semibold lg:h-auto lg:w-[70vw] w-full z-10 overflow-y-auto">
+          <div>
+            <p className="font-bold text-left m-4 text-xl opacity-70 text-indigo-600 ">
+              Upload Images
+            </p>
+          </div>
+          <div className="flex flex-col lg:flex-row flex-wrap gap-4 justify-around">
+            <div className="flex flex-col items-center">
+              {details?.resPicLink && (
+                <img
+                  src={details?.resPicLink}
+                  className="w-24 h-24 rounded-lg shadow-md"
+                />
+              )}
+              <Upload
+                action={(f) => {}}
+               
+                fileList={fileList}
+                multiple={false}
+                maxCount={1}
+                onChange={({ fileList }) => {
+                  if (fileList.length) {
+                    if (fileList[0].size > 300000) {
+                      alert("Image size should be less than 300KB");
+                      return;
+                    }
+                  }
+                  setFileList(fileList);
+                }}
+              >
+                {fileList.length === 0 && (
+                  <button
+                    style={{ border: 0, background: "none" }}
+                    type="button"
+                    className="text-gray-600 hover:text-black"
+                  >
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Change</div>
+                  </button>
+                )}
+              </Upload>
+              <Button
+                disabled={fileList.length === 0}
+                onClick={handleUpload}
+                className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+              >
+                Upload Restaurant pic
+              </Button>
+            </div>
+            <div className="flex flex-col items-center">
+              <img src={details?.panCard?.link} className="w-20 h-20" />
+              <Upload
+                beforeUpload={(f) => {
+                  handleDocUpload(f, "panCard");
+                }}
+                fileList={null}
+              >
+                <Button
+                className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                >Upload Pan Card</Button>
+              </Upload>
+            </div>
+            <div className="flex flex-col items-center">
+              <img src={details?.bankAccount?.link} className="w-20 h-20" />
+              <Upload
+                beforeUpload={(f) => {
+                  handleDocUpload(f, "bankAccount");
+                }}
+                fileList={null}
+              >
+                <Button
+                className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                >Upload Bank Account details</Button>
+              </Upload>
+            </div>
+            <div className="flex flex-col items-center">
+              <img src={details?.FSSAILicense?.link} className="w-20 h-20" />
+              <Upload
+                beforeUpload={(f) => {
+                  handleDocUpload(f, "FSSAILicense");
+                }}
+                fileList={null}
+              >
+                <Button
+                className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                >Upload FSSAI License</Button>
+              </Upload>
+            </div>
+          </div>
+          <div className="text-right mt-4">
+            <Button
+              onClick={saveDetails}
+              className="bg-green-600 text-white rounded-lg hover:bg-green-700"
+            >
+              Save Changes
+            </Button>
+          </div>
+        </div>
         </div>
       </div>
     </div>
