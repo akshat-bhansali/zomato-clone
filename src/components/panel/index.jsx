@@ -228,7 +228,12 @@ const Panel = ({ tableData, loading, user }) => {
   }, [selectedRows]);
 
   return (
-    <div className="container mx-auto p-6 bg-gray-50 min-h-screen" >
+    <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
+      <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
+        <h1 className="font-bold text-2xl text-gray-800">
+          <span className="text-indigo-600">{" SuperAdmin"}</span>
+        </h1>
+      </div>
       <div className="mb-6">
         {data && (
           <Select
@@ -300,7 +305,8 @@ const Panel = ({ tableData, loading, user }) => {
         className="rounded-lg"
       >
         <p className="text-lg mb-4 flex items-center">
-          Pay <p className="font-bold text-xl m-3">{sum}</p> to <p className="font-bold text-xl m-3 text-indigo-600">{curRes}</p>
+          Pay <p className="font-bold text-xl m-3">{sum}</p> to
+          <p className="font-bold text-xl m-3 text-indigo-600">{curRes}</p>
         </p>
         <div className="flex flex-col items-center justify-evenly mt-5">
           {/* QR Image */}
