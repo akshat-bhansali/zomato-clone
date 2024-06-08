@@ -72,7 +72,9 @@ const Home = () => {
                   onClick={handleCardClick}
                 >
                   <img
-                    className={`rounded-lg mb-2 border h-[250px] w-full object-cover  ${restaurant.closed ? 'grayscale' : ''}`}
+                    className={`rounded-lg mb-2 border h-[250px] w-full object-cover  ${
+                      restaurant.closed ? "grayscale" : ""
+                    }`}
                     src={
                       restaurant?.resPicLink
                         ? restaurant?.resPicLink
@@ -94,9 +96,12 @@ const Home = () => {
                         <div className="flex">
                           <div className="flex border rounded-lg p-2 bg-green-700 mt-[-3px]">
                             <div className="text-white font-bold">
-                              {restaurant?.rating / restaurant?.ratingCount ||
-                                "N/A"}
-                            </div>{" "}
+                              {restaurant?.ratingCount
+                                ? (
+                                    restaurant.rating / restaurant.ratingCount
+                                  ).toFixed(2)
+                                : "N/A"}
+                            </div>
                             <FaStar className="text-white mt-1 ml-1" />
                           </div>
                           <div className="w-1 bg-black rounded-md mx-2"></div>
@@ -111,12 +116,14 @@ const Home = () => {
                         </div>
                       </div>
                       <div className="flex gap-5">
-                      <p className="text-gray-700 text-start pl-2">
-                        {restaurant.address ? restaurant.address : "No Address"}
-                      </p>
-                      <p className="text-red-700 text-start pl-2 ml-3">
-                        {restaurant?.closed ? "Not accepting orders":""}
-                      </p>
+                        <p className="text-gray-700 text-start pl-2">
+                          {restaurant.address
+                            ? restaurant.address
+                            : "No Address"}
+                        </p>
+                        <p className="text-red-700 text-start pl-2 ml-3">
+                          {restaurant?.closed ? "Not accepting orders" : ""}
+                        </p>
                       </div>
                     </div>
                   </div>
