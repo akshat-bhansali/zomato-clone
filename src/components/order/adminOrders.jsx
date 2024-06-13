@@ -18,6 +18,7 @@ const AdminOrders = ({ user }) => {
       );
       listOrders.push({ ...v.data(), totalPrice });
     });
+    listOrders.reverse();
     setOrders(listOrders);
   };
 

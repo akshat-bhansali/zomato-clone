@@ -14,7 +14,7 @@ import ProductCard from "./productCard";
 import axios from "axios";
 import { addOrderToFirestore } from "../../firebase/auth";
 import { useAuth } from "../../contexts/authContext";
-import { Input} from "antd";
+import { Input,Result} from "antd";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -29,6 +29,8 @@ export default function Cart() {
   const [toatlPrice, setTotalPrice] = useState(null);
   const [instruction, setInstruction] = useState(null);
   const platformFee = 3;
+  const [orderPlaced,setOrderPlaced] = useState(false);
+  const [orderId,setOrderId] = useState("");
   async function getUserData() {
     if (user?.email == null) {
       return;
@@ -48,14 +50,17 @@ export default function Cart() {
       sum += Number(ele.price) * Number(ele.cnt);
     });
     setTotalPrice(sum+platformFee);
-    console.log("Result ", res);
     setUserData(v.data());
+    if(sum==0){
+      toast.error("Cart Is Empty");
+      navigate("/home");
+    }
   }
 
   useEffect(() => {
     if (user?.email == null || user?.email == "") {
-      navigate("/login");
       toast.error("Login First");
+      navigate("/login");
       return;
     }
     getUserData();
@@ -124,7 +129,8 @@ export default function Cart() {
               instruction
             );
             toast.success("Order added successfully");
-            navigate("/orders");
+            // navigate("/orders");
+            setOrderPlaced(true);
             removeFromCart();
           } catch (error) {
             console.error("Error adding order:", error);
@@ -155,7 +161,7 @@ export default function Cart() {
   return (
     <>
     <ToastContainer/>
-    <div style={{ margin: "0 auto", padding: "20px" }}>
+    {!orderPlaced && <div style={{ margin: "0 auto", padding: "20px" }}>
       <h2 className="font-bold text-xl m-3">Your Shopping Cart</h2>
       {userData?.cart?.map((item, ind) => (
         <ProductCard
@@ -192,7 +198,16 @@ export default function Cart() {
         </div>
         </div>
       </div>
-    </div></>
+    </div>}
+    {orderPlaced && <Result
+    status="success"
+    title={`Order Placed!`}
+    subTitle={`Order Id: ${orderId} Your Order will shortly begin to prepare, please wait.`}
+    extra={[
+      <Button key="buy" onClick={()=>{navigate("/orders")}}>View Orders</Button>,
+    ]}
+  />}
+    </>
   );
   //   return (<div className="flex p-10 flex-col">
   //     <div className="flex">

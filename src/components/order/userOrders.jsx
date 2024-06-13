@@ -21,6 +21,7 @@ const UserOrders = ({user}) => {
             v.data()?.orderDetails.forEach((v,i)=>totalPrice+=(Number(v.cnt)*Number(v.price)))
             listOrders.push({...v.data(),totalPrice:totalPrice});
         })
+        listOrders.reverse();
         setOrders(listOrders);
     }
     useEffect(()=>{
