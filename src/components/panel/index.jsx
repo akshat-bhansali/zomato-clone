@@ -10,6 +10,8 @@ import {
 import { db, storage } from "../../firebase/firebase";
 import { Option } from "antd/es/mentions";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Panel = ({ tableData, loading, user }) => {
   const handleDishImgUpload = (file, key) => {
@@ -60,12 +62,9 @@ const Panel = ({ tableData, loading, user }) => {
               }
             });
 
-            alert("Successfully updated image !");
+            toast.success("Successfully updated image !");
             getData();
           } catch (e) {
-            alert("Some");
-            console.log("error ", e);
-            alert("Some");
             console.log("error ", e);
           }
         }
@@ -229,6 +228,7 @@ const Panel = ({ tableData, loading, user }) => {
 
   return (
     <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
+      <ToastContainer/>
       <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
         <h1 className="font-bold text-2xl text-gray-800">
           <span className="text-indigo-600">{" SuperAdmin"}</span>

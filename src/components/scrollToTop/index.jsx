@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaArrowUp } from "react-icons/fa";
 import { useAuth } from "../../contexts/authContext";
 import { db } from "../../firebase/firebase";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import {
   addDoc,
   collection,
@@ -12,6 +12,8 @@ import {
   where,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ScrollToTopButton = () => {
   const { currentUser } = useAuth();
@@ -29,7 +31,7 @@ const ScrollToTopButton = () => {
       behavior: "smooth",
     });
   };
-   
+
   const handleCartClick = () => {
     console.log("Cart clicked");
   };
@@ -45,10 +47,10 @@ const ScrollToTopButton = () => {
         cart: [],
         resId: null,
         resImg: null,
-        resName:null
+        resName: null,
       });
       setCartResItem(0);
-      alert("Removed Cart");
+      toast.success("Removed Cart");
     });
   };
   const getCartData = async () => {
@@ -60,12 +62,12 @@ const ScrollToTopButton = () => {
       setCartResName(data.resName);
       setCartResImg(data.resImg);
       setCartResEmail(data.resId);
-      let price =0;
-      let count =0;
-      data?.cart?.map((item,i)=>{
+      let price = 0;
+      let count = 0;
+      data?.cart?.map((item, i) => {
         price += Number(Number(item?.price) * Number(item?.cnt));
-        count += Number(item?.cnt)
-      })
+        count += Number(item?.cnt);
+      });
       setCartResPrice(price);
       setCartResItem(count);
     });
@@ -75,8 +77,15 @@ const ScrollToTopButton = () => {
   }, []);
   return (
     <div className="flex">
-      <div className={`fixed lg:bottom-10 lg:left-10 bottom-3 left-3 z-10 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 h-[80px]   ${cartResItem>0?"flex":"hidden"}`}>
-        <div className={`${cartResItem>0?"flex":"hidden"} justify-between`}>
+      <ToastContainer/>
+      <div
+        className={`fixed lg:bottom-10 lg:left-10 bottom-3 left-3 z-10 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 h-[80px]   ${
+          cartResItem > 0 ? "flex" : "hidden"
+        }`}
+      >
+        <div
+          className={`${cartResItem > 0 ? "flex" : "hidden"} justify-between`}
+        >
           {/* menu */}
           <div className="flex">
             <img src={cartResImg} className="w-8 h-8 mt-3 rounded-lg" />
@@ -85,20 +94,26 @@ const ScrollToTopButton = () => {
               <div className="flex items-center text-xs text-black">
                 <div>{cartResItem} Item</div>
                 <div className="m-1 bg-gray-200 rounded-full w-[2px] h-4"></div>
-                <button onClick={()=>{navigate(`/restaurant/${btoa(cartResEmail)}`)}}>View Menu &#8594;</button>
+                <button
+                  onClick={() => {
+                    navigate(`/restaurant/${btoa(cartResEmail)}`);
+                  }}
+                >
+                  View Menu &#8594;
+                </button>
               </div>
             </div>
           </div>
           {/* cart */}
           <Link to="/cart">
-  <button
-    className="bg-red-500 p-2 flex flex-col items-center rounded-md mx-2"
-    onClick={handleCartClick}
-  >
-    <div className="text-white text-sm">₹{cartResPrice}</div>
-    <div className="ml-2 text-white text-xs pr-1">View Cart</div>
-  </button>
-</Link>
+            <button
+              className="bg-red-500 p-2 flex flex-col items-center rounded-md mx-2"
+              onClick={handleCartClick}
+            >
+              <div className="text-white text-sm">₹{cartResPrice}</div>
+              <div className="ml-2 text-white text-xs pr-1">View Cart</div>
+            </button>
+          </Link>
           {/* cancel */}
           <button
             onClick={removeFromCart}

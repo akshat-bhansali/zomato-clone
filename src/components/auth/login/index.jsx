@@ -6,6 +6,8 @@ import {
   doSendEmailVerification,
 } from "../../../firebase/auth";
 import { useAuth } from "../../../contexts/authContext";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const { userLoggedIn } = useAuth();
@@ -22,7 +24,7 @@ const Login = () => {
         await doSignInWithEmailAndPassword(email, password, "user");
         console.log("User created successfully");
       } catch (error) {
-        alert("Invalid Email or Password");
+        toast.error("Invalid Email or Password");
         setIsSigningIn(false);
       }
     }
@@ -41,7 +43,7 @@ const Login = () => {
   return (
     <div>
       {userLoggedIn && <Navigate to={"/home"} replace={true} />}
-
+      <ToastContainer/>
       <main className="w-full h-screen flex self-center place-content-center place-items-center">
         <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">
           <div className="text-center">

@@ -7,6 +7,8 @@ import {
 } from "../../../firebase/auth";
 import { useAuth } from "../../../contexts/authContext";
 import Panel from "../../panel";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SuperAdmin = () => {
   const { userLoggedIn } = useAuth();
@@ -26,7 +28,7 @@ const SuperAdmin = () => {
         console.log("User created successfully");
       } catch (error) {
         console.log("Error : ",error)
-        alert("Invalid Email or Password");
+        toast.error("Invalid Email or Password");
         setIsSigningIn(false);
       }
     }
@@ -39,8 +41,8 @@ const SuperAdmin = () => {
   return (
     <div>
       {userLoggedIn && user?.role!=='superadmin' && <Navigate to={"/home"} replace={true} />}
+      <ToastContainer/>
       {(userLoggedIn && user?.role==='superadmin') ? <Panel user={user}/> :
-
       <main className="w-full h-screen flex self-center place-content-center place-items-center">
         <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">
           <div className="text-center">

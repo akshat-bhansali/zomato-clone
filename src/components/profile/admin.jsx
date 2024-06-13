@@ -31,6 +31,8 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function AdminProfile({ user }) {
   const [modalItemName, setModalItemName] = useState("");
@@ -114,7 +116,7 @@ function AdminProfile({ user }) {
               Edit
             </Button>
             <Modal
-              title="Basic Modal"
+              title="Edit Item"
               open={isModalOpen}
               onOk={() => handleOk()}
               onCancel={handleCancel}
@@ -285,11 +287,8 @@ function AdminProfile({ user }) {
                 }
               });
             }
-            alert("Successfully updated image !");
+            toast.success("Successfully updated image !");
           } catch (e) {
-            alert("Some");
-            console.log("error ", e);
-            alert("Some");
             console.log("error ", e);
           }
         }
@@ -361,12 +360,9 @@ function AdminProfile({ user }) {
                 });
               });
             }
-            alert("Successfully updated image !");
+            toast.success("Successfully updated image !");
             getData();
           } catch (e) {
-            alert("Some");
-            console.log("error ", e);
-            alert("Some");
             console.log("error ", e);
           }
         }
@@ -438,12 +434,9 @@ function AdminProfile({ user }) {
                 }
               });
             }
-            alert("Successfully updated image !");
+            toast.success("Successfully updated image !");
             getData();
           } catch (e) {
-            alert("Some");
-            console.log("error ", e);
-            alert("Some");
             console.log("error ", e);
           }
         }
@@ -459,7 +452,7 @@ function AdminProfile({ user }) {
     const doc = querySnapshot.forEach(async (doc) => {
       console.log(details);
       await updateDoc(doc.ref, { ...details });
-      alert("Saved changes");
+      toast.success("Saved changes");
     });
   };
   async function saveTableData(pos, tdata) {
@@ -482,7 +475,7 @@ function AdminProfile({ user }) {
       console.log(details);
       await updateDoc(doc.ref, { ...details, dishes: [...lis] });
       setDetails({ ...details, dishes: [...lis] });
-      alert("Saved changes");
+      toast.success("Saved changes");
     });
     getData();
   }
@@ -507,6 +500,7 @@ function AdminProfile({ user }) {
 
   return (
     <div className="p-6">
+      <ToastContainer/>
       <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
         <h1 className="font-bold text-2xl text-gray-800">
           Welcome to your restaurant,{" "}
@@ -773,7 +767,7 @@ function AdminProfile({ user }) {
                 onChange={({ fileList }) => {
                   if (fileList.length) {
                     if (fileList[0].size > 300000) {
-                      alert("Image size should be less than 300KB");
+                      toast.error("Image size should be less than 300KB");
                       return;
                     }
                   }

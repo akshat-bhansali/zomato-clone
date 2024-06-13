@@ -8,6 +8,8 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { getFirestore, addDoc, collection, getDocs, CollectionReference } from "firebase/firestore";
 import {db} from "./firebase" 
 const colletionRef = collection(db, 'user');
@@ -68,7 +70,6 @@ export const saveDataToFirestore = async (email,name,role) => {
       localStorage.setItem("user",JSON.stringify({name:name,role:role,email:email}));
     } catch (error) {
       console.error("Error writing document: ", error);
-      alert("Error writing document to Database");
     }
   }
   else{

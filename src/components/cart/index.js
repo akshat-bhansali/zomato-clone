@@ -14,7 +14,9 @@ import ProductCard from "./productCard";
 import axios from "axios";
 import { addOrderToFirestore } from "../../firebase/auth";
 import { useAuth } from "../../contexts/authContext";
-import { Input } from "antd";
+import { Input} from "antd";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const { TextArea } = Input;
 
@@ -53,7 +55,7 @@ export default function Cart() {
   useEffect(() => {
     if (user?.email == null || user?.email == "") {
       navigate("/login");
-      alert("Login First");
+      toast.error("Login First");
       return;
     }
     getUserData();
@@ -73,7 +75,7 @@ export default function Cart() {
 
     await updateDoc(doc.ref, { ...userData, cart });
 
-    alert("Updated to quantity");
+    toast.success('Updated quantity');
 
     getUserData();
   };
@@ -92,7 +94,7 @@ export default function Cart() {
         resImg: null,
         resName: null,
       });
-      alert("Removed Cart");
+      toast.success('Emptied Cart');
     });
   };
   const initPayment = (data) => {
@@ -121,7 +123,7 @@ export default function Cart() {
               userData?.name,
               instruction
             );
-            alert("Order added successfully");
+            toast.success("Order added successfully");
             navigate("/orders");
             removeFromCart();
           } catch (error) {
@@ -151,6 +153,8 @@ export default function Cart() {
   };
    
   return (
+    <>
+    <ToastContainer/>
     <div style={{ margin: "0 auto", padding: "20px" }}>
       <h2 className="font-bold text-xl m-3">Your Shopping Cart</h2>
       {userData?.cart?.map((item, ind) => (
@@ -188,7 +192,7 @@ export default function Cart() {
         </div>
         </div>
       </div>
-    </div>
+    </div></>
   );
   //   return (<div className="flex p-10 flex-col">
   //     <div className="flex">

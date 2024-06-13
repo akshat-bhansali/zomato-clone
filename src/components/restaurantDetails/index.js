@@ -11,6 +11,8 @@ import React, { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { db } from "../../firebase/firebase";
 import { getAuth } from "firebase/auth";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RestaurantDetails = () => {
   const user = getAuth().currentUser;
@@ -63,7 +65,7 @@ const RestaurantDetails = () => {
                 onClick={() => {
                   if (user?.email == null || user?.email == "") {
                     navigate("/login");
-                    alert("Login First");
+                    toast.error("Login First");
                     return;
                   }
                   removeFromCart(record);
@@ -78,7 +80,7 @@ const RestaurantDetails = () => {
                 onClick={() => {
                   if (user?.email == null || user?.email == "") {
                     navigate("/login");
-                    alert("Login First");
+                    toast.error("Login First");
                     return;
                   }
                   addToCart(record);
@@ -146,7 +148,7 @@ const RestaurantDetails = () => {
       newData.cart = lis;
       await updateDoc(doc.ref, { ...newData });
       getUserData();
-      alert("Added to Cart");
+      toast.success("Added to Cart");
     });
   };
   const removeFromCart = async (rec) => {
@@ -190,7 +192,7 @@ const RestaurantDetails = () => {
         });
       } else await updateDoc(doc.ref, { ...data, cart: lis });
       getUserData();
-      alert("Removed from cart to Cart");
+      toast.error("Removed from cart");
     });
   };
   async function getUserData() {
@@ -233,7 +235,7 @@ const RestaurantDetails = () => {
   async function updateRating(rate) {
     if (user?.email == null || user?.email == "") {
       navigate("/login");
-      alert("Login First");
+      toast.error("Login First");
       return;
     }
     const q = query(userCollection, where("email", "==", user.email));
@@ -285,7 +287,7 @@ const RestaurantDetails = () => {
 
   return (
     <div className="p-6">
-      
+        <ToastContainer/>
         <div>
           <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
             <h1 className="font-bold text-2xl text-gray-800">
@@ -293,6 +295,16 @@ const RestaurantDetails = () => {
               <span className="text-indigo-600">{" " + details?.name}</span>
             </h1>
           </div>
+        </div>
+        <div>
+          contact - {details?.contact}
+          <br/>
+          address - {details?.address}
+          <br/>
+          cusines - 
+          {details?.cusines?.map((c,i)=>{
+            return(<div>{c}</div>)
+          })}
         </div>
         <div className="flex justify-end ">
         <div className="mr-5 p-3 rounded-lg flex gap-5 align-middle justify-center">

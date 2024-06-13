@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Row, Col, Collapse, Image, Select } from "antd";
 import { collection, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const { Panel } = Collapse;
 
@@ -33,7 +35,7 @@ const OrderCard = ({ order }) => {
           return prevOptions;
         }
       });
-      alert("Order status updated successfully.");
+      toast.success("Order status updated successfully.");
     } catch (error) {
       console.error("Error updating order status:", error);
     }
@@ -55,6 +57,8 @@ const OrderCard = ({ order }) => {
   }, [order]);
 
   return (
+    <>
+    <ToastContainer/>
     <Col span={24} key={order.id} className="mb-4">
       <div className="border rounded-lg shadow-md p-4 bg-white text-left">
         <Row className="items-center">
@@ -106,7 +110,7 @@ const OrderCard = ({ order }) => {
           </Col>
         </Row>
       </div>
-    </Col>
+    </Col></>
   );
 };
 

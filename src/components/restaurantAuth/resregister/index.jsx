@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Navigate, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/authContext";
 import { doCreateUserWithEmailAndPassword ,doSendEmailVerification, doSignInWithGoogle, saveDataToFirestore} from "../../../firebase/auth";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ResRegister = () => {
   const navigate = useNavigate();
@@ -37,7 +39,7 @@ const ResRegister = () => {
         saveDataToFirestore(email,name,"admin");
       } catch (error) {
         console.error("Error creating user:", error);
-        alert("User already exists");
+        toast.error("User already exists");
         setIsRegistering(false);
       }
       
@@ -47,7 +49,7 @@ const ResRegister = () => {
   return (
     <>
       {userLoggedIn && <Navigate to={"/home"} replace={true} />}
-
+    <ToastContainer/>
       <main className="w-full h-screen flex self-center place-content-center place-items-center">
         <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">
           <div className="text-center mb-6">
