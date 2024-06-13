@@ -85,11 +85,11 @@ const Home = () => {
                   <div className="bg-gray-400 w-full h-[2px] rounded-lg my-2"></div>
                   <div className="flex-grow flex flex-col justify-between">
                     <div>
-                      <div className="flex gap-x-5">
+                      <div className="flex w-[320px] justify-between">
                         <div className="font-bold text-xl mb-2 text-start pl-2">
                           {restaurant?.name
-                            ? restaurant.name.length > 10
-                              ? restaurant.name.slice(0, 10) + "..."
+                            ? restaurant.name.length > 15
+                              ? restaurant.name.slice(0, 15) + "..."
                               : restaurant.name
                             : "No Name"}
                         </div>
