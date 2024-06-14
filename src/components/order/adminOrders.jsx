@@ -20,6 +20,7 @@ const AdminOrders = ({ user }) => {
     });
     listOrders.reverse();
     setOrders(listOrders);
+    console.log(listOrders);
   };
 
   useEffect(() => {
@@ -37,9 +38,28 @@ const AdminOrders = ({ user }) => {
         </h1>
       </div>
       <Row gutter={[16, 16]}>
-        {orders?.map((order) => (
-          <OrderCard order={order} key={order.id} />
-        ))}
+        <div>Pending Orders</div>
+        {orders?.map((order) =>
+          order?.status != "Order Picked Up" ? (
+            <>
+              <OrderCard order={order} key={order.id} />
+            </>
+          ) : (
+            <></>
+          )
+        )}
+      </Row>
+      <Row gutter={[16, 16]}>
+        <div>Previous Orders</div>
+        {orders?.map((order) =>
+          order?.status == "Order Picked Up" ? (
+            <>
+              <OrderCard order={order} key={order.id} />
+            </>
+          ) : (
+            <></>
+          )
+        )}
       </Row>
     </div>
   );

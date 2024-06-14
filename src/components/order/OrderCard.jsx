@@ -18,8 +18,8 @@ const OrderCard = ({ order }) => {
   const [options, setOptions] = useState([
     { value: "Order Placed", label: "Order Placed" },
     { value: "Preparing Order", label: "Preparing Order" },
-    { value: "Ready for pickup", label: "Ready for pickup" },
-    { value: "Order Picker Up", label: "Order Picker Up" },
+    { value: "Ready for Pickup", label: "Ready for Pickup" },
+    { value: "Order Picked Up", label: "Order Picked Up" },
   ]);
 
   const handleChange = async (selected) => {
@@ -38,18 +38,18 @@ const OrderCard = ({ order }) => {
           return prevOptions.filter(
             (option) => option.value !== "Order Placed"
           );
-        } else if (newStatus === "Ready for pickup") {
+        } else if (newStatus === "Ready for Pickup") {
           return prevOptions.filter(
             (option) =>
               option.value !== "Order Placed" &&
               option.value !== "Preparing Order"
           );
-        } else if (newStatus === "Order Picker Up") {
+        } else if (newStatus === "Order Picked Up") {
           return prevOptions.filter(
             (option) =>
               option.value !== "Order Placed" &&
               option.value !== "Preparing Order" &&
-              option.value !== "Ready for pickup"
+              option.value !== "Ready for Pickup"
           );
         } else {
           return prevOptions;
@@ -66,18 +66,18 @@ const OrderCard = ({ order }) => {
     setOptions((prevOptions) => {
       if (newStatus === "Preparing Order") {
         return prevOptions.filter((option) => option.value !== "Order Placed");
-      } else if (newStatus === "Ready for pickup") {
+      } else if (newStatus === "Ready for Pickup") {
         return prevOptions.filter(
           (option) =>
             option.value !== "Order Placed" &&
             option.value !== "Preparing Order"
         );
-      } else if (newStatus === "Order Picker Up") {
+      } else if (newStatus === "Order Picked Up") {
         return prevOptions.filter(
           (option) =>
             option.value !== "Order Placed" &&
             option.value !== "Preparing Order" &&
-            option.value !== "Ready for pickup"
+            option.value !== "Ready for Pickup"
         );
       } else {
         return prevOptions;
@@ -109,8 +109,8 @@ const OrderCard = ({ order }) => {
               className="text-left flex justify-between lg:flex-col mb-4 lg:mb-0"
             >
               <p className="font-semibold text-md opacity-70">Status</p>
-              {selectedOption == "Order Picker Up" ? (
-                <>Order Picked Up</>
+              {selectedOption == "Order Picked Up" ? (
+                <p className='text-lg font-bold'>{order.status}</p>
               ) : (
                 <Select
                   value={selectedOption}
