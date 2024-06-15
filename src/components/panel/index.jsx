@@ -15,6 +15,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Panel = ({ tableData, loading, user }) => {
+  const [ordersIds,setOrderIds] = useState([]);
   const handleDishImgUpload = (file, key) => {
     try {
       // const file = fileList[0].originFileObj;
@@ -40,7 +41,8 @@ const Panel = ({ tableData, loading, user }) => {
             const q = query(
               ordersCollection2,
               where("resName", "==", curRes),
-              where("pay_status", "==", "Not Paid")
+              where("pay_status", "==", "Not Paid"),
+              where("orderId", "in", ordersIds)
             );
 
             // Get the documents that match the query
@@ -195,13 +197,16 @@ const Panel = ({ tableData, loading, user }) => {
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
-      console.log(selectedRows, "s");
+      // console.log(
+      //   `selectedRowKeys: ${selectedRowKeys}`,
+      //   "selectedRows: ",
+      //   selectedRows
+      // );
+      // console.log(selectedRows, "s");
       setSelectedRows(selectedRows);
+      const orderIds = selectedRows.map(row => row.orderId);
+      // console.log(orderIds, "orderIds");
+      setOrderIds(orderIds);
     },
     getCheckboxProps: (record) => ({
       disabled: record.title === "Disabled User",
@@ -338,7 +343,7 @@ const Panel = ({ tableData, loading, user }) => {
         className="rounded-lg"
       >
         <p className="text-lg mb-4 flex items-center">
-          Pay <p className="font-bold text-xl m-3">{sum}</p> to
+          Pay ₹<p className="font-bold text-xl m-3">{sum}</p> to
           <p className="font-bold text-xl m-3 text-indigo-600">{curRes}</p>
         </p>
         <div className="flex flex-col items-center justify-evenly mt-5">
