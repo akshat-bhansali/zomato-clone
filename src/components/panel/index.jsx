@@ -7,11 +7,12 @@ import {
   where,
   updateDoc,
 } from "firebase/firestore";
+import { Navigate, Link, useNavigate } from "react-router-dom";
 import { db, storage } from "../../firebase/firebase";
 import { Option } from "antd/es/mentions";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Panel = ({ tableData, loading, user }) => {
   const handleDishImgUpload = (file, key) => {
@@ -74,6 +75,7 @@ const Panel = ({ tableData, loading, user }) => {
     }
   };
   const ordersCollection = collection(db, "order");
+  const adminCollection = collection(db, "admin");
 
   const columns = [
     {
@@ -128,6 +130,8 @@ const Panel = ({ tableData, loading, user }) => {
   const [mainData, setMainData] = useState([]);
 
   const [curRes, setCurRes] = useState();
+  const [resData, setResData] = useState([]);
+  const [resData2, setResData2] = useState(false);
   const [selectedRows, setSelectedRows] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sum, setSum] = useState(0);
@@ -145,7 +149,7 @@ const Panel = ({ tableData, loading, user }) => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-
+  const navigate = useNavigate();
   async function getData() {
     setData(null);
     const q = query(ordersCollection);
@@ -175,6 +179,18 @@ const Panel = ({ tableData, loading, user }) => {
     }
     setData(temp);
     return;
+  }
+  const getRes=async()=>{
+    setResData2(false)
+    const q = query(adminCollection, where("name", "==", curRes));
+      const querySnapshot2 = await getDocs(q);
+      querySnapshot2.forEach(async (doc) => {
+        const tempRes = [];
+        tempRes?.push(doc.data());
+        setResData(tempRes);
+      });
+      setResData2(true);
+      console.log(resData)
   }
 
   const rowSelection = {
@@ -225,10 +241,17 @@ const Panel = ({ tableData, loading, user }) => {
     setCurPaymentId(id);
     setSum(val);
   }, [selectedRows]);
+  useEffect(()=>{
+    console.log("a",curRes)
+    if(curRes!="" && curRes!=undefined){
+      setResData([]);
+      getRes();
+    }
+  },[curRes])
 
   return (
     <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
-      <ToastContainer/>
+      <ToastContainer />
       <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
         <h1 className="font-bold text-2xl text-gray-800">
           <span className="text-indigo-600">{" SuperAdmin"}</span>
@@ -249,6 +272,16 @@ const Panel = ({ tableData, loading, user }) => {
           </Select>
         )}
       </div>
+      {resData2 && <div>
+        Owner Name - {resData[0]?.owner_name}<br/>
+        Owner Contact - +91 {resData[0]?.owner_contact}<br/>
+        Contact - +91 {resData[0]?.contact}<br/>
+        Email - {resData[0]?.email}<br/>
+        FSSAI License - <Image src={`${resData[0]?.FSSAILicense?.link}`}/>
+        QR code - <Image src={`${resData[0]?.bankAccount?.link}`}/>
+        Pan Card - <Image src={`${resData[0]?.panCard?.link}`}/>
+        <Button onClick={()=>{navigate(`/restaurant/${btoa(resData[0]?.email)}`)}}>View Restaurant</Button>
+      </div>}
       <div className="flex items-center space-x-4 mb-6">
         {data && (
           <>
@@ -310,7 +343,7 @@ const Panel = ({ tableData, loading, user }) => {
         </p>
         <div className="flex flex-col items-center justify-evenly mt-5">
           {/* QR Image */}
-          <img src="logo192.png" alt="QR Code" className="mb-5 w-40 h-40" />
+          <Image src={`${resData[0]?.bankAccount?.link}`} alt="QR Code" className="mb-5 w-40 h-40" />
           <Upload
             beforeUpload={(f) => {
               handleDishImgUpload(f, curPaymentId);
