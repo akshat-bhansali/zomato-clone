@@ -4,6 +4,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { useAuth } from "../../contexts/authContext";
 import { doSignOut } from "../../firebase/auth";
 import { NavLink, Link, useNavigate } from "react-router-dom";
+import {  Drawer } from 'antd';
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { userLoggedIn } = useAuth();
@@ -95,17 +96,8 @@ const Navbar = () => {
         </nav>
       </header>
       {isMenuOpen && (
-        <div>
-          <nav className="fixed top-0 right-0 left-0 bottom-0 lg:bottom-auto bg-slate-100">
-            <div
-              className="hidden max-lg:block fixed right-0  px-8 py-4 cursor-pointer"
-              onClick={() => {
-                setIsMenuOpen(!isMenuOpen);
-              }}
-            >
-              <AiOutlineClose className="text-4xl" />
-            </div>
-            <ul className=" lg:hidden flex flex-col items-center justify-center h-full ">
+        <Drawer title="Basic Drawer" onClose={()=>{setIsMenuOpen(false)}} open={isMenuOpen}>
+        <ul className=" lg:hidden flex flex-col items-center justify-center h-full ">
               {navLinks.map((item) => (
                 <li
                   key={item.label}
@@ -173,8 +165,7 @@ const Navbar = () => {
                 </div>
               </li>
             </ul>
-          </nav>
-        </div>
+      </Drawer>
       )}
     </div>
   );
