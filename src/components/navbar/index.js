@@ -96,7 +96,7 @@ const Navbar = () => {
         </nav>
       </header>
       {isMenuOpen && (
-        <Drawer title="Basic Drawer" onClose={()=>{setIsMenuOpen(false)}} open={isMenuOpen}>
+        <Drawer onClose={()=>{setIsMenuOpen(false)}} open={isMenuOpen}>
         <ul className=" lg:hidden flex flex-col items-center justify-center h-full ">
               {navLinks.map((item) => (
                 <li
