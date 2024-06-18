@@ -20,7 +20,7 @@ const AdminOrders = ({ user }) => {
     });
     listOrders.reverse();
     setOrders(listOrders);
-    console.log(listOrders);
+    // console.log(listOrders);
   };
 
   useEffect(() => {

@@ -57,7 +57,6 @@ const ScrollToTopButton = () => {
     const q = query(userCollection, where("email", "==", currentUser.email));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach(async (doc) => {
-      console.log("doc data ", doc.data());
       const data = doc.data();
       setCartResName(data.resName);
       setCartResImg(data.resImg);

@@ -227,7 +227,6 @@ const RestaurantDetails = () => {
     } else {
       querySnapshot.forEach(async (doc) => {
         setDetails(doc.data());
-        console.log("doc data ", doc.data());
       });
     }
     return;

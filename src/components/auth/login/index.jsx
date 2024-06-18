@@ -22,7 +22,6 @@ const Login = () => {
       setIsSigningIn(true);
       try {
         await doSignInWithEmailAndPassword(email, password, "user");
-        console.log("User created successfully");
       } catch (error) {
         toast.error("Invalid Email or Password");
         setIsSigningIn(false);

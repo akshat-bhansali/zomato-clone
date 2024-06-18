@@ -37,7 +37,7 @@ const Register = () => {
       setIsRegistering(true);
       try {
         await doCreateUserWithEmailAndPassword(email, password);
-        console.log("User created successfully");
+        // console.log("User created successfully");
         setIsRegistering(false);
         doSendEmailVerification();
         saveDataToFirestore(email, name, "user");

@@ -237,8 +237,8 @@ function AdminProfile({ user }) {
   const handleUpload = () => {
     try {
       const file = fileList[0].originFileObj;
-      console.log(file);
-      console.log(fileList);
+      // console.log(file);
+      // console.log(fileList);
       const path = `/${user.email}/${"RestaurantPic-" + file.name}`;
       const imgRef = ref(storage, path);
       const uploadTask = uploadBytesResumable(imgRef, file);
@@ -246,23 +246,23 @@ function AdminProfile({ user }) {
         "state_changed",
         (e) => {},
         (e) => {
-          console.log("Some error occured while uploading ", e);
+          // console.log("Some error occured while uploading ", e);
         },
         async () => {
           try {
             const url = await getDownloadURL(uploadTask.snapshot.ref);
             const querySnapshot = await getDocs(q);
-            console.log("Query Snapshot ", querySnapshot);
+            // console.log("Query Snapshot ", querySnapshot);
             if (querySnapshot.empty) {
-              console.log("Adding doc");
+              // console.log("Adding doc");
               const res = await addDoc(await adminCollection, {
                 email: user.email,
                 resPicPath: uploadTask.snapshot.ref.fullPath,
                 resPicLink: url,
               });
-              console.log("result ", res);
+              // console.log("result ", res);
 
-              console.log("Doc added successfully with pic");
+              // console.log("Doc added successfully with pic");
             } else {
               querySnapshot.forEach(async (doc) => {
                 const oldPath = doc.get("resPicPath");
@@ -275,9 +275,9 @@ function AdminProfile({ user }) {
                         resPicLink: url,
                       })
                     );
-                    console.log("Deleted Old File");
+                    // console.log("Deleted Old File");
                   } catch (e) {
-                    console.log("Error while deleting old File", e);
+                    // console.log("Error while deleting old File", e);
                   }
                 } else {
                   await updateDoc(doc.ref, {
@@ -289,20 +289,20 @@ function AdminProfile({ user }) {
             }
             toast.success("Successfully updated image !");
           } catch (e) {
-            console.log("error ", e);
+            // console.log("error ", e);
           }
         }
       );
       handleClearFileList();
     } catch (e) {
-      console.log("errors ", e);
+      // console.log("errors ", e);
     }
   };
 
   const handleDishImgUpload = (file, key) => {
     try {
       // const file = fileList[0].originFileObj;
-      console.log("Key to upload ", key);
+      // console.log("Key to upload ", key);
       // console.log(fileList);
       const path = `/${user.email}/dishes/${key + "-" + file.name}`;
       const imgRef = ref(storage, path);
@@ -311,16 +311,16 @@ function AdminProfile({ user }) {
         "state_changed",
         (e) => {},
         (e) => {
-          console.log("Some error occured while uploading ", e);
+          // console.log("Some error occured while uploading ", e);
         },
         async () => {
           try {
             const url = await getDownloadURL(uploadTask.snapshot.ref);
             // const q =
             const querySnapshot = await getDocs(q);
-            console.log("Query Snapshot ", querySnapshot);
+            // console.log("Query Snapshot ", querySnapshot);
             if (querySnapshot.empty) {
-              console.log("Adding doc");
+              // console.log("Adding doc");
               const res = await addDoc(await adminCollection, {
                 email: user.email,
                 dishes: [
@@ -330,9 +330,9 @@ function AdminProfile({ user }) {
                   },
                 ],
               });
-              console.log("result ", res);
+              // console.log("result ", res);
 
-              console.log("Doc added successfully with pic");
+              // console.log("Doc added successfully with pic");
             } else {
               let dishData = details?.dishes.filter((v, i) => v.key === key);
               dishData = dishData[0];
@@ -342,19 +342,19 @@ function AdminProfile({ user }) {
                 if (oldPath) {
                   try {
                     await deleteObject(ref(storage, oldPath));
-                    console.log("Deleted Old File", oldPath);
+                    // console.log("Deleted Old File", oldPath);
                   } catch (e) {
-                    console.log("Error while deleting old File", e);
+                    // console.log("Error while deleting old File", e);
                   }
                 }
-                console.log("New Data ", details?.dishes);
+                // console.log("New Data ", details?.dishes);
                 let dishLis = details?.dishes.filter((v, i) => v.key !== key);
                 dishData = {
                   ...dishData,
                   image: { path: uploadTask.snapshot.ref.fullPath, link: url },
                 };
                 dishLis.push(dishData);
-                console.log("New Data ", dishLis);
+                // console.log("New Data ", dishLis);
                 const res = await updateDoc(doc.ref, {
                   dishes: dishLis,
                 });
@@ -363,12 +363,12 @@ function AdminProfile({ user }) {
             toast.success("Successfully updated image !");
             getData();
           } catch (e) {
-            console.log("error ", e);
+            // console.log("error ", e);
           }
         }
       );
     } catch (e) {
-      console.log("errors ", e);
+      // console.log("errors ", e);
     }
   };
   const handleDocUpload = (file, key) => {
@@ -383,16 +383,16 @@ function AdminProfile({ user }) {
         "state_changed",
         (e) => {},
         (e) => {
-          console.log("Some error occured while uploading ", e);
+          // console.log("Some error occured while uploading ", e);
         },
         async () => {
           try {
             const url = await getDownloadURL(uploadTask.snapshot.ref);
             // const q =
             const querySnapshot = await getDocs(q);
-            console.log("Query Snapshot ", querySnapshot);
+            // console.log("Query Snapshot ", querySnapshot);
             if (querySnapshot.empty) {
-              console.log("Adding doc");
+              // console.log("Adding doc");
               const res = await addDoc(await adminCollection, {
                 email: user.email,
                 [key]: {
@@ -400,9 +400,9 @@ function AdminProfile({ user }) {
                   link: url,
                 },
               });
-              console.log("result ", res);
+              // console.log("result ", res);
 
-              console.log("Do c added successfully with pic");
+              // console.log("Do c added successfully with pic");
             } else {
               let oldPath = null;
               if (key == "panCard") oldPath = details?.panCard?.path;
@@ -420,9 +420,9 @@ function AdminProfile({ user }) {
                         },
                       })
                     );
-                    console.log("Deleted Old File", oldPath);
+                    // console.log("Deleted Old File", oldPath);
                   } catch (e) {
-                    console.log("Error while deleting old File", e);
+                    // console.log("Error while deleting old File", e);
                   }
                 } else {
                   const res = await updateDoc(doc.ref, {
@@ -437,12 +437,12 @@ function AdminProfile({ user }) {
             toast.success("Successfully updated image !");
             getData();
           } catch (e) {
-            console.log("error ", e);
+            // console.log("error ", e);
           }
         }
       );
     } catch (e) {
-      console.log("errors ", e);
+      // console.log("errors ", e);
     }
   };
   // use states of fields
@@ -450,7 +450,7 @@ function AdminProfile({ user }) {
   const saveDetails = async () => {
     const querySnapshot = await getDocs(q);
     const doc = querySnapshot.forEach(async (doc) => {
-      console.log(details);
+      // console.log(details);
       await updateDoc(doc.ref, { ...details });
       toast.success("Saved changes");
     });
@@ -459,20 +459,20 @@ function AdminProfile({ user }) {
     let lis = details?.dishes || [];
     if (pos == -1) {
       lis = [...lis, { ...tdata }];
-      console.log("List ", lis);
+      // console.log("List ", lis);
     } else {
       lis = lis.filter((v, i) => {
-        console.log(v.key, "   ", tdata.key);
+        // console.log(v.key, "   ", tdata.key);
         return v.key !== tdata.key;
       });
-      console.log("deleted ", lis);
+      // console.log("deleted ", lis);
       lis = [...lis, { ...tdata }];
     }
-    console.log("lis ", lis);
+    // console.log("lis ", lis);
     // return;
     const querySnapshot = await getDocs(q);
     const doc = querySnapshot.forEach(async (doc) => {
-      console.log(details);
+      // console.log(details);
       await updateDoc(doc.ref, { ...details, dishes: [...lis] });
       setDetails({ ...details, dishes: [...lis] });
       toast.success("Saved changes");
@@ -490,7 +490,7 @@ function AdminProfile({ user }) {
     } else {
       querySnapshot.forEach(async (doc) => {
         setDetails(doc.data());
-        console.log("doc data ", doc.data());
+        // console.log("doc data ", doc.data());
       });
     }
   }
@@ -816,7 +816,7 @@ function AdminProfile({ user }) {
               >
                 <Button
                 className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-                >Upload Bank Account details</Button>
+                >Upload payment QR code</Button>
               </Upload>
             </div>
             <div className="flex flex-col items-center">

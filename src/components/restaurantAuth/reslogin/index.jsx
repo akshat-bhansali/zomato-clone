@@ -22,7 +22,7 @@ const ResLogin = () => {
       setIsSigningIn(true);
       try {
         await doSignInWithEmailAndPassword(email, password,"admin");
-        console.log("User created successfully");
+        // console.log("User created successfully");
       } catch (error) {
         console.error("Error creating user:", error);
         toast.error("Invalid Email or Password");

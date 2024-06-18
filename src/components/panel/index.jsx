@@ -19,7 +19,7 @@ const Panel = ({ tableData, loading, user }) => {
   const handleDishImgUpload = (file, key) => {
     try {
       // const file = fileList[0].originFileObj;
-      console.log("Key to upload ", key);
+      // console.log("Key to upload ", key);
       // console.log(fileList);
       const path = `/${user.email}/payment/${key + "-" + file.name}`;
       const imgRef = ref(storage, path);
@@ -33,7 +33,7 @@ const Panel = ({ tableData, loading, user }) => {
         async () => {
           try {
             const url = await getDownloadURL(uploadTask.snapshot.ref);
-            console.log("PaymentURL", url);
+            // console.log("PaymentURL", url);
 
             const ordersCollection2 = collection(db, "order");
 
@@ -59,7 +59,7 @@ const Panel = ({ tableData, loading, user }) => {
                   pay_status: "Paid",
                   pay_url: url,
                 });
-                console.log("Document updated successfully");
+                // console.log("Document updated successfully");
               } catch (error) {
                 console.error("Error updating document: ", error);
               }
@@ -192,7 +192,7 @@ const Panel = ({ tableData, loading, user }) => {
         setResData(tempRes);
       });
       setResData2(true);
-      console.log(resData)
+      // console.log(resData)
   }
 
   const rowSelection = {
@@ -239,7 +239,7 @@ const Panel = ({ tableData, loading, user }) => {
     selectedRows?.forEach((row) => {
       id = row.orderId;
       if (row?.orderValue) {
-        console.log(row);
+        // console.log(row);
         val += row?.orderValue;
       }
     });
@@ -247,7 +247,7 @@ const Panel = ({ tableData, loading, user }) => {
     setSum(val);
   }, [selectedRows]);
   useEffect(()=>{
-    console.log("a",curRes)
+    // console.log("a",curRes)
     if(curRes!="" && curRes!=undefined){
       setResData([]);
       getRes();

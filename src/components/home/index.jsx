@@ -32,7 +32,7 @@ const Home = () => {
       setRestData(tempRes);
     });
     setShowRes(true);
-    console.log(restData);
+    // console.log(restData);
   };
   useEffect(() => {
     getRestaurants();

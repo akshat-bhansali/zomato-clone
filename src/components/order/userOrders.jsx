@@ -12,11 +12,11 @@ const UserOrders = ({user}) => {
     const getOrders = async ()=>{
         const q = query(ordresCollection, where("userEmail", "==", user.email));
         const querySnapshot = await getDocs(q);
-        console.log(querySnapshot);
+        // console.log(querySnapshot);
         let listOrders = []
 
         querySnapshot?.docs?.map((v,i)=>{
-            console.log(i," ",v.data());
+            // console.log(i," ",v.data());
             let totalPrice = 0;
             v.data()?.orderDetails.forEach((v,i)=>totalPrice+=(Number(v.cnt)*Number(v.price)))
             listOrders.push({...v.data(),totalPrice:totalPrice});

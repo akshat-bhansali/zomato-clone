@@ -34,7 +34,6 @@ export const addOrderToFirestore = async (userEmail, resEmail, orderDetails,orde
       pay_status : "Not Paid",
       pay_url : ""
     });
-    console.log("Order added with ID: ", docRef.id);
     return docRef.id; 
   } catch (error) {
     console.error("Error adding order: ", error);
@@ -50,7 +49,6 @@ export const doSignInWithEmailAndPassword = async(email, password,role) => {
       return signInWithEmailAndPassword(auth, "email", password);
     }
     else{
-      console.log("Reached")
       localStorage.setItem("user",JSON.stringify(existingUser));
       return signInWithEmailAndPassword(auth, email, password);
     }

@@ -25,7 +25,7 @@ const SuperAdmin = () => {
       try {
         await doSignInWithEmailAndPassword(email, password, "superadmin");
         setUser(JSON.parse(localStorage.getItem("user")));
-        console.log("User created successfully");
+        // console.log("User created successfully");
       } catch (error) {
         console.log("Error : ",error)
         toast.error("Invalid Email or Password");
