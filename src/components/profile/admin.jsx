@@ -12,6 +12,8 @@ import {
   Table,
   Modal,
   Switch,
+  Image,
+  Checkbox
 } from "antd";
 import { db, storage } from "../../firebase/firebase";
 import {
@@ -45,8 +47,13 @@ function AdminProfile({ user }) {
   const [modalItemDesc2, setModalItemDesc2] = useState("");
   const [modalItemPrice2, setModalItemPrice2] = useState(0);
   const [isModalOpen2, setIsModalOpen2] = useState(false);
+  const [mainData, setMainData] = useState([]);
+  const [paidBox, setPaidBox] = useState(false);
+  const [notPaidBox, setNotPaidBox] = useState(true);
   const adminCollection = collection(db, "admin");
+  const ordersCollection = collection(db, "order");
   const q = query(adminCollection, where("email", "==", user.email));
+  const q2 = query(ordersCollection, where("resEmail", "==", user.email));
 
   const normFile = (e) => {
     if (Array.isArray(e)) {
@@ -68,7 +75,44 @@ function AdminProfile({ user }) {
     { value: "Andhra", label: "Andhra" },
     { value: "Goan", label: "Goan" },
   ];
-
+  const onChangePaid = (e) => {
+    setPaidBox(e.target.checked);
+    setNotPaidBox(!e.target.checked);
+  };
+  const onChangeNotPaid = (e) => {
+    setPaidBox(!e.target.checked);
+    setNotPaidBox(e.target.checked);
+  };
+  const columns2 = [
+    {
+      title: "OrderId",
+      dataIndex: "orderId",
+      render: (text) => (
+        <a href={text} target="_blank" rel="noopener noreferrer">
+          {text}
+        </a>
+      ),
+    },
+    {
+      title: "OrderValue",
+      dataIndex: "orderValue",
+    },
+    {
+      title: "Status",
+      dataIndex: "pay_status",
+    },
+    {
+      title: "Image",
+      dataIndex: "pay_url",
+      render: (imgd, d) => {
+        return (
+          <>
+            <Image src={imgd} height={50} className="w-7 h-7" />
+          </>
+        );
+      },
+    },
+  ];
   const columns = [
     {
       title: "Item",
@@ -483,7 +527,7 @@ function AdminProfile({ user }) {
     setDetails(null);
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
-      await addDoc(await adminCollection, {
+      await addDoc( adminCollection, {
         email: user.email,
       });
       setDetails({ email: user.email });
@@ -494,9 +538,36 @@ function AdminProfile({ user }) {
       });
     }
   }
+  async function getPaymentDetails(){
+    const querySnapshot = await getDocs(q2);
+    const tempRes = [];
+    querySnapshot.forEach(async (doc) => {
+      let orderObj = {
+        orderId: doc.data().orderId,
+        orderValue: doc
+          .data()
+          .orderDetails.reduce(
+            (acc, curr) => acc + parseFloat(curr.price),
+            0
+          ),
+        pay_status: doc.data().pay_status,
+        pay_url: doc.data().pay_url,
+      };
+      if(paidBox && doc.data().pay_status=="Paid"){
+        tempRes?.push(orderObj);
+      }else if(notPaidBox && doc.data().pay_status=="Not Paid"){
+        tempRes?.push(orderObj);
+      }
+    });
+    setMainData(tempRes)
+    console.log(tempRes)
+  }
   useEffect(() => {
     getData();
   }, []);
+  useEffect(()=>{
+    getPaymentDetails();
+  },[paidBox,notPaidBox])
 
   return (
     <div className="p-6">
@@ -842,6 +913,30 @@ function AdminProfile({ user }) {
             </Button>
           </div>
         </div>
+        <div>
+        <Checkbox
+              onChange={onChangePaid}
+              checked={paidBox}
+              className="text-lg"
+            >
+              Paid
+            </Checkbox>
+            <Checkbox
+              onChange={onChangeNotPaid}
+              checked={notPaidBox}
+              className="text-lg"
+            >
+              Not Paid
+            </Checkbox>
+        <Table
+          title={() => (
+            <h2 className="text-2xl font-bold text-left">Payment Status</h2>
+          )}
+          columns={columns2}
+          dataSource={mainData}
+          className="shadow-md rounded-lg overflow-auto"
+        />
+      </div>
         </div>
       </div>
     </div>
