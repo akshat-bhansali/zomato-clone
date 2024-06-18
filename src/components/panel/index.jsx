@@ -15,7 +15,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Panel = ({ tableData, loading, user }) => {
-  const [ordersIds,setOrderIds] = useState([]);
+  const [ordersIds, setOrderIds] = useState([]);
   const handleDishImgUpload = (file, key) => {
     try {
       // const file = fileList[0].originFileObj;
@@ -182,18 +182,18 @@ const Panel = ({ tableData, loading, user }) => {
     setData(temp);
     return;
   }
-  const getRes=async()=>{
-    setResData2(false)
+  const getRes = async () => {
+    setResData2(false);
     const q = query(adminCollection, where("name", "==", curRes));
-      const querySnapshot2 = await getDocs(q);
-      querySnapshot2.forEach(async (doc) => {
-        const tempRes = [];
-        tempRes?.push(doc.data());
-        setResData(tempRes);
-      });
-      setResData2(true);
-      // console.log(resData)
-  }
+    const querySnapshot2 = await getDocs(q);
+    querySnapshot2.forEach(async (doc) => {
+      const tempRes = [];
+      tempRes?.push(doc.data());
+      setResData(tempRes);
+    });
+    setResData2(true);
+    // console.log(resData)
+  };
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -204,7 +204,7 @@ const Panel = ({ tableData, loading, user }) => {
       // );
       // console.log(selectedRows, "s");
       setSelectedRows(selectedRows);
-      const orderIds = selectedRows.map(row => row.orderId);
+      const orderIds = selectedRows.map((row) => row.orderId);
       // console.log(orderIds, "orderIds");
       setOrderIds(orderIds);
     },
@@ -246,88 +246,145 @@ const Panel = ({ tableData, loading, user }) => {
     setCurPaymentId(id);
     setSum(val);
   }, [selectedRows]);
-  useEffect(()=>{
+  useEffect(() => {
     // console.log("a",curRes)
-    if(curRes!="" && curRes!=undefined){
+    if (curRes != "" && curRes != undefined) {
       setResData([]);
       getRes();
     }
-  },[curRes])
+  }, [curRes]);
 
   return (
     <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
       <ToastContainer />
       <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
         <h1 className="font-bold text-2xl text-gray-800">
-          <span className="text-indigo-600">{" SuperAdmin"}</span>
+          <span className="text-indigo-600">SuperAdmin</span>
         </h1>
       </div>
-      <div className="mb-6">
-        {data && (
-          <Select
-            defaultValue={curRes}
-            className="w-full md:w-1/3"
-            onChange={(e) => setCurRes(e)}
-          >
-            {Object.keys(data).map((op, i) => (
-              <Option key={i} value={op}>
-                {op}
-              </Option>
-            ))}
-          </Select>
-        )}
-      </div>
-      {resData2 && <div>
-        Owner Name - {resData[0]?.owner_name}<br/>
-        Owner Contact - +91 {resData[0]?.owner_contact}<br/>
-        Contact - +91 {resData[0]?.contact}<br/>
-        Email - {resData[0]?.email}<br/>
-        FSSAI License - <Image src={`${resData[0]?.FSSAILicense?.link}`}/>
-        QR code - <Image src={`${resData[0]?.bankAccount?.link}`}/>
-        Pan Card - <Image src={`${resData[0]?.panCard?.link}`}/>
-        <Button onClick={()=>{navigate(`/restaurant/${btoa(resData[0]?.email)}`)}}>View Restaurant</Button>
-      </div>}
-      <div className="flex items-center space-x-4 mb-6">
-        {data && (
-          <>
-            <Checkbox
-              onChange={onChangePaid}
-              checked={paidBox}
-              className="text-lg"
-            >
-              Paid
-            </Checkbox>
-            <Checkbox
-              onChange={onChangeNotPaid}
-              checked={notPaidBox}
-              className="text-lg"
-            >
-              Not Paid
-            </Checkbox>
-            {notPaidBox && (
-              <Button
-                onClick={showModal}
-                disabled={sum === 0}
-                className="bg-blue-500 text-white hover:bg-blue-700"
+      <div className="flex flex-col md:flex-row md:space-x-6">
+        {/* Left Section - Restaurant Details */}
+        <div className="w-full md:w-1/3 bg-white p-4 rounded-lg shadow-md mb-6 md:mb-0">
+          <div className="mb-6">
+            {data && (
+              <Select
+                defaultValue={curRes}
+                className="w-full"
+                onChange={(e) => setCurRes(e)}
               >
-                Pay
-              </Button>
+                {Object.keys(data).map((op, i) => (
+                  <Option key={i} value={op} className="font-bold">
+                    {op}
+                  </Option>
+                ))}
+              </Select>
             )}
-          </>
-        )}
-      </div>
-      {mainData && curRes && (
-        <Table
-          title={() => (
-            <h2 className="text-2xl font-bold text-left">{curRes}</h2>
+          </div>
+          {resData2 && (
+            <div className="bg-white p-6 space-y-4">
+              <h2 className="text-xl font-bold text-indigo-800">
+                Restaurant Details
+              </h2>
+              <div className="space-y-2">
+                <p className="text-gray-700 font-bold">
+                  <span className="font-semibold">Owner Name:</span>{" "}
+                  {resData[0]?.owner_name}
+                </p>
+                <p className="text-gray-700 font-bold">
+                  <span className="font-semibold">Owner Contact:</span> +91{" "}
+                  {resData[0]?.owner_contact}
+                </p>
+                <p className="text-gray-700 font-bold">
+                  <span className="font-semibold">Contact:</span> +91{" "}
+                  {resData[0]?.contact}
+                </p>
+                <p className="text-gray-700 font-bold">
+                  <span className="font-semibold">Email:</span>{" "}
+                  {resData[0]?.email}
+                </p>
+                <p className="text-gray-700 font-bold">
+                  <span className="font-semibold">FSSAI License:</span>{" "}
+                  <Image
+                    src={`${resData[0]?.FSSAILicense?.link}`}
+                    alt="FSSAI License"
+                    className="inline-block w-20 h-20 rounded-lg border"
+                  />
+                </p>
+                <p className="text-gray-700 font-bold">
+                  <span className="font-semibold">QR Code:</span>{" "}
+                  <Image
+                    src={`${resData[0]?.bankAccount?.link}`}
+                    alt="QR Code"
+                    className="inline-block w-20 h-20 rounded-lg border"
+                  />
+                </p>
+                <p className="text-gray-700 font-bold">
+                  <span className="font-semibold">Pan Card:</span>{" "}
+                  <Image
+                    src={`${resData[0]?.panCard?.link}`}
+                    alt="Pan Card"
+                    className="inline-block w-20 h-20 rounded-lg border"
+                  />
+                </p>
+              </div>
+              <Button
+                onClick={() => {
+                  navigate(`/restaurant/${btoa(resData[0]?.email)}`);
+                }}
+                className="bg-indigo-600 text-white hover:bg-indigo-800 rounded-lg  mt-4"
+              >
+                View Restaurant
+              </Button>
+            </div>
           )}
-          loading={loading}
-          rowSelection={rowSelection}
-          columns={columns}
-          dataSource={mainData}
-          className="shadow-md rounded-lg overflow-auto"
-        />
-      )}
+        </div>
+
+        {/* Right Section - Orders Table */}
+        <div className="w-full md:w-2/3">
+          <div className="flex items-center space-x-4 mb-6">
+            {data && (
+              <>
+                <Checkbox
+                  onChange={onChangePaid}
+                  checked={paidBox}
+                  className="text-lg"
+                >
+                  Paid
+                </Checkbox>
+                <Checkbox
+                  onChange={onChangeNotPaid}
+                  checked={notPaidBox}
+                  className="text-lg"
+                >
+                  Not Paid
+                </Checkbox>
+                {notPaidBox && (
+                  <Button
+                    onClick={showModal}
+                    disabled={sum === 0}
+                    className="bg-blue-500 text-white hover:bg-blue-700 rounded"
+                  >
+                    Pay
+                  </Button>
+                )}
+              </>
+            )}
+          </div>
+          {mainData && curRes && (
+            <Table
+              title={() => (
+                <h2 className="text-2xl font-bold text-left">{curRes}</h2>
+              )}
+              loading={loading}
+              rowSelection={rowSelection}
+              columns={columns}
+              dataSource={mainData}
+              className="shadow-md rounded-lg overflow-auto"
+            />
+          )}
+        </div>
+      </div>
+
       <Modal
         title="Payment Confirmation"
         open={isModalOpen}
@@ -343,12 +400,17 @@ const Panel = ({ tableData, loading, user }) => {
         className="rounded-lg"
       >
         <p className="text-lg mb-4 flex items-center">
-          Pay ₹<p className="font-bold text-xl m-3">{sum}</p> to
-          <p className="font-bold text-xl m-3 text-indigo-600">{curRes}</p>
+          Pay ₹<span className="font-bold text-xl mx-2">{sum}</span> to
+          <span className="font-bold text-xl mx-2 text-indigo-600">
+            {curRes}
+          </span>
         </p>
         <div className="flex flex-col items-center justify-evenly mt-5">
-          {/* QR Image */}
-          <Image src={`${resData[0]?.bankAccount?.link}`} alt="QR Code" className="mb-5 w-40 h-40" />
+          <Image
+            src={`${resData[0]?.bankAccount?.link}`}
+            alt="QR Code"
+            className="mb-5 w-40 h-40"
+          />
           <Upload
             beforeUpload={(f) => {
               handleDishImgUpload(f, curPaymentId);
