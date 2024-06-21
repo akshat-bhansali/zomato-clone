@@ -20,7 +20,6 @@ const AdminOrders = ({ user }) => {
     });
     listOrders.reverse();
     setOrders(listOrders);
-    // console.log(listOrders);
   };
 
   useEffect(() => {
@@ -30,37 +29,35 @@ const AdminOrders = ({ user }) => {
   const [orders, setOrders] = useState(null);
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="p-6 bg-gray-50 min-h-screen">
       <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
         <h1 className="font-bold text-2xl text-gray-800">
           Recieved
           <span className="text-indigo-600"> Orders</span>
         </h1>
       </div>
-      <Row gutter={[16, 16]}>
-        <div>Pending Orders</div>
-        {orders?.map((order) =>
-          order?.status != "Order Picked Up" ? (
-            <>
-              <OrderCard order={order} key={order.id} />
-            </>
-          ) : (
-            <></>
-          )
-        )}
-      </Row>
-      <Row gutter={[16, 16]}>
-        <div>Previous Orders</div>
-        {orders?.map((order) =>
-          order?.status == "Order Picked Up" ? (
-            <>
-              <OrderCard order={order} key={order.id} />
-            </>
-          ) : (
-            <></>
-          )
-        )}
-      </Row>
+      <div className="mb-8">
+        <div className="bg-red-50 p-4 rounded-lg shadow-md mb-6">
+          <h2 className="font-bold text-xl text-gray-800 mb-4">Pending Orders</h2>
+          <Row gutter={[16, 16]}>
+            {orders?.map((order) =>
+              order?.status !== "Order Picked Up" ? (
+                <OrderCard order={order} key={order.id} />
+              ) : null
+            )}
+          </Row>
+        </div>
+        <div className="bg-green-50 p-4 rounded-lg shadow-md">
+          <h2 className="font-bold text-xl text-gray-800 mb-4">Previous Orders</h2>
+          <Row gutter={[16, 16]}>
+            {orders?.map((order) =>
+              order?.status === "Order Picked Up" ? (
+                <OrderCard order={order} key={order.id} />
+              ) : null
+            )}
+          </Row>
+        </div>
+      </div>
     </div>
   );
 };

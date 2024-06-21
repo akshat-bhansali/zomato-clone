@@ -13,7 +13,7 @@ import {
   Modal,
   Switch,
   Image,
-  Checkbox
+  Checkbox,
 } from "antd";
 import { db, storage } from "../../firebase/firebase";
 import {
@@ -33,8 +33,8 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AdminProfile({ user }) {
   const [modalItemName, setModalItemName] = useState("");
@@ -527,7 +527,7 @@ function AdminProfile({ user }) {
     setDetails(null);
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
-      await addDoc( adminCollection, {
+      await addDoc(adminCollection, {
         email: user.email,
       });
       setDetails({ email: user.email });
@@ -538,7 +538,7 @@ function AdminProfile({ user }) {
       });
     }
   }
-  async function getPaymentDetails(){
+  async function getPaymentDetails() {
     const querySnapshot = await getDocs(q2);
     const tempRes = [];
     querySnapshot.forEach(async (doc) => {
@@ -546,32 +546,29 @@ function AdminProfile({ user }) {
         orderId: doc.data().orderId,
         orderValue: doc
           .data()
-          .orderDetails.reduce(
-            (acc, curr) => acc + parseFloat(curr.price),
-            0
-          ),
+          .orderDetails.reduce((acc, curr) => acc + parseFloat(curr.price), 0),
         pay_status: doc.data().pay_status,
         pay_url: doc.data().pay_url,
       };
-      if(paidBox && doc.data().pay_status=="Paid"){
+      if (paidBox && doc.data().pay_status == "Paid") {
         tempRes?.push(orderObj);
-      }else if(notPaidBox && doc.data().pay_status=="Not Paid"){
+      } else if (notPaidBox && doc.data().pay_status == "Not Paid") {
         tempRes?.push(orderObj);
       }
     });
-    setMainData(tempRes)
-    console.log(tempRes)
+    setMainData(tempRes);
+    console.log(tempRes);
   }
   useEffect(() => {
     getData();
   }, []);
-  useEffect(()=>{
+  useEffect(() => {
     getPaymentDetails();
-  },[paidBox,notPaidBox])
+  }, [paidBox, notPaidBox]);
 
   return (
     <div className="p-6">
-      <ToastContainer/>
+      <ToastContainer />
       <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
         <h1 className="font-bold text-2xl text-gray-800">
           Welcome to your restaurant,{" "}
@@ -744,78 +741,104 @@ function AdminProfile({ user }) {
 
         {/* Dishes Table and Add Item Modal */}
         <div>
-        <div className=" m-4 p-3 border shadow-lg rounded-lg  font-semibold lg:h-[37vh] lg:w-[70vw] w-full z-10 overflow-y-auto">
-          <Button
-            onClick={showModal2}
-            className="bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6 w-full lg:w-auto"
-          >
-            Add Item
-          </Button>
+          <div className=" m-4 p-3 border shadow-lg rounded-lg  font-semibold lg:h-[37vh] lg:w-[70vw] w-full z-10 overflow-y-auto">
+            <Button
+              onClick={showModal2}
+              className="bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6 w-full lg:w-auto"
+            >
+              Add Item
+            </Button>
 
-          <Table
-            columns={columns}
-            dataSource={details?.dishes}
-            className="mb-6"
-          />
+            <Table
+              columns={columns}
+              dataSource={details?.dishes}
+              className="mb-6"
+            />
 
-          <Modal
-            title="Add New Item"
-            open={isModalOpen2}
-            onOk={handleOk2}
-            onCancel={handleCancel2}
-            footer={[
-              <Button
-                key="back"
-                onClick={handleOk2}
-                className="bg-green-600 text-white rounded-lg hover:bg-green-700"
-              >
-                SAVE
-              </Button>,
-            ]}
-          >
-            <div className="mb-4">
-              <label className="text-xs font-bold mb-2 block">Item Name</label>
-              <Input
-                placeholder="Enter Item Name"
-                value={modalItemName2}
-                onChange={(e) => {
-                  setModalItemName2(e.target.value);
-                }}
-                className="border rounded-lg p-2"
-              />
-            </div>
+            <Modal
+              title="Add New Item"
+              open={isModalOpen2}
+              onOk={handleOk2}
+              onCancel={handleCancel2}
+              footer={[
+                <Button
+                  key="back"
+                  onClick={handleOk2}
+                  className="bg-green-600 text-white rounded-lg hover:bg-green-700"
+                >
+                  SAVE
+                </Button>,
+              ]}
+            >
+              <div className="mb-4">
+                <label className="text-xs font-bold mb-2 block">
+                  Item Name
+                </label>
+                <Input
+                  placeholder="Enter Item Name"
+                  value={modalItemName2}
+                  onChange={(e) => {
+                    setModalItemName2(e.target.value);
+                  }}
+                  className="border rounded-lg p-2"
+                />
+              </div>
 
-            <div className="mb-4">
-              <label className="text-xs font-semibold mb-2 block">
-                Item Description
-              </label>
-              <Input
-                placeholder="Enter Item Description"
-                value={modalItemDesc2}
-                onChange={(e) => {
-                  setModalItemDesc2(e.target.value);
-                }}
-                className="border rounded-lg p-2"
-              />
-            </div>
+              <div className="mb-4">
+                <label className="text-xs font-semibold mb-2 block">
+                  Item Description
+                </label>
+                <Input
+                  placeholder="Enter Item Description"
+                  value={modalItemDesc2}
+                  onChange={(e) => {
+                    setModalItemDesc2(e.target.value);
+                  }}
+                  className="border rounded-lg p-2"
+                />
+              </div>
 
-            <div className="mb-4">
-              <label className="text-xs font-semibold mb-2 block">
-                Item Price
-              </label>
-              <Input
-                type="number"
-                placeholder="Enter Item Price"
-                value={modalItemPrice2}
-                onChange={(e) => {
-                  setModalItemPrice2(e.target.value);
-                }}
-                className="border rounded-lg p-2"
-              />
-            </div>
-          </Modal>
-        </div>
-        <div className="m-4 p-3 border shadow-lg rounded-lg font-semibold lg:h-auto lg:w-[70vw] w-full z-10 overflow-y-auto">
+              <div className="mb-4">
+                <label className="text-xs font-semibold mb-2 block">
+                  Item Price
+                </label>
+                <Input
+                  type="number"
+                  placeholder="Enter Item Price"
+                  value={modalItemPrice2}
+                  onChange={(e) => {
+                    setModalItemPrice2(e.target.value);
+                  }}
+                  className="border rounded-lg p-2"
+                />
+              </div>
+            </Modal>
+          </div>
+
+          <div className="m-4 p-3 border shadow-xl rounded-lg font-semibold lg:h-auto lg:w-[70vw] w-full z-10 overflow-y-auto">
+            <Checkbox
+              onChange={onChangePaid}
+              checked={paidBox}
+              className="text-lg"
+            >
+              Paid
+            </Checkbox>
+            <Checkbox
+              onChange={onChangeNotPaid}
+              checked={notPaidBox}
+              className="text-lg"
+            >
+              Not Paid
+            </Checkbox>
+            <Table
+              title={() => (
+                <h2 className="text-2xl font-bold text-left">Payment Status</h2>
+              )}
+              columns={columns2}
+              dataSource={mainData}
+              className="overflow-auto"
+            />
+          </div>
           <div>
             <p className="font-bold text-left m-4 text-xl opacity-70 text-indigo-600 ">
               Upload Images
@@ -831,7 +854,6 @@ function AdminProfile({ user }) {
               )}
               <Upload
                 action={(f) => {}}
-               
                 fileList={fileList}
                 multiple={false}
                 maxCount={1}
@@ -872,9 +894,9 @@ function AdminProfile({ user }) {
                 }}
                 fileList={null}
               >
-                <Button
-                className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-                >Upload Pan Card</Button>
+                <Button className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                  Upload Pan Card
+                </Button>
               </Upload>
             </div>
             <div className="flex flex-col items-center">
@@ -885,9 +907,9 @@ function AdminProfile({ user }) {
                 }}
                 fileList={null}
               >
-                <Button
-                className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-                >Upload payment QR code</Button>
+                <Button className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                  Upload payment QR code
+                </Button>
               </Upload>
             </div>
             <div className="flex flex-col items-center">
@@ -898,9 +920,9 @@ function AdminProfile({ user }) {
                 }}
                 fileList={null}
               >
-                <Button
-                className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-                >Upload FSSAI License</Button>
+                <Button className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                  Upload FSSAI License
+                </Button>
               </Upload>
             </div>
           </div>
@@ -912,31 +934,6 @@ function AdminProfile({ user }) {
               Save Changes
             </Button>
           </div>
-        </div>
-        <div>
-        <Checkbox
-              onChange={onChangePaid}
-              checked={paidBox}
-              className="text-lg"
-            >
-              Paid
-            </Checkbox>
-            <Checkbox
-              onChange={onChangeNotPaid}
-              checked={notPaidBox}
-              className="text-lg"
-            >
-              Not Paid
-            </Checkbox>
-        <Table
-          title={() => (
-            <h2 className="text-2xl font-bold text-left">Payment Status</h2>
-          )}
-          columns={columns2}
-          dataSource={mainData}
-          className="shadow-md rounded-lg overflow-auto"
-        />
-      </div>
         </div>
       </div>
     </div>
