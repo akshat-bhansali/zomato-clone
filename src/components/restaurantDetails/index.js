@@ -1,12 +1,5 @@
-import { Button, Image, Rate, Table } from "antd";
-import {
-  addDoc,
-  collection,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { Button, Image, Rate, Table, Collapse } from "antd";
+import { addDoc, collection, getDocs, query, updateDoc, where } from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { db } from "../../firebase/firebase";
@@ -14,12 +7,19 @@ import { getAuth } from "firebase/auth";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const { Panel } = Collapse;
+
 const RestaurantDetails = () => {
   const user = getAuth().currentUser;
   const navigate = useNavigate();
   const [rating, setRating] = useState(0);
   const { id } = useParams();
   const [userData, setUserData] = useState(null);
+  const [details, setDetails] = useState([]);
+  const [showDetails, setShowDetails] = useState(false);
+  const adminCollection = collection(db, "admin");
+  const userCollection = collection(db, "user");
+
   const columns = [
     {
       title: "Item",
@@ -43,11 +43,9 @@ const RestaurantDetails = () => {
       dataIndex: "image",
       render: (imgd, d) => {
         return (
-          <>
-            <div className="flex align-middle justify-evenly">
-              <Image src={imgd?.link} height={50} className="w-7 h-7" />
-            </div>
-          </>
+          <div className="flex align-middle justify-evenly">
+            <Image src={imgd?.link} height={50} className="w-7 h-7" />
+          </div>
         );
       },
     },
@@ -57,51 +55,44 @@ const RestaurantDetails = () => {
       dataIndex: "key",
       render: (k, record) => {
         return (
-          <>
-            <div className="flex justify-evenly">
-              <Button
-                className="bg-blue-300"
-                type="secondary"
-                onClick={() => {
-                  if (user?.email == null || user?.email == "") {
-                    navigate("/login");
-                    toast.error("Login First");
-                    return;
-                  }
-                  removeFromCart(record);
-                }}
-              >
-                -
-              </Button>
-              {getCount(record.key)}
-              <Button
-                className="bg-blue-300"
-                type="secondary"
-                onClick={() => {
-                  if (user?.email == null || user?.email == "") {
-                    navigate("/login");
-                    toast.error("Login First");
-                    return;
-                  }
-                  addToCart(record);
-                }}
-              >
-                +
-              </Button>
-            </div>
-          </>
+          <div className="flex justify-evenly">
+            <Button
+              className="bg-blue-300"
+              type="secondary"
+              onClick={() => {
+                if (user?.email == null || user?.email == "") {
+                  navigate("/login");
+                  toast.error("Login First");
+                  return;
+                }
+                removeFromCart(record);
+              }}
+            >
+              -
+            </Button>
+            {getCount(record.key)}
+            <Button
+              className="bg-blue-300"
+              type="secondary"
+              onClick={() => {
+                if (user?.email == null || user?.email == "") {
+                  navigate("/login");
+                  toast.error("Login First");
+                  return;
+                }
+                addToCart(record);
+              }}
+            >
+              +
+            </Button>
+          </div>
         );
       },
     },
   ];
 
-  const [details, setDetails] = useState([]);
-  const adminCollection = collection(db, "admin");
-  const userCollection = collection(db, "user");
-
   const getCount = (k) => {
     if (!user?.email) return 0;
-    // await getUserData();
     if (userData?.resId !== atob(id)) return 0;
     let result = 0;
     userData?.cart?.forEach((v) => {
@@ -109,14 +100,12 @@ const RestaurantDetails = () => {
     });
     return result;
   };
+
   const addToCart = async (rec) => {
-    // console.log("Recordd ",rec);
-    // return;
     const q = query(userCollection, where("email", "==", user.email));
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach(async (doc) => {
-      // console.log("doc data ", doc.data());
       const data = doc.data();
       let newData = data;
       if (!data?.resId) {
@@ -151,14 +140,12 @@ const RestaurantDetails = () => {
       toast.success("Added to Cart");
     });
   };
+
   const removeFromCart = async (rec) => {
-    // console.log("Recordd ",rec);
-    // return;
     const q = query(userCollection, where("email", "==", user.email));
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach(async (doc) => {
-      // console.log("doc data ", doc.data());
       const data = doc.data();
 
       if (!data?.resId) {
@@ -182,7 +169,6 @@ const RestaurantDetails = () => {
           .filter((v) => v) || [];
 
       if (lis.length == 0) {
-        // console.log({ ...data,cart:[],resId:null})
         await updateDoc(doc.ref, {
           ...data,
           cart: lis,
@@ -195,9 +181,8 @@ const RestaurantDetails = () => {
       toast.error("Removed from cart");
     });
   };
+
   async function getUserData() {
-    // const user = localStorage.getItem('user')
-    // console.log("user ",user);
     if (user?.email == null) {
       return;
     }
@@ -211,9 +196,8 @@ const RestaurantDetails = () => {
       if (v.key === atob(id)) setRating(v.rating);
     });
     setUserData(v.data());
-
-    // console.log("sdf ",v.data());
   }
+
   async function getData() {
     setDetails(null);
     const q = query(adminCollection, where("email", "==", atob(id)));
@@ -231,6 +215,7 @@ const RestaurantDetails = () => {
     }
     return;
   }
+
   async function updateRating(rate) {
     if (user?.email == null || user?.email == "") {
       navigate("/login");
@@ -275,44 +260,52 @@ const RestaurantDetails = () => {
     getData();
     getUserData();
   }
-  // React.useEffect(() => {
-  //   // console.log("Restaurant ID:", id);
-  // }, [id]);
 
   React.useEffect(() => {
     getUserData();
     getData();
   }, []);
 
+  const toggleDetails = () => {
+    setShowDetails(!showDetails);
+  };
+
   return (
     <div className="p-6">
-        <ToastContainer/>
-        <div>
-          <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
-            <h1 className="font-bold text-2xl text-gray-800">
-              Order from
-              <span className="text-indigo-600">{" " + details?.name}</span>
-            </h1>
-          </div>
+      <ToastContainer />
+      <div>
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
+          <h1 className="font-bold text-2xl text-gray-800">
+            Order from
+            <span className="text-indigo-600">{" " + details?.name}</span>
+          </h1>
         </div>
-        <div>
-          contact - {details?.contact}
-          <br/>
-          address - {details?.address}
-          <br/>
-          cusines - 
-          {details?.cusines?.map((c,i)=>{
-            return(<div>{c}</div>)
-          })}
-        </div>
-        <div className="flex justify-end ">
+      </div>
+      <div className="flex justify-between mb-4">
+        <Button type="primary" onClick={toggleDetails} className="bg-blue-500 text-white">
+          View Restaurant Details
+        </Button>
         <div className="mr-5 p-3 rounded-lg flex gap-5 align-middle justify-center">
           <p className="font-bold opacity-70 text-lg">Rate Us</p>
           <Rate value={rating} onChange={(v) => updateRating(v)} />
         </div>
-        </div>
-      
-      {<Table columns={columns} dataSource={details?.dishes} />}
+      </div>
+      {showDetails && (
+        <Collapse defaultActiveKey={['1']}>
+          <Panel header="Restaurant Details" key="1">
+            <div>
+              <div>Contact - {details?.contact}</div>
+              <div>Address - {details?.address}</div>
+              <div>Cuisines - 
+                {details?.cusines?.map((c, i) => (
+                  <div key={i}>{c}</div>
+                ))}
+              </div>
+            </div>
+          </Panel>
+        </Collapse>
+      )}
+      <Table columns={columns} dataSource={details?.dishes} />
     </div>
   );
 };
