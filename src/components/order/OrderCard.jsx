@@ -55,7 +55,7 @@ const OrderCard = ({ order }) => {
           return prevOptions;
         }
       });
-      toast.success("Order status updated successfully.");
+      // toast.success("Order status updated successfully.");
     } catch (error) {
       console.error("Error updating order status:", error);
     }
