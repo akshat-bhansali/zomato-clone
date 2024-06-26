@@ -114,7 +114,7 @@ export default function Cart() {
       handler: async (response) => {
         try {
           const { data } = await axios.post(
-            "http://localhost:4000/verify",
+            "https://zomato-clone-backend-1pw8.onrender.com/verify",
             response
           );
           try {
@@ -149,7 +149,7 @@ export default function Cart() {
   const handlePayment = async () => {
     try {
       const { data } = await axios.post(
-        "http://localhost:4000/api/process/payment",
+        "https://zomato-clone-backend-1pw8.onrender.com/api/process/payment",
         { amount: toatlPrice }
       );
       initPayment(data.data);

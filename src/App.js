@@ -25,7 +25,7 @@ function App() {
   const routesArray = [
     {
       path: "*",
-      element: <Login />,
+      element: <Home />,
     },
     {
       path: "/login",

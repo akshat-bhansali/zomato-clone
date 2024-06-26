@@ -27,29 +27,29 @@ const OrderCard = ({ order }) => {
       const newStatus = selected;
       const q = query(
         collection(db, "order"),
-        where("orderId", "==", order.orderId)
+        where("orderId", "==", order?.orderId)
       );
       const querySnapshot = await getDocs(q);
-      const orderDoc = querySnapshot.docs[0];
-      await updateDoc(orderDoc.ref, { status: newStatus });
+      const orderDoc = querySnapshot?.docs[0];
+      await updateDoc(orderDoc?.ref, { status: newStatus });
       setSelectedOption(selected);
       setOptions((prevOptions) => {
         if (newStatus === "Preparing Order") {
-          return prevOptions.filter(
-            (option) => option.value !== "Order Placed"
+          return prevOptions?.filter(
+            (option) => option?.value !== "Order Placed"
           );
         } else if (newStatus === "Ready for Pickup") {
-          return prevOptions.filter(
+          return prevOptions?.filter(
             (option) =>
-              option.value !== "Order Placed" &&
-              option.value !== "Preparing Order"
+              option?.value !== "Order Placed" &&
+              option?.value !== "Preparing Order"
           );
         } else if (newStatus === "Order Picked Up") {
-          return prevOptions.filter(
+          return prevOptions?.filter(
             (option) =>
-              option.value !== "Order Placed" &&
-              option.value !== "Preparing Order" &&
-              option.value !== "Ready for Pickup"
+              option?.value !== "Order Placed" &&
+              option?.value !== "Preparing Order" &&
+              option?.value !== "Ready for Pickup"
           );
         } else {
           return prevOptions;
@@ -65,19 +65,19 @@ const OrderCard = ({ order }) => {
     const newStatus = order?.status;
     setOptions((prevOptions) => {
       if (newStatus === "Preparing Order") {
-        return prevOptions.filter((option) => option.value !== "Order Placed");
+        return prevOptions?.filter((option) => option?.value !== "Order Placed");
       } else if (newStatus === "Ready for Pickup") {
-        return prevOptions.filter(
+        return prevOptions?.filter(
           (option) =>
-            option.value !== "Order Placed" &&
-            option.value !== "Preparing Order"
+            option?.value !== "Order Placed" &&
+            option?.value !== "Preparing Order"
         );
       } else if (newStatus === "Order Picked Up") {
-        return prevOptions.filter(
+        return prevOptions?.filter(
           (option) =>
-            option.value !== "Order Placed" &&
-            option.value !== "Preparing Order" &&
-            option.value !== "Ready for Pickup"
+            option?.value !== "Order Placed" &&
+            option?.value !== "Preparing Order" &&
+            option?.value !== "Ready for Pickup"
         );
       } else {
         return prevOptions;
@@ -87,7 +87,7 @@ const OrderCard = ({ order }) => {
 
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <Col span={24} key={order.id} className="mb-4">
         <div className="border rounded-lg shadow-md p-4 bg-white text-left">
           <Row className="items-center">

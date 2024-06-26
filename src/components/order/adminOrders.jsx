@@ -13,10 +13,10 @@ const AdminOrders = ({ user }) => {
     let listOrders = [];
     querySnapshot?.docs?.map((v) => {
       let totalPrice = 0;
-      v.data()?.orderDetails.forEach(
+      v?.data()?.orderDetails?.forEach(
         (item) => (totalPrice += Number(item.cnt) * Number(item.price))
       );
-      listOrders.push({ ...v.data(), totalPrice });
+      listOrders?.push({ ...v?.data(), totalPrice });
     });
     listOrders.reverse();
     setOrders(listOrders);
