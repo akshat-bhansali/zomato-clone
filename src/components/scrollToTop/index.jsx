@@ -54,29 +54,31 @@ const ScrollToTopButton = () => {
     });
   };
   const getCartData = async () => {
-    const q = query(userCollection, where("email", "==", currentUser.email));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(async (doc) => {
-      const data = doc.data();
-      setCartResName(data.resName);
-      setCartResImg(data.resImg);
-      setCartResEmail(data.resId);
-      let price = 0;
-      let count = 0;
-      data?.cart?.map((item, i) => {
-        price += Number(Number(item?.price) * Number(item?.cnt));
-        count += Number(item?.cnt);
+    try {
+      const q = query(userCollection, where("email", "==", currentUser.email));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(async (doc) => {
+        const data = doc.data();
+        setCartResName(data.resName);
+        setCartResImg(data.resImg);
+        setCartResEmail(data.resId);
+        let price = 0;
+        let count = 0;
+        data?.cart?.map((item, i) => {
+          price += Number(Number(item?.price) * Number(item?.cnt));
+          count += Number(item?.cnt);
+        });
+        setCartResPrice(price);
+        setCartResItem(count);
       });
-      setCartResPrice(price);
-      setCartResItem(count);
-    });
+    } catch (e) {}
   };
   useEffect(() => {
     getCartData();
   }, []);
   return (
     <div className="flex">
-      <ToastContainer/>
+      <ToastContainer />
       <div
         className={`fixed lg:bottom-10 lg:left-10 bottom-3 left-3 z-10 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 h-[80px]   ${
           cartResItem > 0 ? "flex" : "hidden"

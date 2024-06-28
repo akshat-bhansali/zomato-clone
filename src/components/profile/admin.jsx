@@ -26,6 +26,7 @@ import {
 import {
   addDoc,
   collection,
+  deleteDoc,
   getDoc,
   getDocs,
   query,
@@ -118,7 +119,7 @@ function AdminProfile({ user }) {
       title: "Item",
       dataIndex: "item",
       key: "item",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <div>{text}</div>,
     },
     {
       title: "Description",
@@ -653,26 +654,6 @@ function AdminProfile({ user }) {
                   className="w-full"
                 />
               </Form.Item>
-              <Form.Item
-                label="List restaurant online :"
-                className="font-bold text-gray-700"
-              >
-                <Switch
-                  className="m-3"
-                  defaultChecked={details?.publish}
-                  onChange={(v) => setDetails({ ...details, publish: v })}
-                />
-              </Form.Item>
-              <Form.Item
-                label="Temporarily closed :"
-                className="font-bold text-gray-700"
-              >
-                <Switch
-                  className="m-3"
-                  defaultChecked={details?.closed}
-                  onChange={(v) => setDetails({ ...details, closed: v })}
-                />
-              </Form.Item>
               <Form.Item label="Address" className="font-bold text-gray-700">
                 <Input
                   value={details?.address}
@@ -725,6 +706,26 @@ function AdminProfile({ user }) {
                   onChange={(v) => setDetails({ ...details, cusines: v })}
                   options={categoriesOptions}
                   className="border rounded-lg w-full"
+                />
+              </Form.Item>
+              <Form.Item
+                label="List restaurant online :"
+                className="font-bold text-gray-700"
+              >
+                <Switch
+                  className="m-3"
+                  defaultChecked={details?.publish}
+                  onChange={(v) => setDetails({ ...details, publish: v })}
+                />
+              </Form.Item>
+              <Form.Item
+                label="Temporarily closed :"
+                className="font-bold text-gray-700"
+              >
+                <Switch
+                  className="m-3"
+                  defaultChecked={details?.closed}
+                  onChange={(v) => setDetails({ ...details, closed: v })}
                 />
               </Form.Item>
               <Form.Item>

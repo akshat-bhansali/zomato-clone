@@ -9,14 +9,15 @@ import {
 import React, { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../firebase/firebase";
-import { Button, Card, Divider, Image } from "antd";
+import { Button, Card, Divider, Image, List, Space, Skeleton } from "antd";
 import ProductCard from "./productCard";
 import axios from "axios";
 import { addOrderToFirestore } from "../../firebase/auth";
 import { useAuth } from "../../contexts/authContext";
-import { Input,Result} from "antd";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Input, Result } from "antd";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Search from "antd/es/transfer/search";
 
 const { TextArea } = Input;
 
@@ -25,12 +26,18 @@ export default function Cart() {
   const user = getAuth().currentUser;
   const navigate = useNavigate();
   const userCollection = collection(db, "user");
+  const couponsCollection = collection(db, "coupons");
   const [userData, setUserData] = useState(null);
   const [toatlPrice, setTotalPrice] = useState(null);
   const [instruction, setInstruction] = useState(null);
   const platformFee = 3;
-  const [orderPlaced,setOrderPlaced] = useState(false);
-  const [orderId,setOrderId] = useState("");
+  const [orderPlaced, setOrderPlaced] = useState(false);
+  const [orderId, setOrderId] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState("");
+  const [couponText, setCouponText] = useState("");
+  const [finalVal, setFinalVal] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [couponsData, setCouponsData] = useState([]);
   async function getUserData() {
     if (user?.email == null) {
       return;
@@ -39,7 +46,6 @@ export default function Cart() {
     const q = query(userCollection, where("email", "==", user.email));
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
-      //
       return;
     }
     const v = querySnapshot?.docs[0];
@@ -49,14 +55,74 @@ export default function Cart() {
     res?.cart?.forEach((ele) => {
       sum += Number(ele.price) * Number(ele.cnt);
     });
-    setTotalPrice(sum+platformFee);
+    setTotalPrice(sum + platformFee);
+    setFinalVal(sum);
     setUserData(v.data());
-    if(sum==0){
+    if (sum == 0) {
       toast.error("Cart Is Empty");
       navigate("/home");
     }
+    const q3 = query(couponsCollection);
+    const querySnapshot3 = await getDocs(q3);
+    const temp = [];
+    querySnapshot3.forEach(async (doc) => {
+      temp.push(doc.data());
+    });
+    setCouponsData(temp);
   }
 
+  useEffect(() => {
+    setCouponText(appliedCoupon);
+    const price = finalVal;
+    const matchingCoupon = couponsData.find(
+      (coupon) => coupon.name === appliedCoupon
+    );
+    if (appliedCoupon != "") {
+      if (matchingCoupon) {
+        if (price >= matchingCoupon.above) {
+          const temp = (price * Number(matchingCoupon.discount)) / 100;
+          const newDisc = Math.min(Number(matchingCoupon.upto), temp);
+          if (matchingCoupon.upto) {
+            const newDisc = Math.min(Number(matchingCoupon.upto), temp);
+            setTotalPrice(price + 3 - newDisc);
+            setDiscount(newDisc);
+            toast.success("Coupon Applied");
+          } else {
+            const newDisc = temp;
+            setTotalPrice(price + 3 - newDisc);
+            setDiscount(newDisc);
+            toast.success("Coupon Applied");
+          }
+        } else if (!matchingCoupon.above) {
+          const temp = (price * Number(matchingCoupon.discount)) / 100;
+          const newDisc = Math.min(Number(matchingCoupon.upto), temp);
+          if (matchingCoupon.upto) {
+            const newDisc = Math.min(Number(matchingCoupon.upto), temp);
+            setTotalPrice(price + 3 - newDisc);
+            setDiscount(newDisc);
+            toast.success("Coupon Applied");
+          } else {
+            const newDisc = temp;
+            setTotalPrice(price + 3 - newDisc);
+            setDiscount(newDisc);
+            toast.success("Coupon Applied");
+          }
+        } else {
+          toast.error(
+            `Add items worth ₹${Number(
+              Number(matchingCoupon.above) - Number(price)
+            )} more to avail this coupon`
+          );
+          setDiscount(0);
+          setTotalPrice(finalVal + 3);
+        }
+      } else {
+        toast.error("No coupon found");
+        setDiscount(0);
+        setTotalPrice(finalVal + 3);
+      }
+    }
+  }, [appliedCoupon, finalVal]);
   useEffect(() => {
     if (user?.email == null || user?.email == "") {
       toast.error("Login First");
@@ -80,8 +146,8 @@ export default function Cart() {
 
     await updateDoc(doc.ref, { ...userData, cart });
 
-    toast.success('Updated quantity');
-
+    toast.success("Updated quantity");
+    setAppliedCoupon("");
     getUserData();
   };
   //   const handleRemoveItem = ()=>{}
@@ -99,7 +165,7 @@ export default function Cart() {
         resImg: null,
         resName: null,
       });
-      toast.success('Emptied Cart');
+      toast.success("Emptied Cart");
     });
   };
   const initPayment = (data) => {
@@ -157,56 +223,119 @@ export default function Cart() {
       console.log(error);
     }
   };
-   
+
   return (
     <>
-    <ToastContainer/>
-    {!orderPlaced && <div style={{ margin: "0 auto", padding: "20px" }}>
-      <h2 className="font-bold text-xl m-3">Your Shopping Cart</h2>
-      {userData?.cart?.map((item, ind) => (
-        <ProductCard
-          key={item.id}
-          item={item}
-          onUpdateQuantity={(value) => handleUpdateQuantity(ind, value)}
-          //   onRemove={() => handleRemoveItem(item.id)}
+      <ToastContainer />
+      {!orderPlaced && (
+        <div style={{ margin: "0 auto", padding: "20px" }}>
+          <h2 className="font-bold text-xl m-3">Your Shopping Cart</h2>
+          {userData?.cart?.map((item, ind) => (
+            <ProductCard
+              key={item.id}
+              item={item}
+              onUpdateQuantity={(value) => handleUpdateQuantity(ind, value)}
+              //   onRemove={() => handleRemoveItem(item.id)}
+            />
+          ))}
+          <TextArea
+            rows={4}
+            placeholder="Enter cooking instruction,max length =20"
+            maxLength={20}
+            value={instruction}
+            onChange={(e) => {
+              setInstruction(e.target.value);
+            }}
+          />
+          <Space.Compact style={{ width: "100%" }}>
+            <Input
+              value={couponText}
+              placeholder="Enter Coupon Code"
+              onChange={(e) => {
+                setCouponText(e.target.value);
+              }}
+            />
+            <Button
+              type="dashed"
+              onClick={() => {
+                setAppliedCoupon(couponText);
+              }}
+            >
+              Apply
+            </Button>
+          </Space.Compact>
+          <List
+            itemLayout="horizontal"
+            dataSource={couponsData}
+            renderItem={(item, index) => (
+              <List.Item
+                actions={[
+                  <Button
+                    onClick={() => {
+                      setAppliedCoupon(item.name);
+                    }}
+                    key="list-loadmore-edit"
+                  >
+                    Apply
+                  </Button>,
+                ]}
+              >
+                <Skeleton avatar title={false} loading={item.loading} active>
+                  <List.Item.Meta
+                    title={<h2>{item.name}</h2>}
+                    description={`Get ${item.discount}% off ${
+                      item.upto ? `upto ₹${item.upto}` : ""
+                    } ${item.above ? `on orders above ₹${item.above}` : ""}`}
+                  />
+                </Skeleton>
+              </List.Item>
+            )}
+          />
+          <Divider />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Button onClick={handlePayment} size="large">
+              Proceed to Checkout
+            </Button>
+            <div>
+              <p className="font-semibold text-gray-500 ">Sum: ₹{finalVal} </p>
+              {discount != 0 && (
+                <p className="font-semibold text-gray-500 ">
+                  Discount: -₹{discount}{" "}
+                </p>
+              )}
+              <p className="font-semibold text-gray-500 ">
+                Platform fee: ₹{platformFee}{" "}
+              </p>
+              <div style={{ fontSize: "1.5em", fontWeight: "bold" }}>
+                Total: ₹{toatlPrice}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {orderPlaced && (
+        <Result
+          status="success"
+          title={`Order Placed!`}
+          subTitle={`Order Id: ${orderId} Your Order will shortly begin to prepare, please wait.`}
+          extra={[
+            <Button
+              key="buy"
+              onClick={() => {
+                navigate("/orders");
+              }}
+            >
+              View Orders
+            </Button>,
+          ]}
         />
-      ))}
-      <TextArea
-        rows={4}
-        placeholder="Enter cooking instruction,max length =20"
-        maxLength={20}
-        value={instruction}
-        onChange={(e) => {
-          setInstruction(e.target.value);
-        }}
-      />
-      <Divider />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Button onClick={handlePayment} size="large">
-          Proceed to Checkout
-        </Button>
-        <div>
-        <p className="font-semibold text-gray-500 ">Platform fee: ₹{platformFee} </p>
-        <div style={{ fontSize: "1.5em", fontWeight: "bold" }}>
-          Total: ₹{toatlPrice}
-        </div>
-        </div>
-      </div>
-    </div>}
-    {orderPlaced && <Result
-    status="success"
-    title={`Order Placed!`}
-    subTitle={`Order Id: ${orderId} Your Order will shortly begin to prepare, please wait.`}
-    extra={[
-      <Button key="buy" onClick={()=>{navigate("/orders")}}>View Orders</Button>,
-    ]}
-  />}
+      )}
     </>
   );
   //   return (<div className="flex p-10 flex-col">
