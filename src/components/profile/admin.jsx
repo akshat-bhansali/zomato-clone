@@ -569,375 +569,372 @@ function AdminProfile({ user }) {
 
   return (
     <div className="p-6">
-      <ToastContainer />
-      <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
-        <h1 className="font-bold text-2xl text-gray-800">
-          Welcome to your restaurant,{" "}
-          <span className="text-indigo-600">{user?.name}</span>
-        </h1>
-      </div>
-
-      <div className="flex">
-        {details && (
-          <div className="bg-white border m-4 p-6 rounded-lg shadow-lg mb-6 lg:w-[28vw] overflow-y-auto">
-            <div>
-              <p className="font-bold text-xl opacity-70 text-indigo-600 mb-4">
-                Restaurant Details
-              </p>
-            </div>
-            <Form
-              labelCol={{ span: 22 }}
-              wrapperCol={{ span: 22 }}
-              layout="vertical"
-              style={{ maxWidth: 900, font: "bold" }}
-              className="text-left"
-            >
-              <Form.Item
-                label="Restaurant Name"
-                className="font-bold text-gray-700"
-              >
-                <Input
-                  value={details.name}
-                  onChange={(v) =>
-                    setDetails({ ...details, name: v.target.value })
-                  }
-                  className="w-full"
-                />
-              </Form.Item>
-              <Form.Item
-                label="Restaurant Owner Name"
-                className="font-bold text-gray-700"
-              >
-                <Input
-                  value={details?.owner_name}
-                  onChange={(v) =>
-                    setDetails({ ...details, owner_name: v.target.value })
-                  }
-                  className="w-full"
-                />
-              </Form.Item>
-              <Form.Item
-                label="Restaurant Email"
-                className="font-bold text-gray-700"
-              >
-                <Input
-                  value={user?.email}
-                  className="w-full "
-                  disabled={true}
-                />
-              </Form.Item>
-              <Form.Item
-                label="Restaurant Owner Contact"
-                className="font-bold text-gray-700"
-              >
-                <Input
-                  addonBefore="+91"
-                  type="number"
-                  value={details?.owner_contact}
-                  onChange={(v) =>
-                    setDetails({ ...details, owner_contact: v.target.value })
-                  }
-                  className="w-full "
-                />
-              </Form.Item>
-              <Form.Item
-                label="Restaurant Contact"
-                className="font-bold text-gray-700"
-              >
-                <Input
-                  addonBefore="+91"
-                  type="number"
-                  value={details?.contact}
-                  onChange={(v) =>
-                    setDetails({ ...details, contact: v.target.value })
-                  }
-                  className="w-full"
-                />
-              </Form.Item>
-              <Form.Item label="Address" className="font-bold text-gray-700">
-                <Input
-                  value={details?.address}
-                  onChange={(v) =>
-                    setDetails({ ...details, address: v.target.value })
-                  }
-                  className="border rounded-lg p-2 w-full "
-                />
-              </Form.Item>
-              <Form.Item label="Pincode" className="font-bold text-gray-700">
-                <Input
-                  type="number"
-                  maxLength={6}
-                  onChange={(v) =>
-                    setDetails({ ...details, pincode: v.target.value })
-                  }
-                  value={details?.pincode}
-                  className="border rounded-lg p-2 w-full "
-                />
-              </Form.Item>
-              <Form.Item label="Veg" className="font-bold text-gray-700">
-                <Radio.Group
-                  onChange={(v) =>
-                    setDetails({ ...details, veg: v.target.value })
-                  }
-                  defaultValue={details?.veg}
-                  className="flex space-x-4"
-                >
-                  <Radio
-                    value="veg-only"
-                    defaultChecked={details?.veg === "veg-only"}
-                  >
-                    Veg Only
-                  </Radio>
-                  <Radio
-                    value="non-veg"
-                    defaultChecked={details?.veg === false}
-                  >
-                    Veg and Non-Veg
-                  </Radio>
-                </Radio.Group>
-              </Form.Item>
-
-              <Form.Item label="Cuisines" className="font-bold text-gray-700">
-                <Select
-                  mode="tags"
-                  style={{ width: "100%" }}
-                  placeholder="Tags Mode"
-                  defaultValue={details && details?.cusines}
-                  onChange={(v) => setDetails({ ...details, cusines: v })}
-                  options={categoriesOptions}
-                  className="border rounded-lg w-full"
-                />
-              </Form.Item>
-              <Form.Item
-                label="List restaurant online :"
-                className="font-bold text-gray-700"
-              >
-                <Switch
-                  className="m-3"
-                  defaultChecked={details?.publish}
-                  onChange={(v) => setDetails({ ...details, publish: v })}
-                />
-              </Form.Item>
-              <Form.Item
-                label="Temporarily closed :"
-                className="font-bold text-gray-700"
-              >
-                <Switch
-                  className="m-3"
-                  defaultChecked={details?.closed}
-                  onChange={(v) => setDetails({ ...details, closed: v })}
-                />
-              </Form.Item>
-              <Form.Item>
-                <Button
-                  onClick={saveDetails}
-                  className="bg-green-600 text-white rounded-lg hover:bg-green-700"
-                >
-                  Save Changes
-                </Button>
-              </Form.Item>
-            </Form>
-          </div>
-        )}
-
-        {/* Dishes Table and Add Item Modal */}
-        <div>
-          <div className=" m-4 p-3 border shadow-lg rounded-lg  font-semibold lg:h-[37vh] lg:w-[70vw] w-full z-10 overflow-y-auto">
-            <Button
-              onClick={showModal2}
-              className="bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6 w-full lg:w-auto"
-            >
-              Add Item
-            </Button>
-
-            <Table
-              columns={columns}
-              dataSource={details?.dishes}
-              className="mb-6"
-            />
-
-            <Modal
-              title="Add New Item"
-              open={isModalOpen2}
-              onOk={handleOk2}
-              onCancel={handleCancel2}
-              footer={[
-                <Button
-                  key="back"
-                  onClick={handleOk2}
-                  className="bg-green-600 text-white rounded-lg hover:bg-green-700"
-                >
-                  SAVE
-                </Button>,
-              ]}
-            >
-              <div className="mb-4">
-                <label className="text-xs font-bold mb-2 block">
-                  Item Name
-                </label>
-                <Input
-                  placeholder="Enter Item Name"
-                  value={modalItemName2}
-                  onChange={(e) => {
-                    setModalItemName2(e.target.value);
-                  }}
-                  className="border rounded-lg p-2"
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="text-xs font-semibold mb-2 block">
-                  Item Description
-                </label>
-                <Input
-                  placeholder="Enter Item Description"
-                  value={modalItemDesc2}
-                  onChange={(e) => {
-                    setModalItemDesc2(e.target.value);
-                  }}
-                  className="border rounded-lg p-2"
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="text-xs font-semibold mb-2 block">
-                  Item Price
-                </label>
-                <Input
-                  type="number"
-                  placeholder="Enter Item Price"
-                  value={modalItemPrice2}
-                  onChange={(e) => {
-                    setModalItemPrice2(e.target.value);
-                  }}
-                  className="border rounded-lg p-2"
-                />
-              </div>
-            </Modal>
-          </div>
-
-          <div className="m-4 p-3 border shadow-xl rounded-lg font-semibold lg:h-auto lg:w-[70vw] w-full z-10 overflow-y-auto">
-            <Checkbox
-              onChange={onChangePaid}
-              checked={paidBox}
-              className="text-lg"
-            >
-              Paid
-            </Checkbox>
-            <Checkbox
-              onChange={onChangeNotPaid}
-              checked={notPaidBox}
-              className="text-lg"
-            >
-              Not Paid
-            </Checkbox>
-            <Table
-              title={() => (
-                <h2 className="text-2xl font-bold text-left">Payment Status</h2>
-              )}
-              columns={columns2}
-              dataSource={mainData}
-              className="overflow-auto"
-            />
-          </div>
+    <ToastContainer />
+    <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
+      <h1 className="font-bold text-2xl text-gray-800">
+        Welcome to your restaurant,{" "}
+        <span className="text-indigo-600">{user?.name}</span>
+      </h1>
+    </div>
+  
+    <div className="flex flex-col lg:flex-row lg:items-start items-center">
+      {details && (
+        <div className="lg:mt-4 bg-white border p-6 rounded-lg shadow-lg lg:w-1/3 w-full overflow-y-auto lg:mx-0 mx-auto">
           <div>
-            <p className="font-bold text-left m-4 text-xl opacity-70 text-indigo-600 ">
-              Upload Images
+            <p className="font-bold text-xl opacity-70 text-indigo-600 mb-4">
+              Restaurant Details
             </p>
           </div>
-          <div className="flex flex-col lg:flex-row flex-wrap gap-4 justify-around">
-            <div className="flex flex-col items-center">
-              {details?.resPicLink && (
-                <img
-                  src={details?.resPicLink}
-                  className="w-24 h-24 rounded-lg shadow-md"
-                />
-              )}
-              <Upload
-                action={(f) => {}}
-                fileList={fileList}
-                multiple={false}
-                maxCount={1}
-                onChange={({ fileList }) => {
-                  if (fileList.length) {
-                    if (fileList[0].size > 300000) {
-                      toast.error("Image size should be less than 300KB");
-                      return;
-                    }
-                  }
-                  setFileList(fileList);
-                }}
-              >
-                {fileList.length === 0 && (
-                  <button
-                    style={{ border: 0, background: "none" }}
-                    type="button"
-                    className="text-gray-600 hover:text-black"
-                  >
-                    <PlusOutlined />
-                    <div style={{ marginTop: 8 }}>Change</div>
-                  </button>
-                )}
-              </Upload>
-              <Button
-                disabled={fileList.length === 0}
-                onClick={handleUpload}
-                className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-              >
-                Upload Restaurant pic
-              </Button>
-            </div>
-            <div className="flex flex-col items-center">
-              <img src={details?.panCard?.link} className="w-20 h-20" />
-              <Upload
-                beforeUpload={(f) => {
-                  handleDocUpload(f, "panCard");
-                }}
-                fileList={null}
-              >
-                <Button className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                  Upload Pan Card
-                </Button>
-              </Upload>
-            </div>
-            <div className="flex flex-col items-center">
-              <img src={details?.bankAccount?.link} className="w-20 h-20" />
-              <Upload
-                beforeUpload={(f) => {
-                  handleDocUpload(f, "bankAccount");
-                }}
-                fileList={null}
-              >
-                <Button className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                  Upload payment QR code
-                </Button>
-              </Upload>
-            </div>
-            <div className="flex flex-col items-center">
-              <img src={details?.FSSAILicense?.link} className="w-20 h-20" />
-              <Upload
-                beforeUpload={(f) => {
-                  handleDocUpload(f, "FSSAILicense");
-                }}
-                fileList={null}
-              >
-                <Button className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                  Upload FSSAI License
-                </Button>
-              </Upload>
-            </div>
-          </div>
-          <div className="text-right mt-4">
-            <Button
-              onClick={saveDetails}
-              className="bg-green-600 text-white rounded-lg hover:bg-green-700"
+          <Form
+            labelCol={{ span: 22 }}
+            wrapperCol={{ span: 22 }}
+            layout="vertical"
+            style={{ maxWidth: 900, font: "bold" }}
+            className="text-left"
+          >
+            <Form.Item label="Restaurant Name" className="font-bold text-gray-700">
+              <Input
+                value={details.name}
+                onChange={(v) =>
+                  setDetails({ ...details, name: v.target.value })
+                }
+                className="w-full"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Restaurant Owner Name"
+              className="font-bold text-gray-700"
             >
-              Save Changes
+              <Input
+                value={details?.owner_name}
+                onChange={(v) =>
+                  setDetails({ ...details, owner_name: v.target.value })
+                }
+                className="w-full"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Restaurant Email"
+              className="font-bold text-gray-700"
+            >
+              <Input
+                value={user?.email}
+                className="w-full "
+                disabled={true}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Restaurant Owner Contact"
+              className="font-bold text-gray-700"
+            >
+              <Input
+                addonBefore="+91"
+                type="number"
+                value={details?.owner_contact}
+                onChange={(v) =>
+                  setDetails({ ...details, owner_contact: v.target.value })
+                }
+                className="w-full "
+              />
+            </Form.Item>
+            <Form.Item
+              label="Restaurant Contact"
+              className="font-bold text-gray-700"
+            >
+              <Input
+                addonBefore="+91"
+                type="number"
+                value={details?.contact}
+                onChange={(v) =>
+                  setDetails({ ...details, contact: v.target.value })
+                }
+                className="w-full"
+              />
+            </Form.Item>
+            <Form.Item label="Address" className="font-bold text-gray-700">
+              <Input
+                value={details?.address}
+                onChange={(v) =>
+                  setDetails({ ...details, address: v.target.value })
+                }
+                className="border rounded-lg p-2 w-full "
+              />
+            </Form.Item>
+            <Form.Item label="Pincode" className="font-bold text-gray-700">
+              <Input
+                type="number"
+                maxLength={6}
+                onChange={(v) =>
+                  setDetails({ ...details, pincode: v.target.value })
+                }
+                value={details?.pincode}
+                className="border rounded-lg p-2 w-full "
+              />
+            </Form.Item>
+            <Form.Item label="Veg" className="font-bold text-gray-700">
+              <Radio.Group
+                onChange={(v) =>
+                  setDetails({ ...details, veg: v.target.value })
+                }
+                defaultValue={details?.veg}
+                className="flex space-x-4"
+              >
+                <Radio
+                  value="veg-only"
+                  defaultChecked={details?.veg === "veg-only"}
+                >
+                  Veg Only
+                </Radio>
+                <Radio
+                  value="non-veg"
+                  defaultChecked={details?.veg === false}
+                >
+                  Veg and Non-Veg
+                </Radio>
+              </Radio.Group>
+            </Form.Item>
+  
+            <Form.Item label="Cuisines" className="font-bold text-gray-700">
+              <Select
+                mode="tags"
+                style={{ width: "100%" }}
+                placeholder="Tags Mode"
+                defaultValue={details && details?.cusines}
+                onChange={(v) => setDetails({ ...details, cusines: v })}
+                options={categoriesOptions}
+                className="border rounded-lg w-full"
+              />
+            </Form.Item>
+            <Form.Item
+              label="List restaurant online :"
+              className="font-bold text-gray-700"
+            >
+              <Switch
+                className="m-3"
+                defaultChecked={details?.publish}
+                onChange={(v) => setDetails({ ...details, publish: v })}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Temporarily closed :"
+              className="font-bold text-gray-700"
+            >
+              <Switch
+                className="m-3"
+                defaultChecked={details?.closed}
+                onChange={(v) => setDetails({ ...details, closed: v })}
+              />
+            </Form.Item>
+            <Form.Item>
+              <Button
+                onClick={saveDetails}
+                className="bg-green-600 text-white rounded-lg hover:bg-green-700"
+              >
+                Save Changes
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+      )}
+  
+      {/* Dishes Table and Add Item Modal */}
+      <div className="lg:flex-1 lg:w-auto w-full mx-auto">
+        <div className=" lg:ml-4 m-4 mb-4 p-3 border shadow-lg rounded-lg font-semibold lg:h-[37vh] lg:w-[70vw] w-full z-10 overflow-y-auto mx-auto">
+          <Button
+            onClick={showModal2}
+            className="bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6 w-full lg:w-auto"
+          >
+            Add Item
+          </Button>
+  
+          <Table
+            columns={columns}
+            dataSource={details?.dishes}
+            className="mb-6"
+          />
+  
+          <Modal
+            title="Add New Item"
+            open={isModalOpen2}
+            onOk={handleOk2}
+            onCancel={handleCancel2}
+            footer={[
+              <Button
+                key="back"
+                onClick={handleOk2}
+                className="bg-green-600 text-white rounded-lg hover:bg-green-700"
+              >
+                SAVE
+              </Button>,
+            ]}
+          >
+            <div className="mb-4">
+              <label className="text-xs font-bold mb-2 block">Item Name</label>
+              <Input
+                placeholder="Enter Item Name"
+                value={modalItemName2}
+                onChange={(e) => {
+                  setModalItemName2(e.target.value);
+                }}
+                className="border rounded-lg p-2"
+              />
+            </div>
+  
+            <div className="mb-4">
+              <label className="text-xs font-semibold mb-2 block">
+                Item Description
+              </label>
+              <Input
+                placeholder="Enter Item Description"
+                value={modalItemDesc2}
+                onChange={(e) => {
+                  setModalItemDesc2(e.target.value);
+                }}
+                className="border rounded-lg p-2"
+              />
+            </div>
+  
+            <div className="mb-4">
+              <label className="text-xs font-semibold mb-2 block">
+                Item Price
+              </label>
+              <Input
+                type="number"
+                placeholder="Enter Item Price"
+                value={modalItemPrice2}
+                onChange={(e) => {
+                  setModalItemPrice2(e.target.value);
+                }}
+                className="border rounded-lg p-2"
+              />
+            </div>
+          </Modal>
+        </div>
+  
+        <div className="lg:ml-4 m-4 mb-4 p-3 border shadow-xl rounded-lg font-semibold lg:h-auto lg:w-[70vw] w-full z-10 overflow-y-auto mx-auto">
+          <Checkbox
+            onChange={onChangePaid}
+            checked={paidBox}
+            className="text-lg"
+          >
+            Paid
+          </Checkbox>
+          <Checkbox
+            onChange={onChangeNotPaid}
+            checked={notPaidBox}
+            className="text-lg"
+          >
+            Not Paid
+          </Checkbox>
+          <Table
+            title={() => (
+              <h2 className="text-2xl font-bold text-left">Payment Status</h2>
+            )}
+            columns={columns2}
+            dataSource={mainData}
+            className="overflow-auto"
+          />
+        </div>
+        <div>
+          <p className="font-bold text-left m-4 text-xl opacity-70 text-indigo-600 ">
+            Upload Images
+          </p>
+        </div>
+        <div className="flex flex-col lg:flex-row flex-wrap gap-4 justify-around">
+          <div className="flex flex-col items-center">
+            {details?.resPicLink && (
+              <img
+                src={details?.resPicLink}
+                className="w-24 h-24 rounded-lg shadow-md"
+              />
+            )}
+            <Upload
+              action={(f) => {}}
+              fileList={fileList}
+              multiple={false}
+              maxCount={1}
+              onChange={({ fileList }) => {
+                if (fileList.length) {
+                  if (fileList[0].size > 300000) {
+                    toast.error("Image size should be less than 300KB");
+                    return;
+                  }
+                }
+                setFileList(fileList);
+              }}
+            >
+              {fileList.length === 0 && (
+                <button
+                  style={{ border: 0, background: "none" }}
+                  type="button"
+                  className="text-gray-600 hover:text-black"
+                >
+                  <PlusOutlined />
+                  <div style={{ marginTop: 8 }}>Change</div>
+                </button>
+              )}
+            </Upload>
+            <Button
+              disabled={fileList.length === 0}
+              onClick={handleUpload}
+              className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+            >
+              Upload Restaurant pic
             </Button>
           </div>
+          <div className="flex flex-col items-center">
+            <img src={details?.panCard?.link} className="w-20 h-20" />
+            <Upload
+              beforeUpload={(f) => {
+                handleDocUpload(f, "panCard");
+              }}
+              fileList={null}
+            >
+              <Button className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                Upload Pan Card
+              </Button>
+            </Upload>
+          </div>
+          <div className="flex flex-col items-center">
+            <img src={details?.bankAccount?.link} className="w-20 h-20" />
+            <Upload
+              beforeUpload={(f) => {
+                handleDocUpload(f, "bankAccount");
+              }}
+              fileList={null}
+            >
+              <Button className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                Upload payment QR code
+              </Button>
+            </Upload>
+          </div>
+          <div className="flex flex-col items-center">
+            <img src={details?.FSSAILicense?.link} className="w-20 h-20" />
+            <Upload
+              beforeUpload={(f) => {
+                handleDocUpload(f, "FSSAILicense");
+              }}
+              fileList={null}
+            >
+              <Button className="mt-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                Upload FSSAI License
+              </Button>
+            </Upload>
+          </div>
+        </div>
+        <div className="text-right mt-4">
+          <Button
+            onClick={saveDetails}
+            className="bg-green-600 text-white rounded-lg hover:bg-green-700"
+          >
+            Save Changes
+          </Button>
         </div>
       </div>
     </div>
+  </div>
+  
+  
   );
 }
 
