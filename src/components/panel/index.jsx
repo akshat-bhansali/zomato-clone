@@ -350,166 +350,261 @@ const Panel = ({ tableData, loading, user }) => {
 
   return (
     <>
-      <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
-        <ToastContainer />
-        <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
-          <h1 className="font-bold text-2xl text-gray-800">
-            <span className="text-indigo-600">SuperAdmin</span>
-          </h1>
-        </div>
-        <div className="flex flex-col md:flex-row md:space-x-6">
-          {/* Left Section - Restaurant Details */}
-          <div className="w-full md:w-1/3 bg-white p-4 rounded-lg shadow-md mb-6 md:mb-0">
-            <div className="mb-6">
-              {data && (
-                <Select
-                  defaultValue={curRes}
-                  className="w-full"
-                  onChange={(e) => setCurRes(e)}
-                >
-                  {Object.keys(data).map((op, i) => (
-                    <Option key={i} value={op} className="font-bold">
-                      {op}
-                    </Option>
-                  ))}
-                </Select>
-              )}
-            </div>
-            {resData2 && (
-              <div className="bg-white p-6 space-y-4">
-                <h2 className="text-xl font-bold text-indigo-800">
-                  Restaurant Details
-                </h2>
-                <div className="space-y-2">
-                  <p className="text-gray-700 font-bold">
-                    <span className="font-semibold">Owner Name:</span>{" "}
-                    {resData[0]?.owner_name}
-                  </p>
-                  <p className="text-gray-700 font-bold">
-                    <span className="font-semibold">Owner Contact:</span> +91{" "}
-                    {resData[0]?.owner_contact}
-                  </p>
-                  <p className="text-gray-700 font-bold">
-                    <span className="font-semibold">Contact:</span> +91{" "}
-                    {resData[0]?.contact}
-                  </p>
-                  <p className="text-gray-700 font-bold">
-                    <span className="font-semibold">Email:</span>{" "}
-                    {resData[0]?.email}
-                  </p>
-                  <p className="text-gray-700 font-bold">
-                    <span className="font-semibold">FSSAI License:</span>{" "}
-                    <Image
-                      src={`${resData[0]?.FSSAILicense?.link}`}
-                      alt="FSSAI License"
-                      className="inline-block w-20 h-20 rounded-lg border"
-                    />
-                  </p>
-                  <p className="text-gray-700 font-bold">
-                    <span className="font-semibold">QR Code:</span>{" "}
-                    <Image
-                      src={`${resData[0]?.bankAccount?.link}`}
-                      alt="QR Code"
-                      className="inline-block w-20 h-20 rounded-lg border"
-                    />
-                  </p>
-                  <p className="text-gray-700 font-bold">
-                    <span className="font-semibold">Pan Card:</span>{" "}
-                    <Image
-                      src={`${resData[0]?.panCard?.link}`}
-                      alt="Pan Card"
-                      className="inline-block w-20 h-20 rounded-lg border"
-                    />
-                  </p>
-                </div>
-                <Button
-                  onClick={() => {
-                    navigate(`/restaurant/${btoa(resData[0]?.email)}`);
-                  }}
-                  className="bg-indigo-600 text-white hover:bg-indigo-800 rounded-lg  mt-4"
-                >
-                  View Restaurant
-                </Button>
-              </div>
-            )}
-          </div>
-
-          {/* Right Section - Orders Table */}
-          <div className="w-full md:w-2/3">
-            <div className="flex items-center space-x-4 mb-6">
-              {data && (
-                <>
-                  <Checkbox
-                    onChange={onChangePaid}
-                    checked={paidBox}
-                    className="text-lg"
-                  >
-                    Paid
-                  </Checkbox>
-                  <Checkbox
-                    onChange={onChangeNotPaid}
-                    checked={notPaidBox}
-                    className="text-lg"
-                  >
-                    Not Paid
-                  </Checkbox>
-                  {notPaidBox && (
-                    <Button
-                      onClick={showModal}
-                      disabled={sum === 0}
-                      className="bg-blue-500 text-white hover:bg-blue-700 rounded"
-                    >
-                      Pay
-                    </Button>
-                  )}
-                </>
-              )}
-            </div>
-            {mainData && curRes && (
-              <Table
-                title={() => (
-                  <h2 className="text-2xl font-bold text-left">{curRes}</h2>
-                )}
-                loading={loading}
-                rowSelection={rowSelection}
-                columns={columns}
-                dataSource={mainData}
-                className="shadow-md rounded-lg overflow-auto"
-              />
-            )}
-          </div>
-        </div>
-
-        <Modal
-          title="Payment Confirmation"
-          open={isModalOpen}
-          onCancel={handleCancel}
-          footer={
-            <Button
-              onClick={handleCancel}
-              className="bg-gray-500 hover:bg-gray-700 text-white font-bold rounded"
+  <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
+    <ToastContainer />
+    <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6 border-b-2 border-gray-200">
+      <h1 className="font-bold text-2xl text-gray-800">
+        <span className="text-indigo-600">SuperAdmin</span>
+      </h1>
+    </div>
+    <div className="flex flex-col md:flex-row md:space-x-6">
+      {/* Left Section - Restaurant Details */}
+      <div className="w-full md:w-1/3 bg-white p-4 rounded-lg shadow-md mb-6 md:mb-0 border border-gray-200">
+        <div className="mb-6">
+          {data && (
+            <Select
+              defaultValue={curRes}
+              className="w-full border border-gray-300 rounded-lg"
+              onChange={(e) => setCurRes(e)}
             >
-              Cancel
+              {Object.keys(data).map((op, i) => (
+                <Option key={i} value={op} className="font-bold">
+                  {op}
+                </Option>
+              ))}
+            </Select>
+          )}
+        </div>
+        {resData2 && (
+          <div className="bg-white p-6 space-y-4 border-t border-gray-200">
+            <h2 className="text-xl font-bold text-indigo-800">
+              Restaurant Details
+            </h2>
+            <div className="space-y-2">
+              <p className="text-gray-700 font-bold border-b border-gray-200 pb-2">
+                <span className="font-semibold">Owner Name:</span>{" "}
+                {resData[0]?.owner_name}
+              </p>
+              <p className="text-gray-700 font-bold border-b border-gray-200 pb-2">
+                <span className="font-semibold">Owner Contact:</span> +91{" "}
+                {resData[0]?.owner_contact}
+              </p>
+              <p className="text-gray-700 font-bold border-b border-gray-200 pb-2">
+                <span className="font-semibold">Contact:</span> +91{" "}
+                {resData[0]?.contact}
+              </p>
+              <p className="text-gray-700 font-bold border-b border-gray-200 pb-2">
+                <span className="font-semibold">Email:</span>{" "}
+                {resData[0]?.email}
+              </p>
+              <p className="text-gray-700 font-bold border-b border-gray-200 pb-2">
+                <span className="font-semibold">FSSAI License:</span>{" "}
+                <Image
+                  src={`${resData[0]?.FSSAILicense?.link}`}
+                  alt="FSSAI License"
+                  className="inline-block w-20 h-20 rounded-lg border border-gray-300"
+                />
+              </p>
+              <p className="text-gray-700 font-bold border-b border-gray-200 pb-2">
+                <span className="font-semibold">QR Code:</span>{" "}
+                <Image
+                  src={`${resData[0]?.bankAccount?.link}`}
+                  alt="QR Code"
+                  className="inline-block w-20 h-20 rounded-lg border border-gray-300"
+                />
+              </p>
+              <p className="text-gray-700 font-bold">
+                <span className="font-semibold">Pan Card:</span>{" "}
+                <Image
+                  src={`${resData[0]?.panCard?.link}`}
+                  alt="Pan Card"
+                  className="inline-block w-20 h-20 rounded-lg border border-gray-300"
+                />
+              </p>
+            </div>
+            <Button
+              onClick={() => {
+                navigate(`/restaurant/${btoa(resData[0]?.email)}`);
+              }}
+              className="bg-indigo-600 text-white hover:bg-indigo-800 rounded-lg mt-4"
+            >
+              View Restaurant
             </Button>
-          }
-          className="rounded-lg"
-        >
-          <p className="text-lg mb-4 flex items-center">
-            Pay ₹<span className="font-bold text-xl mx-2">{sum}</span> to
-            <span className="font-bold text-xl mx-2 text-indigo-600">
-              {curRes}
-            </span>
-          </p>
-          <div className="flex flex-col items-center justify-evenly mt-5">
-            <Image
-              src={`${resData[0]?.bankAccount?.link}`}
-              alt="QR Code"
-              className="mb-5 w-40 h-40"
+          </div>
+        )}
+      </div>
+      {/* Right Section - Orders Table */}
+      <div className="md:w-2/3">
+        <div className="w-full">
+          <div className="flex items-center space-x-4 mb-6">
+            {data && (
+              <>
+                <Checkbox
+                  onChange={onChangePaid}
+                  checked={paidBox}
+                  className="text-lg"
+                >
+                  Paid
+                </Checkbox>
+                <Checkbox
+                  onChange={onChangeNotPaid}
+                  checked={notPaidBox}
+                  className="text-lg"
+                >
+                  Not Paid
+                </Checkbox>
+                {notPaidBox && (
+                  <Button
+                    onClick={showModal}
+                    disabled={sum === 0}
+                    className="bg-blue-500 text-white hover:bg-blue-700 rounded"
+                  >
+                    Pay
+                  </Button>
+                )}
+              </>
+            )}
+          </div>
+          {mainData && curRes && (
+            <Table
+              title={() => (
+                <h2 className="text-2xl font-bold text-left border-b border-gray-200 pb-2">{curRes}</h2>
+              )}
+              loading={loading}
+              rowSelection={rowSelection}
+              columns={columns}
+              dataSource={mainData}
+              className="shadow-md rounded-lg overflow-auto border border-gray-200"
             />
-            <Upload
-              beforeUpload={(f) => {
-                handleDishImgUpload(f, curPaymentId);
-                // No need to call handleOk(1) since we're not using the OK button
+          )}
+        </div>
+
+        <div>
+          <div className="">
+            <Modal
+              title="Add New Coupon"
+              open={isModalOpen2}
+              onOk={handleOk2}
+              onCancel={handleCancel2}
+              footer={[
+                <Button
+                  key="back"
+                  onClick={addCoupon}
+                  className="bg-green-600 text-white rounded-lg hover:bg-green-700"
+                >
+                  Add Coupon
+                </Button>,
+              ]}
+            >
+              <div className="mb-4">
+                <label className="text-xs font-bold mb-2 block">
+                  Coupon Name
+                </label>
+                <Input
+                  placeholder="Enter Coupon Name"
+                  value={modalCouponName}
+                  onChange={(e) => {
+                    setModalCouponName(e.target.value);
+                  }}
+                  className="border rounded-lg p-2"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="text-xs font-semibold mb-2 block">
+                  Upto (in ₹)
+                </label>
+                <Input
+                  placeholder="Enter Price"
+                  value={modalCouponUpto}
+                  onChange={(e) => {
+                    setModalCouponUpto(e.target.value);
+                  }}
+                  className="border rounded-lg p-2"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="text-xs font-semibold mb-2 block">
+                  Discount (in %)
+                </label>
+                <Input
+                  type="number"
+                  placeholder="Enter Price"
+                  value={modalCouponDiscount}
+                  onChange={(e) => {
+                    setModalCouponDiscount(e.target.value);
+                  }}
+                  className="border rounded-lg p-2"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="text-xs font-semibold mb-2 block">
+                  Above (in ₹)
+                </label>
+                <Input
+                  type="number"
+                  placeholder="Enter Price"
+                  value={modalCouponAbove}
+                  onChange={(e) => {
+                    setModalCouponAbove(e.target.value);
+                  }}
+                  className="border rounded-lg p-2"
+                />
+              </div>
+            </Modal>
+            <Button
+              className="bg-green-600 text-white rounded-lg hover:bg-green-700 my-4"
+              onClick={() => {
+                setIsModalOpen2(true);
+              }}
+            >
+              Add Coupon
+            </Button>
+          </div>
+          <Table
+            title={() => (
+              <h2 className="text-2xl font-bold text-left border-b border-gray-200 pb-2">Your Coupons</h2>
+            )}
+            loading={loading}
+            columns={columns2}
+            dataSource={coupons}
+            className="shadow-md rounded-lg overflow-auto border border-gray-200"
+          />
+        </div>
+      </div>
+    </div>
+
+    <Modal
+      title="Payment Confirmation"
+      open={isModalOpen}
+      onCancel={handleCancel}
+      footer={
+        <Button
+          onClick={handleCancel}
+          className="bg-gray-500 hover:bg-gray-700 text-white font-bold rounded"
+        >
+          Cancel
+        </Button>
+      }
+      className="rounded-lg"
+    >
+      <p className="text-lg mb-4 flex items-center">
+        Pay ₹<span className="font-bold text-xl mx-2">{sum}</span> to
+        <span className="font-bold text-xl mx-2 text-indigo-600">
+          {curRes}
+        </span>
+      </p>
+      <div className="flex flex-col items-center justify-evenly mt-5">
+        <Image
+          src={`${resData[0]?.bankAccount?.link}`}
+          alt="QR Code"
+          className="mb-5 w-40 h-40 border border-gray-300"
+        />
+        <Upload
+          beforeUpload={(f) => {
+            handleDishImgUpload(f, curPaymentId);
+            // No need to call handleOk(1) since we're not using the OK button
               }}
               fileList={null}
               className="hover:bg-gray-100"
@@ -520,98 +615,6 @@ const Panel = ({ tableData, loading, user }) => {
             </Upload>
           </div>
         </Modal>
-      </div>
-      <div>
-        <div>
-          <Modal
-            title="Add New Coupon"
-            open={isModalOpen2}
-            onOk={handleOk2}
-            onCancel={handleCancel2}
-            footer={[
-              <Button
-                key="back"
-                onClick={addCoupon}
-                className="bg-green-600 text-white rounded-lg hover:bg-green-700"
-              >
-                Add Coupon
-              </Button>,
-            ]}
-          >
-            <div className="mb-4">
-              <label className="text-xs font-bold mb-2 block">
-                Coupon Name
-              </label>
-              <Input
-                placeholder="Enter Coupon Name"
-                value={modalCouponName}
-                onChange={(e) => {
-                  setModalCouponName(e.target.value);
-                }}
-                className="border rounded-lg p-2"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="text-xs font-semibold mb-2 block">
-                Upto (in ₹)
-              </label>
-              <Input
-                placeholder="Enter Price"
-                value={modalCouponUpto}
-                onChange={(e) => {
-                  setModalCouponUpto(e.target.value);
-                }}
-                className="border rounded-lg p-2"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="text-xs font-semibold mb-2 block">
-                Discount (in %)
-              </label>
-              <Input
-                type="number"
-                placeholder="Enter Price"
-                value={modalCouponDiscount}
-                onChange={(e) => {
-                  setModalCouponDiscount(e.target.value);
-                }}
-                className="border rounded-lg p-2"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="text-xs font-semibold mb-2 block">
-                Above (in ₹)
-              </label>
-              <Input
-                type="number"
-                placeholder="Enter Price"
-                value={modalCouponAbove}
-                onChange={(e) => {
-                  setModalCouponAbove(e.target.value);
-                }}
-                className="border rounded-lg p-2"
-              />
-            </div>
-          </Modal>
-          <Button
-            onClick={() => {
-              setIsModalOpen2(true);
-            }}
-          >
-            Add Coupon
-          </Button>
-        </div>
-        <Table
-          title={() => (
-            <h2 className="text-2xl font-bold text-left">Your Coupons</h2>
-          )}
-          loading={loading}
-          columns={columns2}
-          dataSource={coupons}
-          className="shadow-md rounded-lg overflow-auto"
-        />
       </div>
     </>
   );
